@@ -20,6 +20,10 @@ public static class Enums {
 	public static PlacedObject.Type WaterDripsPO;
 	public static PlacedObject.Type MagmaAreaPO;
 	public static PlacedObject.Type HeatSourcePO;
+	public static PlacedObject.Type ColoredCoralNeuronPO;
+	public static PlacedObject.Type ColoredDeepProcessingPO;
+	public static PlacedObject.Type CustomLightRodPO;
+	public static PlacedObject.Type CustomLightArcPO;
 
 	public static ObjectsPage.DevObjectCategories FloodwatersCategory;
 	public static RoomSettingsPage.DevEffectsCategories FloodwatersEffectCategory;
@@ -54,6 +58,10 @@ public static class Enums {
 		WaterDripsPO = new PlacedObject.Type("WaterDrips", register: true);
 		MagmaAreaPO = new PlacedObject.Type("MagmaArea", register: true);
 		HeatSourcePO = new PlacedObject.Type("HeatSource", register: true);
+		ColoredCoralNeuronPO = new PlacedObject.Type("ColoredCoralNeuron", register: true);
+		ColoredDeepProcessingPO = new PlacedObject.Type("ColoredDeepProcessing", register: true);
+		CustomLightRodPO = new PlacedObject.Type("CustomLightRod", register: true);
+		CustomLightArcPO = new PlacedObject.Type("CustomLightArc", register: true);
 
 		FloodwatersCategory = new ObjectsPage.DevObjectCategories("Floodwaters", register: true);
 		FloodwatersEffectCategory = new RoomSettingsPage.DevEffectsCategories("Floodwaters", register: true);
@@ -91,6 +99,10 @@ public static class Enums {
 		WaterDripsPO?.Unregister(); WaterDripsPO = null;
 		MagmaAreaPO?.Unregister(); MagmaAreaPO = null;
 		HeatSourcePO?.Unregister(); HeatSourcePO = null;
+		ColoredCoralNeuronPO?.Unregister(); ColoredCoralNeuronPO = null;
+		ColoredDeepProcessingPO?.Unregister(); ColoredDeepProcessingPO = null;
+		CustomLightRodPO?.Unregister(); CustomLightRodPO = null;
+		CustomLightArcPO?.Unregister(); CustomLightArcPO = null;
 
 		FloodwatersCategory?.Unregister(); FloodwatersCategory = null;
 		FloodwatersEffectCategory?.Unregister(); FloodwatersEffectCategory = null;

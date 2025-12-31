@@ -12,6 +12,7 @@ public static class Objects {
 		On.Player.CanBeSwallowed += On_Player_CanBeSwallowed;
 
 		On.Player.Regurgitate += On_Player_Regurgitate;
+		On.CoralBrain.CoralNeuron.DrawSprites += On_CoralNeuron_DrawSprites;
 
 		Futile.atlasManager.LoadAtlas("atlases/cactus");
 		Futile.atlasManager.LoadAtlas("atlases/lillypad");
@@ -29,6 +30,7 @@ public static class Objects {
 		On.Player.CanBeSwallowed -= On_Player_CanBeSwallowed;
 
 		On.Player.Regurgitate -= On_Player_Regurgitate;
+		On.CoralBrain.CoralNeuron.DrawSprites -= On_CoralNeuron_DrawSprites;
 
 		Futile.atlasManager.UnloadAtlas("atlases/cactus");
 		Futile.atlasManager.UnloadAtlas("atlases/lillypad");
@@ -127,6 +129,22 @@ public static class Objects {
 			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, true);
 		}
 
+		else if (tp == Enums.ColoredCoralNeuronPO) {
+			placedObjectRepresentation = new ColoredCoralNeuron.ColoredCoralNeuronRepresentation(self.owner, repName, self, pObj, name);
+		}
+
+		else if (tp == Enums.ColoredDeepProcessingPO) {
+			placedObjectRepresentation = new ColoredDeepProcessing.ColoredDeepProcessingRepresentation(self.owner, repName, self, pObj, name);
+		}
+
+		else if (tp == Enums.CustomLightRodPO) {
+			placedObjectRepresentation = new CustomLightRod.CustomLightRodRepresentation(self.owner, repName, self, pObj);
+		}
+
+		else if (tp == Enums.CustomLightArcPO) {
+			placedObjectRepresentation = new CustomLightArc.CustomLightArcRepresentation(self.owner, repName, self, pObj);
+		}
+
 		if (placedObjectRepresentation != null) {
 			self.tempNodes.Add(placedObjectRepresentation);
 			self.subNodes.Add(placedObjectRepresentation);
@@ -140,6 +158,8 @@ public static class Objects {
 
 		if (self.game == null)
 			return;
+
+		bool hasCoralNeuronSystem = self.updateList.Any(x => x is CoralNeuronSystem);
 
 		for (int poIndex = 0; poIndex < self.roomSettings.placedObjects.Count; poIndex++) {
 			PlacedObject pObj = self.roomSettings.placedObjects[poIndex];
@@ -210,6 +230,22 @@ public static class Objects {
 			else if (pObj.type == Enums.HeatSourcePO) {
 				self.AddObject(new HeatSource(self, pObj));
 			}
+			else if (pObj.type == Enums.ColoredCoralNeuronPO) {
+				if (!hasCoralNeuronSystem) {
+					self.AddObject(new CoralNeuronSystem());
+					hasCoralNeuronSystem = true;
+				}
+				self.waitToEnterAfterFullyLoaded = Mathf.Max(self.waitToEnterAfterFullyLoaded, 80);
+			}
+			else if (pObj.type == Enums.ColoredDeepProcessingPO) {
+				self.AddObject(new ColoredDeepProcessing(pObj));
+			}
+			else if (pObj.type == Enums.CustomLightRodPO) {
+				self.AddObject(new CustomLightRod(pObj, self));
+			}
+			else if (pObj.type == Enums.CustomLightArcPO) {
+				self.AddObject(new CustomLightArc(pObj, self));
+			}
 		}
 	}
 
@@ -276,10 +312,26 @@ public static class Objects {
 		if (self.type == Enums.HeatSourcePO) {
 			self.data = new PlacedObject.ResizableObjectData(self);
 		}
+
+		if (self.type == Enums.ColoredCoralNeuronPO) {
+			self.data = new ColoredCoralNeuron.ColoredCoralNeuronData(self);
+		}
+
+		if (self.type == Enums.ColoredDeepProcessingPO) {
+			self.data = new ColoredDeepProcessing.ColoredDeepProcessingData(self);
+		}
+
+		if (self.type == Enums.CustomLightRodPO) {
+			self.data = new CustomLightRod.CustomLightRodData(self);
+		}
+
+		if (self.type == Enums.CustomLightArcPO) {
+			self.data = new CustomLightArc.CustomLightArcData(self);
+		}
 	}
 
 	private static ObjectsPage.DevObjectCategories On_ObjectsPage_DevObjectGetCategoryFromPlacedType(On.DevInterface.ObjectsPage.orig_DevObjectGetCategoryFromPlacedType orig, ObjectsPage self, PlacedObject.Type type) {
-		if (type == Enums.CactusPO || type == Enums.SandDripPO || type == Enums.DeerSkullPO || type == Enums.CattailPO || type == Enums.ColoredCattailPO || type == Enums.BubbleEmitterPO || type == Enums.BambooPO || type == Enums.ColoredLanternPO || type == Enums.ColoredLanternStickPO || type == Enums.LillypadPO || type == Enums.WaterDripsPO || type == Enums.MagmaAreaPO || type == Enums.HeatSourcePO)
+		if (type == Enums.CactusPO || type == Enums.SandDripPO || type == Enums.DeerSkullPO || type == Enums.CattailPO || type == Enums.ColoredCattailPO || type == Enums.BubbleEmitterPO || type == Enums.BambooPO || type == Enums.ColoredLanternPO || type == Enums.ColoredLanternStickPO || type == Enums.LillypadPO || type == Enums.WaterDripsPO || type == Enums.MagmaAreaPO || type == Enums.HeatSourcePO || type == Enums.ColoredCoralNeuronPO || type == Enums.ColoredDeepProcessingPO || type == Enums.CustomLightRodPO || type == Enums.CustomLightArcPO)
 			return Enums.FloodwatersCategory;
 
 		return orig(self, type);
@@ -321,6 +373,14 @@ public static class Objects {
 			(apo.realizedObject as Cattail).Explode();
 			self.Stun(80);
 			return;
+		}
+	}
+
+	private static void On_CoralNeuron_DrawSprites(On.CoralBrain.CoralNeuron.orig_DrawSprites orig, CoralNeuron self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
+		orig(self, sLeaser, rCam, timeStacker, camPos);
+
+		if (self is ColoredCoralNeuron neuron) {
+			neuron.Refresh(sLeaser, rCam, timeStacker, camPos);
 		}
 	}
 }

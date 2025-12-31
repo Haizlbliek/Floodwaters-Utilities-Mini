@@ -30,16 +30,42 @@ public static class Effects {
 	private static void On_RoomCamera_ApplyPalette(On.RoomCamera.orig_ApplyPalette orig, RoomCamera self) {
 		orig(self);
 
+		if (self.room?.roomSettings == null) {
+			return;
+		}
+
+		float bloom = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.Bloom);
+		float lightBurn = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.LightBurn);
+		float skyAndLightBloom = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SkyAndLightBloom);
+		float skyBloom = self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SkyBloom);
+		float bloomValue = 0f;
+
+		if (bloom > 0f) {
+			Shader.SetGlobalInt(Assets.ShadPropFWBloomType, 0);
+			bloomValue = bloom;
+		} else if (skyAndLightBloom > 0f) {
+			Shader.SetGlobalInt(Assets.ShadPropFWBloomType, 1);
+			bloomValue = skyAndLightBloom;
+		} else if (lightBurn > 0f) {
+			Shader.SetGlobalInt(Assets.ShadPropFWBloomType, 2);
+			bloomValue = lightBurn;
+		} else if (skyBloom > 0f) {
+			Shader.SetGlobalInt(Assets.ShadPropFWBloomType, 3);
+			bloomValue = skyBloom;
+		} else {
+			Shader.SetGlobalInt(Assets.ShadPropFWBloomType, -1);
+		}
+
 		if (self.room?.roomSettings.GetEffect(Enums.FWFogEffect) != null) {
 			self.SetUpFullScreenEffect("Bloom");
 			self.fullScreenEffect.shader = Custom.rainWorld.Shaders["FWFog"];
 			self.lightBloomAlphaEffect = Enums.FWFogEffect;
 			self.lightBloomAlpha = self.room.roomSettings.GetEffectAmount(Enums.FWFogEffect);
 			self.fullScreenEffect.color = new Color(
-				self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.Bloom),
-				Mathf.Max(self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.LightBurn), self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SkyAndLightBloom)),
-				Mathf.Max(self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SkyBloom), self.room.roomSettings.GetEffectAmount(RoomSettings.RoomEffect.Type.SkyAndLightBloom)),
-				1.0f
+				bloomValue,
+				1f,
+				1f,
+				1f
 			);
 			self.fullScreenEffect.alpha = self.lightBloomAlpha;
 			return;
