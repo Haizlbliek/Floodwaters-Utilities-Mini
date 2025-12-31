@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<RainWorldDllPath>C:\Program Files (x86)\Steam\steamapps\common\Rain World\RainWorld_Data\Managed\</RainWorldDllPath>
+		<BepInEx>C:\Program Files (x86)\Steam\steamapps\common\Rain World\BepInEx\</BepInEx>
+		<OutputDirectory>C:\Program Files (x86)\Steam\steamapps\common\Rain World\RainWorld_Data\StreamingAssets\mods\floodwaters_mini\plugins</OutputDirectory>
+	</PropertyGroup>
+
+	<Target Name="CopyData" AfterTargets="AfterBuild">
+		<Copy SourceFiles="./bin/Debug/net48/FloodwatersMini.dll" DestinationFolder="$(OutputDirectory)" />
+		<Copy SourceFiles="./bin/Debug/net48/FloodwatersMini.pdb" DestinationFolder="$(OutputDirectory)" />
+	</Target>
+
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+
+		<ImplicitUsings>disable</ImplicitUsings>
+
+		<Nullable>disable</Nullable>
+
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="assets\**\*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="$(RainWorldDllPath)/Mono.Cecil.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/MonoMod.Common.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/MonoMod.RuntimeDetour.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/MonoMod.Utils.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/Assembly-CSharp-firstpass.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/PUBLIC-Assembly-CSharp.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/UnityEngine.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/Unity.Mathematics.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/UnityEngine.CoreModule.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/UnityEngine.InputLegacyModule.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RainWorldDllPath)/UnityEngine.AssetBundleModule.dll"><Private>false</Private></Reference>
+		<Reference Include="$(BepInEx)/core/BepInEx.dll"><Private>false</Private></Reference>
+		<Reference Include="$(BepInEx)/plugins/HOOKS-Assembly-CSharp.dll"><Private>false</Private></Reference>
+		<Reference Include="$(BepInEx)/utils/PUBLIC-Assembly-CSharp.dll"><Private>false</Private></Reference>
+		<Reference Include="$(BepInEx)/core/0Harmony.dll"><Private>false</Private></Reference>
+
+		<Reference Include="C:\Program Files (x86)\Steam\steamapps\workshop\content\312520\2920439169\plugins\Pom.dll"><Private>false</Private></Reference>
+		<Reference Include="C:\Program Files (x86)\Steam\steamapps\workshop\content\312520\2933196558\newest\plugins\SlugBase.dll"><Private>false</Private></Reference>
+	</ItemGroup>
+
+</Project>

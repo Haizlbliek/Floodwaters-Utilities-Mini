@@ -1,0 +1,242 @@
+namespace Floodwaters.Objects;
+
+public class SandDrip : CosmeticSprite {
+	private readonly PlacedObject placedObject;
+	private float height;
+	private float lastTime;
+	private float time;
+
+	protected SandDripData Data => this.placedObject.data as SandDripData;
+
+	public SandDrip(Room room, PlacedObject placedObject) {
+		this.room = room;
+		this.placedObject = placedObject;
+		Futile.atlasManager.GetElementWithName("Circle20").atlas.texture.wrapMode = TextureWrapMode.Repeat;
+	}
+
+	public override void Update(bool eu) {
+		base.Update(eu);
+		this.pos = this.placedObject.pos;
+		this.lastTime = this.time;
+		if (this.height != 0.0f) this.time += 10.0f / this.height;
+
+		if (this.pos != this.lastPos) {
+			this.lastPos = this.pos;
+			this.Recalculate();
+		}
+	}
+	
+	private void Recalculate() {
+		IntVector2 tile = this.room.GetTilePosition(this.pos);
+		while (tile.y >= 0) {
+			if (this.room.GetTile(tile.x, tile.y).Solid) {
+				break;
+			}
+
+			tile.y--;
+		}
+
+		this.height = this.pos.y - tile.y * 20f - 20f;
+	}
+
+	public override void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
+		sLeaser.sprites = new FSprite[2];
+		sLeaser.sprites[0] = new TriangleMesh("Futile_White", [ new TriangleMesh.Triangle(0, 1, 2) ], false, false) {
+			color = Color.blue
+		};
+		
+		sLeaser.sprites[1] = new TriangleMesh("Circle20", [ new TriangleMesh.Triangle(0, 1, 2), new TriangleMesh.Triangle(1, 2, 3) ], false) {
+			color = Color.green
+		};
+		this.AddToContainer(sLeaser, rCam, null);
+	}
+
+	public override void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette) {
+	}
+
+	public override void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
+		float cTime = Mathf.Lerp(this.lastTime, this.time, timeStacker);
+
+		base.DrawSprites(sLeaser, rCam, timeStacker, camPos);
+		float uy = this.height / 200f;
+		Vector2 endPos = new Vector2(this.pos.x, this.pos.y - this.height);
+
+		TriangleMesh trickle = sLeaser.sprites[1] as TriangleMesh;
+		trickle.color = this.Data.sandColor;
+		trickle.MoveVertice(0, this.pos + Vector2.left - camPos);
+		trickle.MoveVertice(1, this.pos + Vector2.right - camPos);
+		trickle.MoveVertice(2, this.pos + Vector2.left + Vector2.down * this.height - camPos);
+		trickle.MoveVertice(3, this.pos + Vector2.right + Vector2.down * this.height - camPos);
+		trickle.UVvertices[0] = new Vector2(0f, 0f - cTime);
+		trickle.UVvertices[1] = new Vector2(uy, 0f - cTime);
+		trickle.UVvertices[2] = new Vector2(0f, 1f - cTime);
+		trickle.UVvertices[3] = new Vector2(uy, 1f - cTime);
+
+		TriangleMesh pile = sLeaser.sprites[0] as TriangleMesh;
+		pile.color = this.Data.sandColor;
+		pile.MoveVertice(0, endPos + Vector2.left * this.Data.pileSize - camPos);
+		pile.MoveVertice(1, endPos + Vector2.right * this.Data.pileSize - camPos);
+		pile.MoveVertice(2, endPos + Vector2.up * this.Data.pileSize - camPos);
+	}
+
+	public class SandDripData : PlacedObject.Data {
+		public Color sandColor;
+		public Vector2 panelPos;
+		public int pileSize;
+
+		public SandDripData(PlacedObject owner) : base(owner) {
+			this.sandColor = Color.white;
+			this.panelPos = new Vector2(0f, 0f);
+			this.pileSize = 10;
+		}
+
+		public override void FromString(string s) {
+			base.FromString(s);
+			string[] array = Regex.Split(s, "~");
+			try {
+				this.panelPos.x = float.Parse(array[0], NumberStyles.Any, CultureInfo.InvariantCulture);
+				this.panelPos.y = float.Parse(array[1], NumberStyles.Any, CultureInfo.InvariantCulture);
+				this.sandColor.r = float.Parse(array[2], NumberStyles.Any, CultureInfo.InvariantCulture);
+				this.sandColor.g = float.Parse(array[3], NumberStyles.Any, CultureInfo.InvariantCulture);
+				this.sandColor.b = float.Parse(array[4], NumberStyles.Any, CultureInfo.InvariantCulture);
+				this.pileSize = int.Parse(array[5], NumberStyles.Any, CultureInfo.InvariantCulture);
+			} catch (Exception) {
+			}
+			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 6);
+		}
+
+		protected string BaseSaveString() {
+			return string.Format(CultureInfo.InvariantCulture, "{0}~{1}~{2}~{3}~{4}~{5}", [
+				this.panelPos.x,
+				this.panelPos.y,
+				this.sandColor.r,
+				this.sandColor.g,
+				this.sandColor.b,
+				this.pileSize
+			]);
+		}
+
+		public override string ToString() {
+			string text = this.BaseSaveString();
+			text = SaveState.SetCustomData(this, text);
+			return SaveUtils.AppendUnrecognizedStringAttrs(text, "~", this.unrecognizedAttributes);
+		}
+	}
+
+
+	public class SandDripRepresentation : PlacedObjectRepresentation {
+		private SandDripData Data {
+			get {
+				return this.pObj.data as SandDripData;
+			}
+		}
+
+		public SandDripRepresentation(DevUI owner, string IDstring, DevUINode parentNode, PlacedObject pObj, string name) : base(owner, IDstring, parentNode, pObj, name) {
+			this.controlPanel = new SandDripControlPanel(owner, "Sand_Drips_Panel", this, new Vector2(0f, 100f));
+			this.subNodes.Add(this.controlPanel);
+			this.controlPanel.pos = this.Data.panelPos;
+			this.fSprites.Add(new FSprite("pixel", true));
+			this.lineSprite = this.fSprites.Count - 1;
+			owner.placedObjectsContainer.AddChild(this.fSprites[this.lineSprite]);
+			this.fSprites[this.lineSprite].anchorY = 0f;
+			this.drip = owner.room.updateList.FirstOrDefault(delegate (UpdatableAndDeletable obj) {
+				return obj is SandDrip sandDrip && sandDrip.placedObject == pObj;
+			}) as SandDrip;
+
+			if (this.drip == null) {
+				this.drip = new SandDrip(owner.room, pObj);
+				owner.room.AddObject(this.drip);
+			}
+		}
+
+		public override void Refresh() {
+			base.Refresh();
+			base.MoveSprite(this.lineSprite, this.absPos);
+			this.fSprites[this.lineSprite].scaleY = this.controlPanel.pos.magnitude;
+			this.fSprites[this.lineSprite].rotation = Custom.VecToDeg(this.controlPanel.pos);
+			this.Data.panelPos = this.controlPanel.pos;
+			if (this.pObj.pos != this.lastPos) {
+				this.lastPos = this.pObj.pos;
+			}
+		}
+
+		private readonly SandDrip drip;
+
+		private readonly SandDripControlPanel controlPanel;
+
+		private readonly int lineSprite;
+
+		private Vector2 lastPos;
+
+		public class SandDripControlPanel : Panel {
+			public SandDripControlPanel(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos) : base(owner, IDstring, parentNode, pos, new Vector2(200f, 85f), "Sand Drip") {
+				this.subNodes.Add(new SandDripSlider(owner, "Red_Slider", this, new Vector2(5f, 65f), "R: "));
+				this.subNodes.Add(new SandDripSlider(owner, "Green_Slider", this, new Vector2(5f, 45f), "G: "));
+				this.subNodes.Add(new SandDripSlider(owner, "Blue_Slider", this, new Vector2(5f, 25f), "B: "));
+				this.subNodes.Add(new SandDripSlider(owner, "Pile_Slider", this, new Vector2(5f, 5f), "Pile Size: "));
+			}
+
+			public class SandDripSlider : Slider {
+				private SandDripRepresentation Rep {
+					get {
+						return this.parentNode.parentNode as SandDripRepresentation;
+					}
+				}
+
+				private SandDripData Data {
+					get {
+						return this.Rep.pObj.data as SandDripData;
+					}
+				}
+
+				public SandDripSlider(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos, string title) : base(owner, IDstring, parentNode, pos, title, false, 60f) {
+				}
+
+				public override void Refresh() {
+					base.Refresh();
+					float num = 0f;
+					switch (this.IDstring) {
+						case "Red_Slider":
+							num = this.Data.sandColor.r;
+							base.NumberText = Mathf.RoundToInt(num * 255f).ToString();
+							break;
+						case "Green_Slider":
+							num = this.Data.sandColor.g;
+							base.NumberText = Mathf.RoundToInt(num * 255f).ToString();
+							break;
+						case "Blue_Slider":
+							num = this.Data.sandColor.b;
+							base.NumberText = Mathf.RoundToInt(num * 255f).ToString();
+							break;
+						case "Pile_Slider":
+							num = this.Data.pileSize / 100f;
+							base.NumberText = this.Data.pileSize.ToString();
+							break;
+					}
+
+					base.RefreshNubPos(num);
+				}
+
+				public override void NubDragged(float nubPos) {
+					switch (this.IDstring) {
+						case "Red_Slider":
+							this.Data.sandColor.r = nubPos;
+							break;
+						case "Green_Slider":
+							this.Data.sandColor.g = nubPos;
+							break;
+						case "Blue_Slider":
+							this.Data.sandColor.b = nubPos;
+							break;
+						case "Pile_Slider":
+							this.Data.pileSize = Mathf.RoundToInt(nubPos * 100f);
+							break;
+					}
+
+					this.parentNode.parentNode.Refresh();
+					this.Refresh();
+				}
+			}
+		}
+	}
+}
