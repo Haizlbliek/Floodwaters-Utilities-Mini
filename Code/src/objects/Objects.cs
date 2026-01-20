@@ -13,6 +13,10 @@ public static class Objects {
 
 		On.Player.Regurgitate += On_Player_Regurgitate;
 		On.CoralBrain.CoralNeuron.DrawSprites += On_CoralNeuron_DrawSprites;
+		IL.Player.UpdateAnimation += IL_Player_UpdateAnimation;
+		On.Player.UpdateAnimation += On_Player_UpdateAnimation;
+		On.Player.MovementUpdate += On_Player_MovementUpdate;
+		On.RainWorldGame.RestartGame += On_RainWorldGame_RestartGame;
 
 		Futile.atlasManager.LoadAtlas("atlases/cactus");
 		Futile.atlasManager.LoadAtlas("atlases/lillypad");
@@ -31,6 +35,10 @@ public static class Objects {
 
 		On.Player.Regurgitate -= On_Player_Regurgitate;
 		On.CoralBrain.CoralNeuron.DrawSprites -= On_CoralNeuron_DrawSprites;
+		IL.Player.UpdateAnimation -= IL_Player_UpdateAnimation;
+		On.Player.UpdateAnimation -= On_Player_UpdateAnimation;
+		On.Player.MovementUpdate -= On_Player_MovementUpdate;
+		On.RainWorldGame.RestartGame -= On_RainWorldGame_RestartGame;
 
 		Futile.atlasManager.UnloadAtlas("atlases/cactus");
 		Futile.atlasManager.UnloadAtlas("atlases/lillypad");
@@ -137,12 +145,28 @@ public static class Objects {
 			placedObjectRepresentation = new ColoredDeepProcessing.ColoredDeepProcessingRepresentation(self.owner, repName, self, pObj, name);
 		}
 
+		else if (tp == Enums.CustomVinePO) {
+			placedObjectRepresentation = new CustomVineSystem.CustomVineRepresentation(self.owner, repName, self, pObj, name);
+		}
+
+		else if (tp == Enums.CustomVineConnectorPO) {
+			placedObjectRepresentation = new CustomVineConnectorRepresentation(self.owner, repName, self, pObj, name);
+		}
+
 		else if (tp == Enums.CustomLightRodPO) {
 			placedObjectRepresentation = new CustomLightRod.CustomLightRodRepresentation(self.owner, repName, self, pObj);
 		}
 
 		else if (tp == Enums.CustomLightArcPO) {
 			placedObjectRepresentation = new CustomLightArc.CustomLightArcRepresentation(self.owner, repName, self, pObj);
+		}
+
+		else if (tp == Enums.IceCubePO) {
+			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, true);
+		}
+
+		else if (tp == Enums.LittleIceCubesPO) {
+			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, true);
 		}
 
 		if (placedObjectRepresentation != null) {
@@ -160,6 +184,7 @@ public static class Objects {
 			return;
 
 		bool hasCoralNeuronSystem = self.updateList.Any(x => x is CoralNeuronSystem);
+		CustomVineSystem customVineSystem = self.updateList.OfType<CustomVineSystem>().FirstOrDefault();
 
 		for (int poIndex = 0; poIndex < self.roomSettings.placedObjects.Count; poIndex++) {
 			PlacedObject pObj = self.roomSettings.placedObjects[poIndex];
@@ -240,11 +265,33 @@ public static class Objects {
 			else if (pObj.type == Enums.ColoredDeepProcessingPO) {
 				self.AddObject(new ColoredDeepProcessing(pObj));
 			}
+			else if (pObj.type == Enums.CustomVinePO) {
+				if (customVineSystem == null) {
+					customVineSystem = new CustomVineSystem(self);
+					self.AddObject(customVineSystem);
+				}
+
+				customVineSystem.AddVine(pObj);
+			}
+			else if (pObj.type == Enums.CustomVineConnectorPO) {
+				if (customVineSystem == null) {
+					customVineSystem = new CustomVineSystem(self);
+					self.AddObject(customVineSystem);
+				}
+
+				customVineSystem.AddConnector(pObj);
+			}
 			else if (pObj.type == Enums.CustomLightRodPO) {
 				self.AddObject(new CustomLightRod(pObj, self));
 			}
 			else if (pObj.type == Enums.CustomLightArcPO) {
 				self.AddObject(new CustomLightArc(pObj, self));
+			}
+			else if (pObj.type == Enums.IceCubePO && firstTimeRealized) {
+				self.abstractRoom.AddEntity(new IceCube.AbstractIceCube(self.world, Enums.IceCube, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), pObj));
+			}
+			else if (pObj.type == Enums.LittleIceCubesPO) {
+				self.AddObject(new LittleIceCubes(self, pObj));
 			}
 		}
 	}
@@ -321,6 +368,14 @@ public static class Objects {
 			self.data = new ColoredDeepProcessing.ColoredDeepProcessingData(self);
 		}
 
+		if (self.type == Enums.CustomVinePO) {
+			self.data = new CustomVineSystem.CustomVineData(self);
+		}
+
+		if (self.type == Enums.CustomVineConnectorPO) {
+			self.data = new CustomVineConnectorData(self);
+		}
+
 		if (self.type == Enums.CustomLightRodPO) {
 			self.data = new CustomLightRod.CustomLightRodData(self);
 		}
@@ -328,10 +383,18 @@ public static class Objects {
 		if (self.type == Enums.CustomLightArcPO) {
 			self.data = new CustomLightArc.CustomLightArcData(self);
 		}
+
+		if (self.type == Enums.IceCubePO) {
+			self.data = new PlacedObject.ResizableObjectData(self);
+		}
+
+		if (self.type == Enums.LittleIceCubesPO) {
+			self.data = new PlacedObject.ResizableObjectData(self);
+		}
 	}
 
 	private static ObjectsPage.DevObjectCategories On_ObjectsPage_DevObjectGetCategoryFromPlacedType(On.DevInterface.ObjectsPage.orig_DevObjectGetCategoryFromPlacedType orig, ObjectsPage self, PlacedObject.Type type) {
-		if (type == Enums.CactusPO || type == Enums.SandDripPO || type == Enums.DeerSkullPO || type == Enums.CattailPO || type == Enums.ColoredCattailPO || type == Enums.BubbleEmitterPO || type == Enums.BambooPO || type == Enums.ColoredLanternPO || type == Enums.ColoredLanternStickPO || type == Enums.LillypadPO || type == Enums.WaterDripsPO || type == Enums.MagmaAreaPO || type == Enums.HeatSourcePO || type == Enums.ColoredCoralNeuronPO || type == Enums.ColoredDeepProcessingPO || type == Enums.CustomLightRodPO || type == Enums.CustomLightArcPO)
+		if (type == Enums.CactusPO || type == Enums.SandDripPO || type == Enums.DeerSkullPO || type == Enums.CattailPO || type == Enums.ColoredCattailPO || type == Enums.BubbleEmitterPO || type == Enums.BambooPO || type == Enums.ColoredLanternPO || type == Enums.ColoredLanternStickPO || type == Enums.LillypadPO || type == Enums.WaterDripsPO || type == Enums.MagmaAreaPO || type == Enums.HeatSourcePO || type == Enums.ColoredCoralNeuronPO || type == Enums.ColoredDeepProcessingPO || type == Enums.CustomVinePO || type == Enums.CustomVineConnectorPO || type == Enums.CustomLightRodPO || type == Enums.CustomLightArcPO || type == Enums.IceCubePO || type == Enums.LittleIceCubesPO)
 			return Enums.FloodwatersCategory;
 
 		return orig(self, type);
@@ -362,6 +425,10 @@ public static class Objects {
 		if (self.type == Enums.Lillypad) {
 			self.realizedObject = new Lillypad(self as Lillypad.AbstractLillypad);
 		}
+
+		if (self.type == Enums.IceCube) {
+			self.realizedObject = new IceCube(self);
+		}
 	}
 
 	private static void On_Player_Regurgitate(On.Player.orig_Regurgitate orig, Player self) {
@@ -382,5 +449,67 @@ public static class Objects {
 		if (self is ColoredCoralNeuron neuron) {
 			neuron.Refresh(sLeaser, rCam, timeStacker, camPos);
 		}
+	}
+
+	private static void IL_Player_UpdateAnimation(ILContext il) {
+		ILCursor ilcursor = new ILCursor(il);
+		MoveType moveType = MoveType.After;
+		if (ilcursor.TryGotoNext(moveType, [
+			x => x.MatchLdarg(0),
+			x => x.MatchLdfld<UpdatableAndDeletable>("room"),
+			x => x.MatchLdfld<Room>("climbableVines"),
+			x => x.MatchLdarg(0),
+			x => x.MatchLdfld<Player>("vinePos"),
+			x => x.MatchLdarg(0),
+			x => x.MatchCallOrCallvirt<ClimbableVinesSystem>("VineBeingClimbedOn"),
+		])) {
+			ilcursor.Emit(OpCodes.Ldarg_0);
+			ilcursor.EmitDelegate(delegate (Player self) {
+				Room room = self.room;
+				ClimbableVinesSystem climbableVinesSystem = room?.climbableVines;
+				if (climbableVinesSystem != null) {
+					ClimbableVinesSystem.VinePosition vinePos = self.vinePos;
+					if (vinePos != null && climbableVinesSystem.vines.Count > 0) {
+						if (climbableVinesSystem.GetVineObject(vinePos) is CustomVineSystem.CustomVineClimbable customVine && customVine.JumpAllowed()) {
+							self.canJump = 5;
+						}
+					}
+				}
+			});
+		}
+		else {
+			Plugin.Log("Failed to IL hook player UpdateAnimation");
+		}
+	}
+
+	private static void On_Player_UpdateAnimation(On.Player.orig_UpdateAnimation orig, Player self) {
+		if (self.animation == Player.AnimationIndex.VineGrab) {
+			if (self.SwimDir(true).magnitude > 0f) {
+				IClimbableVine vine = self.room.climbableVines.GetVineObject(self.vinePos);
+
+				if (vine != null && vine is CustomVineSystem.CustomVineClimbable customVine && Random.value < 0.05f) {
+					self.room.PlaySound(customVine.preset.climbSound, self.mainBodyChunk, false, 0.5f, 0.5f + Random.value * 1.5f);
+				}
+			}
+		}
+
+		orig(self);
+	}
+
+	private static void On_Player_MovementUpdate(On.Player.orig_MovementUpdate orig, Player self, bool eu) {
+		bool wasGrabbingVine = self.animation == Player.AnimationIndex.VineGrab;
+		orig(self, eu);
+		if (self.animation == Player.AnimationIndex.VineGrab && !wasGrabbingVine) {
+			IClimbableVine vine = self.room.climbableVines?.GetVineObject(self.vinePos);
+			if (vine != null && vine is CustomVineSystem.CustomVineClimbable customVine) {
+				self.room.PlaySound(customVine.preset.grabSound, self.mainBodyChunk, false, 1f, 0.75f + UnityEngine.Random.value * 0.5f);
+			}
+		}
+	}
+
+	private static void On_RainWorldGame_RestartGame(On.RainWorldGame.orig_RestartGame orig, RainWorldGame self) {
+		orig(self);
+
+		CustomVinePreset.presets.Clear();
 	}
 }

@@ -29,13 +29,14 @@ public class Plugin : BaseUnityPlugin {
 
 		On.RainWorld.OnModsInit += this.OnModsInit;
 		On.RainWorld.OnModsDisabled += this.OnModsDisabled;
+
+		Enums.Initialize();
 	}
 	
 	private void Initialize() {
 		if (HasInitialized)
 			return;
 
-		Enums.Initialize();
 		Objects.Objects.Initialize();
 		Effects.Effects.Initialize();
 		Assets.Initialize();

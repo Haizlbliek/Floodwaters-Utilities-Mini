@@ -29,10 +29,8 @@ public class Creatures {
 		orig();
 
 		if (ModManager.Watcher) {
-			StaticWorld.creatureTemplates[WatcherEnums.CreatureTemplateType.FireSprite.index].damageRestistances[Enums.HeatDanger.index, 0] = 10000f;
-			StaticWorld.creatureTemplates[WatcherEnums.CreatureTemplateType.FireSprite.index].damageRestistances[Enums.HeatDanger.index, 1] = 10000f;
-			StaticWorld.creatureTemplates[WatcherEnums.CreatureTemplateType.BoxWorm.index].damageRestistances[Enums.HeatDanger.index, 0] = 10000f;
-			StaticWorld.creatureTemplates[WatcherEnums.CreatureTemplateType.BoxWorm.index].damageRestistances[Enums.HeatDanger.index, 1] = 10000f;
+			StaticWorld.creatureTemplates[WatcherEnums.CreatureTemplateType.FireSprite.index].damageRestistances[Enums.BurnDamageType.index, 0] = 10000f;
+			StaticWorld.creatureTemplates[WatcherEnums.CreatureTemplateType.BoxWorm.index].damageRestistances[Enums.BurnDamageType.index, 0] = 10000f;
 		}
 	}
 }

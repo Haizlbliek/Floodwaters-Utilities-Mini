@@ -6,6 +6,7 @@ public static class Enums {
 	public static AbstractPhysicalObject.AbstractObjectType Cattail;
 	public static AbstractPhysicalObject.AbstractObjectType ColoredLantern;
 	public static AbstractPhysicalObject.AbstractObjectType Lillypad;
+	public static AbstractPhysicalObject.AbstractObjectType IceCube;
 
 	public static PlacedObject.Type CactusPO;
 	public static PlacedObject.Type SandDripPO;
@@ -22,8 +23,12 @@ public static class Enums {
 	public static PlacedObject.Type HeatSourcePO;
 	public static PlacedObject.Type ColoredCoralNeuronPO;
 	public static PlacedObject.Type ColoredDeepProcessingPO;
+	public static PlacedObject.Type CustomVinePO;
+	public static PlacedObject.Type CustomVineConnectorPO;
 	public static PlacedObject.Type CustomLightRodPO;
 	public static PlacedObject.Type CustomLightArcPO;
+	public static PlacedObject.Type IceCubePO;
+	public static PlacedObject.Type LittleIceCubesPO;
 
 	public static ObjectsPage.DevObjectCategories FloodwatersCategory;
 	public static RoomSettingsPage.DevEffectsCategories FloodwatersEffectCategory;
@@ -44,6 +49,7 @@ public static class Enums {
 		Cattail = new AbstractPhysicalObject.AbstractObjectType("Cattail", register: true);
 		ColoredLantern = new AbstractPhysicalObject.AbstractObjectType("ColoredLantern", register: true);
 		Lillypad = new AbstractPhysicalObject.AbstractObjectType("Lillypad", register: true);
+		IceCube = new AbstractPhysicalObject.AbstractObjectType("IceCube", register: true);
 
 		CactusPO = new PlacedObject.Type("Cactus", register: true);
 		SandDripPO = new PlacedObject.Type("SandDrip", register: true);
@@ -60,8 +66,12 @@ public static class Enums {
 		HeatSourcePO = new PlacedObject.Type("HeatSource", register: true);
 		ColoredCoralNeuronPO = new PlacedObject.Type("ColoredCoralNeuron", register: true);
 		ColoredDeepProcessingPO = new PlacedObject.Type("ColoredDeepProcessing", register: true);
+		CustomVinePO = new PlacedObject.Type("CustomVine", register: true);
+		CustomVineConnectorPO = new PlacedObject.Type("CustomVineConnector", register: true);
 		CustomLightRodPO = new PlacedObject.Type("CustomLightRod", register: true);
 		CustomLightArcPO = new PlacedObject.Type("CustomLightArc", register: true);
+		IceCubePO = new PlacedObject.Type("IceCube", register: true);
+		LittleIceCubesPO = new PlacedObject.Type("LittleIceCubes", register: true);
 
 		FloodwatersCategory = new ObjectsPage.DevObjectCategories("Floodwaters", register: true);
 		FloodwatersEffectCategory = new RoomSettingsPage.DevEffectsCategories("Floodwaters", register: true);
@@ -85,6 +95,7 @@ public static class Enums {
 		Cattail?.Unregister(); Cattail = null;
 		ColoredLantern?.Unregister(); ColoredLantern = null;
 		Lillypad?.Unregister(); Lillypad = null;
+		IceCube?.Unregister(); IceCube = null;
 
 		CactusPO?.Unregister(); CactusPO = null;
 		SandDripPO?.Unregister(); SandDripPO = null;
@@ -101,8 +112,12 @@ public static class Enums {
 		HeatSourcePO?.Unregister(); HeatSourcePO = null;
 		ColoredCoralNeuronPO?.Unregister(); ColoredCoralNeuronPO = null;
 		ColoredDeepProcessingPO?.Unregister(); ColoredDeepProcessingPO = null;
+		CustomVinePO?.Unregister(); CustomVinePO = null;
+		CustomVineConnectorPO?.Unregister(); CustomVineConnectorPO = null;
 		CustomLightRodPO?.Unregister(); CustomLightRodPO = null;
 		CustomLightArcPO?.Unregister(); CustomLightArcPO = null;
+		IceCubePO?.Unregister(); IceCubePO = null;
+		LittleIceCubesPO?.Unregister(); LittleIceCubesPO = null;
 
 		FloodwatersCategory?.Unregister(); FloodwatersCategory = null;
 		FloodwatersEffectCategory?.Unregister(); FloodwatersEffectCategory = null;

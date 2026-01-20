@@ -25,6 +25,9 @@ public class HeatDanger : UpdatableAndDeletable {
 
 			foreach (PhysicalObject po in this.room.physicalObjects[1]) {
 				if (po is not Creature creature) continue;
+				if (creature.Template.damageRestistances[Enums.BurnDamageType.index, 0] > 0f) {
+					continue;
+				}
 
 				if (heat > 0.5f) {
 					creature.Violence(null, null, null, null, Enums.BurnDamageType, heat, Random.value < heat * 0.125f ? -15f : -1000f);
