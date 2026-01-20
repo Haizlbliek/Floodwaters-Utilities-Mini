@@ -2,20 +2,17 @@ namespace Floodwaters.Objects;
 
 public class CustomVinePreset {
 	public static FAtlasElement LoadElement(string value) {
-		if (value.StartsWith("/")) {
-			value = "CustomVine-" + value.Substring(1);
-		} else {
+		if (!value.StartsWith("/")) {
 			if (Futile.atlasManager.DoesContainElementWithName(value)) {
 				return Futile.atlasManager.GetElementWithName(value);
 			}
-
-			value = "CustomVine-" + value.Substring(1);
 		}
+		string name = "CustomVine-" + value;
 
-		if (Futile.atlasManager.DoesContainElementWithName(value)) {
-			return Futile.atlasManager.GetElementWithName(value);
+		if (Futile.atlasManager.DoesContainElementWithName(name)) {
+			return Futile.atlasManager.GetElementWithName(name);
 		}
-		FAtlas atlas = Futile.atlasManager.ActuallyLoadAtlasOrImage("CustomVine-" + value, "vinepresets" + Path.DirectorySeparatorChar + value, "");
+		FAtlas atlas = Futile.atlasManager.ActuallyLoadAtlasOrImage(name, "vinepresets" + Path.DirectorySeparatorChar + value, "");
 		atlas.texture.wrapMode = TextureWrapMode.Repeat;
 		return atlas?.elements[0];
 	}

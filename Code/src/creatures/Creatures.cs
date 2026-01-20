@@ -12,6 +12,7 @@ public class Creatures {
 
 	public static void Cleanup() {
 		On.BodyChunk.CheckVerticalCollision -= On_BodyChunk_CheckVerticalCollision;
+		On.StaticWorld.InitCustomTemplates -= On_StaticWorld_InitCustomTemplates;
 	}
 
 	private static void On_BodyChunk_CheckVerticalCollision(On.BodyChunk.orig_CheckVerticalCollision orig, BodyChunk self) {

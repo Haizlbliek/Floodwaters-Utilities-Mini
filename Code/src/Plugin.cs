@@ -39,6 +39,7 @@ public class Plugin : BaseUnityPlugin {
 
 		Objects.Objects.Initialize();
 		Effects.Effects.Initialize();
+		Creatures.Creatures.Initialize();
 		Assets.Initialize();
 
 		HasInitialized = true;
@@ -48,6 +49,7 @@ public class Plugin : BaseUnityPlugin {
 		Enums.Cleanup();
 		Objects.Objects.Cleanup();
 		Effects.Effects.Cleanup();
+		Creatures.Creatures.Cleanup();
 		Assets.Cleanup();
 
 		HasInitialized = false;
