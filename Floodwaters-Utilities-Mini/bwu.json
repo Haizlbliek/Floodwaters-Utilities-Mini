@@ -3,7 +3,7 @@
   "LatestGameVersion": "v1.11.5",
   "UpdateTitle": false,
   "UpdateDescription": false,
-  "MarkAsPublic": false,
+  "MarkAsPublic": true,
   "Tags": [
     "Items",
     "Dependency",

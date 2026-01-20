@@ -7,7 +7,7 @@ using BepInEx;
 
 namespace Floodwaters;
 
-[BepInPlugin(MOD_ID, "Floodwaters Utilities Mini", "1.0.0")]
+[BepInPlugin(MOD_ID, "Floodwaters Utilities Mini", "1.0.6")]
 public class Plugin : BaseUnityPlugin {
 	public const string MOD_ID = "floodwaters_utilities_mini";
 
