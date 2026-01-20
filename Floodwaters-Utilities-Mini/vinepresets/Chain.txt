@@ -1,0 +1,7 @@
+Color=Pal(5, 2)
+Climbable=true
+Jumpable=true
+Mass=0.6f
+Texture=chain
+TextureLoopVertexCount=0.75
+Rad=4f

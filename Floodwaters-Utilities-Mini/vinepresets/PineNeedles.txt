@@ -1,0 +1,12 @@
+GrabSound=Leaves
+ClimbSound=Leaves
+Color=Pal(5, 0)
+Climbable=true
+Jumpable=true
+ChildLeaf=
+	Sprite=+("Leaf", RandomInt(0, 5))
+	SpriteAnchor=Vector2(0.5f, 0.1f)
+	SpriteScale=Vector2(0.25f, Lerp(2.0f, 4.0f, progress))
+	SpriteRotation=?:(>=(%(index, 2f), 1f), 30f, -30f)
+	Color=Lerp(blackColor, -(+(Pal(RandomInt(15, 24), RandomInt(2, 4)), *(Pal(4, 8), 0.5f)), Color(*(0.1f, darkness), *(0.1f, darkness), *(0.1f, darkness))), Clamp(*(Pow(progress, 1.5f), 0.5f), 0.5f, 1.0f))
+	PlacementDistance=0.2f

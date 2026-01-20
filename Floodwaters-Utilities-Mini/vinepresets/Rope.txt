@@ -1,0 +1,8 @@
+GrabSound=Garbage_Worm_Grab_Creature
+ClimbSound=Slugcat_Normal_Jump
+Color=Color(0.4f, 0.25f, 0.15f)
+Texture=rope
+TextureLoopVertexCount=2
+Climbable=true
+Jumpable=true
+Mass=0.35f

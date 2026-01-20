@@ -1,0 +1,41 @@
+{
+	"frames": {
+		"cactus0.png": {
+			"frame": {"x":0,"y":0,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+			"sourceSize": {"w":32,"h":32}
+		},
+		"cactus1.png": {
+			"frame": {"x":32,"y":0,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+			"sourceSize": {"w":32,"h":32}
+		},
+		"cactus2.png": {
+			"frame": {"x":64,"y":0,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+			"sourceSize": {"w":32,"h":32}
+		},
+		"cactus3.png": {
+			"frame": {"x":96,"y":0,"w":32,"h":32},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+			"sourceSize": {"w":32,"h":32}
+		}
+	},
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "cactus.png",
+		"format": "RGBA8888",
+		"size": {"w":128,"h":32},
+		"scale": "1",
+		"smartupdate": "$TexturePacker:SmartUpdate:26989409cdf0e89bb3e466ae59a312fc:f99b9c3750551728283002c194a3e872:68f111719e2751a80948e1729ea7a6fa$"
+	}
+}

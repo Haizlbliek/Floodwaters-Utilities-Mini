@@ -1,0 +1,20 @@
+{
+	"frames": {
+		"fw_lillypad.png": {
+			"frame": {"x":0,"y":0,"w":100,"h":100},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {"x":0,"y":0,"w":100,"h":100},
+			"sourceSize": {"w":100,"h":100}
+		}
+	},
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "lillypad.png",
+		"format": "RGBA8888",
+		"size": {"w":100,"h":100},
+		"scale": "1",
+		"smartupdate": "$TexturePacker:SmartUpdate:26989409cdf0e89bb3e466ae59a312fc:f99b9c3750551728283002c194a3e872:68f111719e2751a80948e1729ea7a6fa$"
+	}
+}
