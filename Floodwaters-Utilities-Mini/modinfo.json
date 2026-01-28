@@ -1,7 +1,7 @@
 {
   "id": "floodwaters_utilities_mini",
   "name": "Floodwaters Utilities Mini",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "target_game_version": "v1.11.5",
   "authors": "Haizlbliek",
   "description": "",
@@ -11,7 +11,10 @@
   "tags": [
     "Items",
     "Dependency",
-    "Game Mechanics"
+    "Game Mechanics",
+    "Downpour",
+    "Base",
+    "Watcher"
   ],
   "checksum_override_version": false
 }
