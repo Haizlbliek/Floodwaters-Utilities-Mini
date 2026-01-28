@@ -36,6 +36,7 @@ public static class Enums {
 	public static RoomSettings.RoomEffect.Type FWFogEffect;
 	public static RoomSettings.RoomEffect.Type FWChromaticEffect;
 	public static RoomSettings.RoomEffect.Type FWNoiseEffect;
+	public static RoomSettings.RoomEffect.Type EoCFanSpeedEffect;
 
 	public static RoomRain.DangerType HeatDanger;
 
@@ -79,6 +80,7 @@ public static class Enums {
 		FWFogEffect = new RoomSettings.RoomEffect.Type("FWFog", register: true);
 		FWChromaticEffect = new RoomSettings.RoomEffect.Type("Chromatic", register: true);
 		FWNoiseEffect = new RoomSettings.RoomEffect.Type("Noise", register: true);
+		EoCFanSpeedEffect = new RoomSettings.RoomEffect.Type("EoCFanSpeed", register: true);
 
 		HeatDanger = new RoomRain.DangerType("Heat", register: true);
 
@@ -125,6 +127,7 @@ public static class Enums {
 		FWFogEffect?.Unregister(); FWFogEffect = null;
 		FWChromaticEffect?.Unregister(); FWChromaticEffect = null;
 		FWNoiseEffect?.Unregister(); FWNoiseEffect = null;
+		EoCFanSpeedEffect?.Unregister(); EoCFanSpeedEffect = null;
 
 		HeatDanger?.Unregister(); HeatDanger = null;
 
