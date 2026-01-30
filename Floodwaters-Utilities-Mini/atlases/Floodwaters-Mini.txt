@@ -1,0 +1,132 @@
+{
+	"frames": {
+		"FWLillypad.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 100,
+				"h": 100
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 100,
+				"h": 100
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 100,
+				"h": 100
+			}
+		},
+		"FWLillypadDetails.png": {
+			"frame": {
+				"x": 100,
+				"y": 0,
+				"w": 100,
+				"h": 100
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 100,
+				"h": 100
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 100,
+				"h": 100
+			}
+		},
+		"FWCactus0.png": {
+			"frame": {
+				"x": 0,
+				"y": 100,
+				"w": 32,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 32,
+				"h": 32
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 32,
+				"h": 32
+			}
+		},
+		"FWCactus1.png": {
+			"frame": {
+				"x": 100,
+				"y": 100,
+				"w": 32,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 32,
+				"h": 32
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 32,
+				"h": 32
+			}
+		},
+		"FWCactus2.png": {
+			"frame": {
+				"x": 32,
+				"y": 100,
+				"w": 32,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 32,
+				"h": 32
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 32,
+				"h": 32
+			}
+		},
+		"FWCactus3.png": {
+			"frame": {
+				"x": 64,
+				"y": 100,
+				"w": 32,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 32,
+				"h": 32
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 32,
+				"h": 32
+			}
+		}
+	},
+	"meta": {
+		"app": "https://goofybox-studios.github.io/tools/texture_packer",
+		"image": "Floodwaters-Mini",
+		"size": {
+			"w": 200,
+			"h": 132
+		}
+	}
+}

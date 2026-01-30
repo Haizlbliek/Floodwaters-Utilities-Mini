@@ -104,13 +104,13 @@ public class Lillypad : PhysicalObject, IDrawable, TerrainManager.ITerrain {
 	public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
 		sLeaser.sprites = new FSprite[3];
 
-		sLeaser.sprites[0] = TriangleMesh.MakeGridMesh("fw_lillypad", 1);
+		sLeaser.sprites[0] = TriangleMesh.MakeGridMesh("FWLillypad", 1);
 		sLeaser.sprites[0].shader = Custom.rainWorld.Shaders["CustomDepth"];
 
-		sLeaser.sprites[1] = TriangleMesh.MakeGridMesh("fw_lillypad", 1);
+		sLeaser.sprites[1] = TriangleMesh.MakeGridMesh("FWLillypad", 1);
 		sLeaser.sprites[1].shader = Custom.rainWorld.Shaders["CustomDepth"];
 
-		sLeaser.sprites[2] = TriangleMesh.MakeGridMesh("fw_lillypad_details", 1);
+		sLeaser.sprites[2] = TriangleMesh.MakeGridMesh("FWLillypadDetails", 1);
 		sLeaser.sprites[2].shader = Custom.rainWorld.Shaders["CustomDepth"];
 
 		this.AddToContainer(sLeaser, rCam, null);

@@ -18,9 +18,7 @@ public static class Objects {
 		On.Player.MovementUpdate += On_Player_MovementUpdate;
 		On.RainWorldGame.RestartGame += On_RainWorldGame_RestartGame;
 
-		Futile.atlasManager.LoadAtlas("atlases/cactus");
-		Futile.atlasManager.LoadAtlas("atlases/lillypad");
-		Futile.atlasManager.LoadAtlas("atlases/lillypad_details");
+		Futile.atlasManager.LoadAtlas("atlases/Floodwaters-Mini");
 	}
 
 	public static void Cleanup() {
@@ -40,9 +38,7 @@ public static class Objects {
 		On.Player.MovementUpdate -= On_Player_MovementUpdate;
 		On.RainWorldGame.RestartGame -= On_RainWorldGame_RestartGame;
 
-		Futile.atlasManager.UnloadAtlas("atlases/cactus");
-		Futile.atlasManager.UnloadAtlas("atlases/lillypad");
-		Futile.atlasManager.UnloadAtlas("atlases/lillypad_details");
+		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
 	}
 
 	private static Player.ObjectGrabability On_Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj) {

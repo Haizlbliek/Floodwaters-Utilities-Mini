@@ -110,7 +110,7 @@ public class Cactus : UpdatableAndDeletable, IDrawable {
 		sLeaser.sprites = new FSprite[this.lumps.Count];
 
 		for (int i = 0; i < this.lumps.Count; i++) {
-			sLeaser.sprites[i] = new FSprite("cactus" + this.lumps[i].type, true) {
+			sLeaser.sprites[i] = new FSprite("FWCactus" + this.lumps[i].type, true) {
 				anchorX = 0.5f,
 				anchorY = 0.0f
 			};
