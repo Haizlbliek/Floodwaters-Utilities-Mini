@@ -165,6 +165,10 @@ public static class Objects {
 			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, true);
 		}
 
+		else if (tp == Enums.ColoredSparksPO) {
+			placedObjectRepresentation = new ColoredSparksRepresentation(self.owner, repName, self, pObj, name);
+		}
+
 		if (placedObjectRepresentation != null) {
 			self.tempNodes.Add(placedObjectRepresentation);
 			self.subNodes.Add(placedObjectRepresentation);
@@ -259,7 +263,7 @@ public static class Objects {
 				self.waitToEnterAfterFullyLoaded = Mathf.Max(self.waitToEnterAfterFullyLoaded, 80);
 			}
 			else if (pObj.type == Enums.ColoredDeepProcessingPO) {
-				self.AddObject(new ColoredDeepProcessing(pObj));
+				self.AddObject(new ColoredDeepProcessing(pObj, self));
 			}
 			else if (pObj.type == Enums.CustomVinePO) {
 				if (customVineSystem == null) {
@@ -288,6 +292,9 @@ public static class Objects {
 			}
 			else if (pObj.type == Enums.LittleIceCubesPO) {
 				self.AddObject(new LittleIceCubes(self, pObj));
+			}
+			else if (pObj.type == Enums.ColoredSparksPO) {
+				self.AddObject(new ColoredSparks(self, pObj));
 			}
 		}
 	}
@@ -342,55 +349,72 @@ public static class Objects {
 
 		if (self.type == Enums.LillypadPO) {
 			self.data = new Lillypad.LillypadData(self);
+			return;
 		}
 
 		if (self.type == Enums.WaterDripsPO) {
 			self.data = new GooDripSource.GooDripsData(self);
+			return;
 		}
 
 		if (self.type == Enums.MagmaAreaPO) {
 			self.data = new MagmaArea.MagmaAreaData(self);
+			return;
 		}
 
 		if (self.type == Enums.HeatSourcePO) {
 			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
 		}
 
 		if (self.type == Enums.ColoredCoralNeuronPO) {
 			self.data = new ColoredCoralNeuron.ColoredCoralNeuronData(self);
+			return;
 		}
 
 		if (self.type == Enums.ColoredDeepProcessingPO) {
 			self.data = new ColoredDeepProcessing.ColoredDeepProcessingData(self);
+			return;
 		}
 
 		if (self.type == Enums.CustomVinePO) {
 			self.data = new CustomVineSystem.CustomVineData(self);
+			return;
 		}
 
 		if (self.type == Enums.CustomVineConnectorPO) {
 			self.data = new CustomVineConnectorData(self);
+			return;
 		}
 
 		if (self.type == Enums.CustomLightRodPO) {
 			self.data = new CustomLightRod.CustomLightRodData(self);
+			return;
 		}
 
 		if (self.type == Enums.CustomLightArcPO) {
 			self.data = new CustomLightArc.CustomLightArcData(self);
+			return;
 		}
 
 		if (self.type == Enums.IceCubePO) {
 			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
 		}
 
 		if (self.type == Enums.LittleIceCubesPO) {
 			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredSparksPO) {
+			self.data = new ColoredSparksData(self);
+			return;
 		}
 	}
 
 	private static ObjectsPage.DevObjectCategories On_ObjectsPage_DevObjectGetCategoryFromPlacedType(On.DevInterface.ObjectsPage.orig_DevObjectGetCategoryFromPlacedType orig, ObjectsPage self, PlacedObject.Type type) {
-		if (type == Enums.CactusPO || type == Enums.SandDripPO || type == Enums.DeerSkullPO || type == Enums.CattailPO || type == Enums.ColoredCattailPO || type == Enums.BubbleEmitterPO || type == Enums.BambooPO || type == Enums.ColoredLanternPO || type == Enums.ColoredLanternStickPO || type == Enums.LillypadPO || type == Enums.WaterDripsPO || type == Enums.MagmaAreaPO || type == Enums.HeatSourcePO || type == Enums.ColoredCoralNeuronPO || type == Enums.ColoredDeepProcessingPO || type == Enums.CustomVinePO || type == Enums.CustomVineConnectorPO || type == Enums.CustomLightRodPO || type == Enums.CustomLightArcPO || type == Enums.IceCubePO || type == Enums.LittleIceCubesPO)
+		if (Enums.Has(type))
 			return Enums.FloodwatersCategory;
 
 		return orig(self, type);

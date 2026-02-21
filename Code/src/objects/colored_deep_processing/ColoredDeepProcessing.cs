@@ -4,33 +4,52 @@ namespace Floodwaters.Objects;
 
 public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 	private readonly Vector2[] quad;
-
+	private Vector2[] verts;
+	public bool meshDirty;
+	public int gridDiv = 1;
 	private float power = 1f;
-
-	private FContainer rendererNodeContainer;
-	private FGameObjectNode rendererNode;
-	private GameObject renderer;
-	private Mesh mesh;
-
-	private static MaterialPropertyBlock mpb;
-	private static Material material;
 
 	public readonly PlacedObject pObj;
 	public ColoredDeepProcessingData Data => this.pObj.data as ColoredDeepProcessingData;
 
-	public ColoredDeepProcessing(PlacedObject placedObject) {
+	public ColoredDeepProcessing(PlacedObject placedObject, Room room) {
 		this.pObj = placedObject;
+		this.room = room;
 		this.quad = new Vector2[4];
-		this.quad[0] = placedObject.pos;
-		this.quad[1] = placedObject.pos + (placedObject.data as PlacedObject.QuadObjectData).handles[0];
-		this.quad[2] = placedObject.pos + (placedObject.data as PlacedObject.QuadObjectData).handles[1];
-		this.quad[3] = placedObject.pos + (placedObject.data as PlacedObject.QuadObjectData).handles[2];
+		this.quad[0] = this.pObj.pos;
+		this.quad[1] = this.pObj.pos + this.Data.handles[0];
+		this.quad[2] = this.pObj.pos + this.Data.handles[1];
+		this.quad[3] = this.pObj.pos + this.Data.handles[2];
+		this.gridDiv = this.GetIdealGridDiv();
+		this.meshDirty = true;
+	}
 
-		mpb ??= new MaterialPropertyBlock();
+	public int GetIdealGridDiv() {
+		float maxDist = 0f;
+		for (int i = 0; i < 3; i++) {
+			float dist = Vector2.Distance(this.quad[i], this.quad[i + 1]);
+			if (dist > maxDist) {
+				maxDist = dist;
+			}
+		}
+		float lastDist = Vector2.Distance(this.quad[0], this.quad[3]);
+		if (lastDist > maxDist) {
+			maxDist = lastDist;
+		}
+		return Mathf.Clamp(Mathf.RoundToInt(maxDist / 150f), 1, 20);
 	}
 
 	public override void Update(bool eu) {
 		base.Update(eu);
+		Vector2[] newQuad = new Vector2[4];
+		for (int i = 0; i < 4; i++) {
+			newQuad[i] = this.pObj.pos + (i == 0 ? Vector2.zero : this.Data.handles[i - 1]);
+			if (this.quad[i] != newQuad[i]) {
+				this.quad[i] = newQuad[i];
+				this.meshDirty = true;
+			}
+		}
+
 		if (UnityEngine.Random.value < 0.071428575f) {
 			if (this.power > this.room.ElectricPower) {
 				this.power = Mathf.Max((UnityEngine.Random.value < 0.2f) ? 0f : this.room.ElectricPower, this.power - 1f / Mathf.Lerp(1f, 4f, UnityEngine.Random.value));
@@ -42,69 +61,33 @@ public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 		}
 	}
 
-	private GameObject CreateMeshObject() {
-		this.DisposeMesh();
-		this.renderer = new GameObject("Colored Deep Processing Renderer", [ typeof(MeshFilter), typeof(MeshRenderer) ]);
-		MeshFilter filter = this.renderer.GetComponent<MeshFilter>();
-		MeshRenderer renderer = this.renderer.GetComponent<MeshRenderer>();
-		this.mesh = new Mesh {
-			name = "Colored Deep Processing Mesh",
-			bounds = new Bounds(Vector3.zero, new Vector3(100_000f, 100_000f, 100_000f))
-		};
-		this.mesh.SetVertices(new Vector3[]{ Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero });
-		this.mesh.SetIndices([ 0, 1, 2, 0, 2, 3 ], MeshTopology.Triangles, 0);
-		this.mesh.SetUVs(0, new Vector2[]{ new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) });
-		filter.sharedMesh = this.mesh;
-		mpb.Clear();
-		mpb.SetColor("_Color", this.Data.color);
-		mpb.SetFloat("_FromDepth", this.Data.fromDepth / 30f);
-		mpb.SetFloat("_ToDepth", this.Data.toDepth / 30f);
-		mpb.SetFloat("_Power", this.power);
-		mpb.SetFloat("_Intensity", this.Data.intensity);
-		renderer.sharedMaterial = material;
-		renderer.SetPropertyBlock(mpb);
-		return this.renderer;
-	}
-
-	private void DisposeMesh() {
-		this.DisposeRendererNode();
-		if (this.renderer != null) {
-			UnityEngine.Object.Destroy(this.renderer);
-			this.renderer = null;
-		}
-		if (this.mesh != null) {
-			UnityEngine.Object.Destroy(this.mesh);
-			this.mesh = null;
-		}
-	}
-
-	private void DisposeRendererNode() {
-		if (this.rendererNode == null) return;
-
-		this.rendererNodeContainer.RemoveChild(this.rendererNode);
-		this.rendererNode = null;
-		this.rendererNodeContainer = null;
-	}
-
 	public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
-		material ??= new Material(rCam.game.rainWorld.Shaders["FWColoredDeepProcessing"].shader);
-
-		sLeaser.sprites = [];
-		sLeaser.containers = [ new FContainer() ];
-		this.DisposeRendererNode();
-		this.rendererNode = new FGameObjectNode(this.CreateMeshObject(), true, true, true) {
-			shouldDestroyOnRemoveFromStage = true,
-		};
-		this.rendererNodeContainer = sLeaser.containers[0];
-		this.rendererNodeContainer.AddChild(this.rendererNode);
+		sLeaser.sprites = new FSprite[1];
+		TriangleMesh triangleMesh = TriangleMesh.MakeGridMesh("Futile_White", this.gridDiv);
+		sLeaser.sprites[0] = triangleMesh;
+		sLeaser.sprites[0].shader = rCam.room.game.rainWorld.Shaders["FWColoredDeepProcessing"];
+		this.verts = new Vector2[triangleMesh.vertices.Length];
 		this.AddToContainer(sLeaser, rCam, null);
+		this.meshDirty = true;
 	}
 
-	private void UpdateVerts() {
-		this.quad[0] = this.pObj.pos;
-		this.quad[1] = this.pObj.pos + (this.pObj.data as PlacedObject.QuadObjectData).handles[0];
-		this.quad[2] = this.pObj.pos + (this.pObj.data as PlacedObject.QuadObjectData).handles[1];
-		this.quad[3] = this.pObj.pos + (this.pObj.data as PlacedObject.QuadObjectData).handles[2];
+	private void UpdateVerts(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
+		int idealGridDiv = this.GetIdealGridDiv();
+		if (idealGridDiv != this.gridDiv) {
+			this.gridDiv = idealGridDiv;
+			sLeaser.sprites[0].RemoveFromContainer();
+			this.InitiateSprites(sLeaser, rCam);
+		}
+
+		for (int i = 0; i <= this.gridDiv; i++) {
+			for (int j = 0; j <= this.gridDiv; j++) {
+				Vector2 a = Vector2.Lerp(this.quad[0], this.quad[1], j / (float) this.gridDiv);
+				Vector2 b = Vector2.Lerp(this.quad[1], this.quad[2], i / (float) this.gridDiv);
+				Vector2 b2 = Vector2.Lerp(this.quad[3], this.quad[2], j / (float) this.gridDiv);
+				Vector2 a2 = Vector2.Lerp(this.quad[0], this.quad[3], i / (float) this.gridDiv);
+				this.verts[j * (this.gridDiv + 1) + i] = Custom.LineIntersection(a, b2, a2, b);
+			}
+		}
 	}
 
 	public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
@@ -113,44 +96,37 @@ public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 			return;
 		}
 
-		FGameObjectNode obj = sLeaser.containers[0].GetChildAt(0) as FGameObjectNode;
-		obj.SetPosition(-camPos);
-		if (obj.gameObject) {
-			MeshRenderer renderer = obj.gameObject.GetComponent<MeshRenderer>();
-			renderer.GetPropertyBlock(mpb);
-			mpb.SetColor("_Color", this.Data.color);
-			mpb.SetFloat("_FromDepth", this.Data.fromDepth / 30f);
-			mpb.SetFloat("_ToDepth", this.Data.toDepth / 30f);
-			mpb.SetFloat("_Power", this.power);
-			mpb.SetFloat("_Intensity", this.Data.intensity);
-			renderer.SetPropertyBlock(mpb);
+		if (this.meshDirty) {
+			this.UpdateVerts(sLeaser, rCam);
+			this.meshDirty = false;
 		}
-		this.UpdateVerts();
 
-		Vector3[] vertices = [
-			new Vector3(this.quad[0].x, this.quad[0].y, 0f),
-			new Vector3(this.quad[1].x, this.quad[1].y, 0f),
-			new Vector3(this.quad[2].x, this.quad[2].y, 0f),
-			new Vector3(this.quad[3].x, this.quad[3].y, 0f)
-		];
-		this.mesh.SetVertices(vertices);
+		for (int i = 0; i < this.verts.Length; i++) {
+			(sLeaser.sprites[0] as TriangleMesh).MoveVertice(i, this.verts[i] - camPos);
+		}
+
+		if (sLeaser.sprites[0]._renderLayer != null) {
+			sLeaser.sprites[0]._renderLayer._material.SetColor("_Color", this.Data.color);
+			sLeaser.sprites[0]._renderLayer._material.SetFloat("_FromDepth", this.Data.fromDepth / 30f);
+			sLeaser.sprites[0]._renderLayer._material.SetFloat("_ToDepth", this.Data.toDepth / 30f);
+			sLeaser.sprites[0]._renderLayer._material.SetFloat("_Power", this.power);
+			sLeaser.sprites[0]._renderLayer._material.SetFloat("_Intensity", this.Data.intensity);
+		}
+		else {
+			this.meshDirty = true;
+		}
 	}
 
 	public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette) {
 	}
 
 	public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContatiner) {
-		newContatiner ??= rCam.ReturnFContainer("Foreground");
+		newContatiner ??= rCam.ReturnFContainer("Water");
 
-		foreach (FContainer container in sLeaser.containers) {
-			container.RemoveFromContainer();
-			newContatiner.AddChild(container);
+		foreach (FSprite sprite in sLeaser.sprites) {
+			sprite.RemoveFromContainer();
+			newContatiner.AddChild(sprite);
 		}
-	}
-
-	public override void Destroy() {
-		base.Destroy();
-		this.DisposeMesh();
 	}
 
 	public class ColoredDeepProcessingData : PlacedObject.QuadObjectData {
@@ -214,7 +190,7 @@ public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 
 			this.DP = owner.room.updateList.OfType<ColoredDeepProcessing>().FirstOrDefault(x => x.pObj == this.pObj);
 			if (this.DP == null) {
-				this.DP = new ColoredDeepProcessing(pObj);
+				this.DP = new ColoredDeepProcessing(pObj, this.owner.room);
 				owner.room.AddObject(this.DP);
 			}
 		}

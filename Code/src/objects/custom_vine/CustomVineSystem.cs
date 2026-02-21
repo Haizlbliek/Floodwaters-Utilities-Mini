@@ -695,7 +695,7 @@ public class CustomVineSystem : UpdatableAndDeletable, IDrawable {
 		public Vector2 panelPos = new Vector2(0, 100);
 		public bool dropLeft = false;
 		public bool dropRight = false;
-		public string presetName = "vine";
+		public string presetName = "vanilla vine";
 		public float density = 1f;
 
 		public CustomVineData(PlacedObject owner) : base(owner) {

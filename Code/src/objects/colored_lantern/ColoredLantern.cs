@@ -238,7 +238,7 @@ public class ColoredLantern : PlayerCarryableItem, IDrawable, IProvideWarmth {
 				num = num2;
 			}
 		}
-		if (base.slatedForDeletetion || this.room != rCam.room) {
+		if (base.slatedForDeletetion) {
 			sLeaser.CleanSpritesAndRemove();
 		}
 	}
@@ -326,9 +326,7 @@ public class ColoredLantern : PlayerCarryableItem, IDrawable, IProvideWarmth {
 					this.dead = bool.Parse(array[6]);
 					this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 7);
 				}
-			} catch (FormatException err) {
-				Plugin.Log("Error while reading ColoredLantern format: " + err);
-			}
+			} catch (Exception) {}
 		}
 
 		protected new string BaseSaveString() {
@@ -369,9 +367,7 @@ public class ColoredLantern : PlayerCarryableItem, IDrawable, IProvideWarmth {
 					this.stickEnd.y = float.Parse(array[8], NumberStyles.Any, CultureInfo.InvariantCulture);
 					this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 9);
 				}
-			} catch (FormatException err) {
-				Plugin.Log("Error while reading ColoredLantern format: " + err);
-			}
+			} catch (Exception) {}
 		}
 
 		protected new string BaseSaveString() {

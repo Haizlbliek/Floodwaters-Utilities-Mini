@@ -1,138 +1,94 @@
 namespace Floodwaters;
 
 public static class Enums {
-	public static AbstractPhysicalObject.AbstractObjectType CactusFruit;
-	public static AbstractPhysicalObject.AbstractObjectType CactusSpear;
-	public static AbstractPhysicalObject.AbstractObjectType Cattail;
-	public static AbstractPhysicalObject.AbstractObjectType ColoredLantern;
-	public static AbstractPhysicalObject.AbstractObjectType Lillypad;
-	public static AbstractPhysicalObject.AbstractObjectType IceCube;
+	private static readonly List<Action> CoreRegister = [];
+	private static readonly List<Action> CoreUnregister = [];
 
-	public static PlacedObject.Type CactusPO;
-	public static PlacedObject.Type SandDripPO;
-	public static PlacedObject.Type DeerSkullPO;
-	public static PlacedObject.Type CattailPO;
-	public static PlacedObject.Type ColoredCattailPO;
-	public static PlacedObject.Type BubbleEmitterPO;
-	public static PlacedObject.Type BambooPO;
-	public static PlacedObject.Type ColoredLanternPO;
-	public static PlacedObject.Type ColoredLanternStickPO;
-	public static PlacedObject.Type LillypadPO;
-	public static PlacedObject.Type WaterDripsPO;
-	public static PlacedObject.Type MagmaAreaPO;
-	public static PlacedObject.Type HeatSourcePO;
-	public static PlacedObject.Type ColoredCoralNeuronPO;
-	public static PlacedObject.Type ColoredDeepProcessingPO;
-	public static PlacedObject.Type CustomVinePO;
-	public static PlacedObject.Type CustomVineConnectorPO;
-	public static PlacedObject.Type CustomLightRodPO;
-	public static PlacedObject.Type CustomLightArcPO;
-	public static PlacedObject.Type IceCubePO;
-	public static PlacedObject.Type LittleIceCubesPO;
+	public class Enum<T> where T : ExtEnum<T> {
+		public static readonly HashSet<T> Enums = [];
 
-	public static ObjectsPage.DevObjectCategories FloodwatersCategory;
-	public static RoomSettingsPage.DevEffectsCategories FloodwatersEffectCategory;
+		public T Value;
+		private bool existedBefore;
+		private readonly string _id;
 
-	public static RoomSettings.RoomEffect.Type FWFogEffect;
-	public static RoomSettings.RoomEffect.Type FWChromaticEffect;
-	public static RoomSettings.RoomEffect.Type FWNoiseEffect;
-	public static RoomSettings.RoomEffect.Type EoCFanSpeedEffect;
+#pragma warning disable IDE1006
+		public int index => this.Value.index;
+#pragma warning restore IDE1006
 
-	public static RoomRain.DangerType HeatDanger;
+		public Enum(string id, bool isFloodwaters = false) {
+			this._id = id;
 
-	public static Creature.DamageType BurnDamageType; public static bool deleteBurnDamageType;
+			CoreRegister.Add(() => {
+				T t = (T) Activator.CreateInstance(typeof(T), this._id, false);
+				this.existedBefore = t.index != -1;
+				this.Value = this.existedBefore ? t : (T) Activator.CreateInstance(typeof(T), this._id, true);
 
-	public static SoundID HeatDangerLoop;
+				Enums.Add(this.Value);
+			});
+			CoreUnregister.Add(() => {
+				if (!this.existedBefore)
+					this.Value?.Unregister();
+
+				Enums.Remove(this.Value);
+				this.existedBefore = false;
+				this.Value = null;
+			});
+		}
+
+		public static implicit operator T(Enum<T> e) => e?.Value;
+	}
+
+	public static bool Has<T>(T t) where T : ExtEnum<T> {
+		return Enum<T>.Enums.Contains(t);
+	}
+
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> CactusFruit = new("CactusFruit");
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> CactusSpear = new("CactusSpear");
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> Cattail = new("Cattail");
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> ColoredLantern = new("ColoredLantern");
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> Lillypad = new("Lillypad");
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> IceCube = new("IceCube");
+
+	public static Enum<PlacedObject.Type> CactusPO = new("Cactus");
+	public static Enum<PlacedObject.Type> SandDripPO = new("SandDrip");
+	public static Enum<PlacedObject.Type> DeerSkullPO = new("DeerSkull");
+	public static Enum<PlacedObject.Type> CattailPO = new("Cattail");
+	public static Enum<PlacedObject.Type> ColoredCattailPO = new("ColoredCattail");
+	public static Enum<PlacedObject.Type> BubbleEmitterPO = new("BubbleEmitter");
+	public static Enum<PlacedObject.Type> BambooPO = new("Bamboo");	public static Enum<PlacedObject.Type> ColoredLanternPO = new("ColoredLantern");
+	public static Enum<PlacedObject.Type> ColoredLanternStickPO = new("ColoredLanternStick");
+	public static Enum<PlacedObject.Type> LillypadPO = new("Lillypad");
+	public static Enum<PlacedObject.Type> WaterDripsPO = new("WaterDrips");
+	public static Enum<PlacedObject.Type> MagmaAreaPO = new("MagmaArea");
+	public static Enum<PlacedObject.Type> HeatSourcePO = new("HeatSource");
+	public static Enum<PlacedObject.Type> ColoredCoralNeuronPO = new("ColoredCoralNeuron");
+	public static Enum<PlacedObject.Type> ColoredDeepProcessingPO = new("ColoredDeepProcessing");
+	public static Enum<PlacedObject.Type> CustomVinePO = new("CustomVine");
+	public static Enum<PlacedObject.Type> CustomVineConnectorPO = new("CustomVineConnector");
+	public static Enum<PlacedObject.Type> CustomLightRodPO = new("CustomLightRod");
+	public static Enum<PlacedObject.Type> CustomLightArcPO = new("CustomLightArc");
+	public static Enum<PlacedObject.Type> IceCubePO = new("IceCube");
+	public static Enum<PlacedObject.Type> LittleIceCubesPO = new("LittleIceCubes");
+	public static Enum<PlacedObject.Type> ColoredSparksPO = new("ColoredSparks");
+
+	public static Enum<ObjectsPage.DevObjectCategories> FloodwatersCategory = new("Floodwaters");
+	public static Enum<RoomSettingsPage.DevEffectsCategories> FloodwatersEffectCategory = new("Floodwaters");
+
+	public static Enum<RoomSettings.RoomEffect.Type> FWFogEffect = new("FWFog");
+	public static Enum<RoomSettings.RoomEffect.Type> FWChromaticEffect = new("Chromatic");
+	public static Enum<RoomSettings.RoomEffect.Type> FWNoiseEffect = new("Noise");
+	public static Enum<RoomSettings.RoomEffect.Type> EoCFanSpeedEffect = new("EoCFanSpeed");
+
+	public static Enum<RoomRain.DangerType> HeatDanger = new("Heat");
+	public static Enum<Creature.DamageType> BurnDamageType = new("Burn");
+
+	public static Enum<SoundID> HeatDangerLoop = new("FW_HeatDangerLoop");
 
 	public static void Initialize() {
-		CactusFruit = new AbstractPhysicalObject.AbstractObjectType("CactusFruit", register: true);
-		CactusSpear = new AbstractPhysicalObject.AbstractObjectType("CactusSpear", register: true);
-		Cattail = new AbstractPhysicalObject.AbstractObjectType("Cattail", register: true);
-		ColoredLantern = new AbstractPhysicalObject.AbstractObjectType("ColoredLantern", register: true);
-		Lillypad = new AbstractPhysicalObject.AbstractObjectType("Lillypad", register: true);
-		IceCube = new AbstractPhysicalObject.AbstractObjectType("IceCube", register: true);
-
-		CactusPO = new PlacedObject.Type("Cactus", register: true);
-		SandDripPO = new PlacedObject.Type("SandDrip", register: true);
-		DeerSkullPO = new PlacedObject.Type("DeerSkull", register: true);
-		CattailPO = new PlacedObject.Type("Cattail", register: true);
-		ColoredCattailPO = new PlacedObject.Type("ColoredCattail", register: true);
-		BubbleEmitterPO = new PlacedObject.Type("BubbleEmitter", register: true);
-		BambooPO = new PlacedObject.Type("Bamboo", register: true);
-		ColoredLanternPO = new PlacedObject.Type("ColoredLantern", register: true);
-		ColoredLanternStickPO = new PlacedObject.Type("ColoredLanternStick", register: true);
-		LillypadPO = new PlacedObject.Type("Lillypad", register: true);
-		WaterDripsPO = new PlacedObject.Type("WaterDrips", register: true);
-		MagmaAreaPO = new PlacedObject.Type("MagmaArea", register: true);
-		HeatSourcePO = new PlacedObject.Type("HeatSource", register: true);
-		ColoredCoralNeuronPO = new PlacedObject.Type("ColoredCoralNeuron", register: true);
-		ColoredDeepProcessingPO = new PlacedObject.Type("ColoredDeepProcessing", register: true);
-		CustomVinePO = new PlacedObject.Type("CustomVine", register: true);
-		CustomVineConnectorPO = new PlacedObject.Type("CustomVineConnector", register: true);
-		CustomLightRodPO = new PlacedObject.Type("CustomLightRod", register: true);
-		CustomLightArcPO = new PlacedObject.Type("CustomLightArc", register: true);
-		IceCubePO = new PlacedObject.Type("IceCube", register: true);
-		LittleIceCubesPO = new PlacedObject.Type("LittleIceCubes", register: true);
-
-		FloodwatersCategory = new ObjectsPage.DevObjectCategories("Floodwaters", register: true);
-		FloodwatersEffectCategory = new RoomSettingsPage.DevEffectsCategories("Floodwaters", register: true);
-
-		FWFogEffect = new RoomSettings.RoomEffect.Type("FWFog", register: true);
-		FWChromaticEffect = new RoomSettings.RoomEffect.Type("Chromatic", register: true);
-		FWNoiseEffect = new RoomSettings.RoomEffect.Type("Noise", register: true);
-		EoCFanSpeedEffect = new RoomSettings.RoomEffect.Type("EoCFanSpeed", register: true);
-
-		HeatDanger = new RoomRain.DangerType("Heat", register: true);
-
-		BurnDamageType = new Creature.DamageType("Burn", register: false);
-		deleteBurnDamageType = BurnDamageType == null;
-		BurnDamageType = new Creature.DamageType("Burn", register: true);
-
-		HeatDangerLoop = new SoundID("FW_HeatDangerLoop", register: true);
+		CoreRegister.ForEach(a => a());
 	}
 
 	public static void Cleanup() {
-		CactusFruit?.Unregister(); CactusFruit = null;
-		CactusSpear?.Unregister(); CactusSpear = null;
-		Cattail?.Unregister(); Cattail = null;
-		ColoredLantern?.Unregister(); ColoredLantern = null;
-		Lillypad?.Unregister(); Lillypad = null;
-		IceCube?.Unregister(); IceCube = null;
-
-		CactusPO?.Unregister(); CactusPO = null;
-		SandDripPO?.Unregister(); SandDripPO = null;
-		DeerSkullPO?.Unregister(); DeerSkullPO = null;
-		CattailPO?.Unregister(); CattailPO = null;
-		ColoredCattailPO?.Unregister(); ColoredCattailPO = null;
-		BubbleEmitterPO?.Unregister(); BubbleEmitterPO = null;
-		BambooPO?.Unregister(); BambooPO = null;
-		ColoredLanternPO?.Unregister(); ColoredLanternPO = null;
-		ColoredLanternStickPO?.Unregister(); ColoredLanternStickPO = null;
-		LillypadPO?.Unregister(); LillypadPO = null;
-		WaterDripsPO?.Unregister(); WaterDripsPO = null;
-		MagmaAreaPO?.Unregister(); MagmaAreaPO = null;
-		HeatSourcePO?.Unregister(); HeatSourcePO = null;
-		ColoredCoralNeuronPO?.Unregister(); ColoredCoralNeuronPO = null;
-		ColoredDeepProcessingPO?.Unregister(); ColoredDeepProcessingPO = null;
-		CustomVinePO?.Unregister(); CustomVinePO = null;
-		CustomVineConnectorPO?.Unregister(); CustomVineConnectorPO = null;
-		CustomLightRodPO?.Unregister(); CustomLightRodPO = null;
-		CustomLightArcPO?.Unregister(); CustomLightArcPO = null;
-		IceCubePO?.Unregister(); IceCubePO = null;
-		LittleIceCubesPO?.Unregister(); LittleIceCubesPO = null;
-
-		FloodwatersCategory?.Unregister(); FloodwatersCategory = null;
-		FloodwatersEffectCategory?.Unregister(); FloodwatersEffectCategory = null;
-
-		FWFogEffect?.Unregister(); FWFogEffect = null;
-		FWChromaticEffect?.Unregister(); FWChromaticEffect = null;
-		FWNoiseEffect?.Unregister(); FWNoiseEffect = null;
-		EoCFanSpeedEffect?.Unregister(); EoCFanSpeedEffect = null;
-
-		HeatDanger?.Unregister(); HeatDanger = null;
-
-		if (deleteBurnDamageType) BurnDamageType?.Unregister(); BurnDamageType = null;
-
-		HeatDangerLoop?.Unregister(); HeatDangerLoop = null;
+		CoreUnregister.ForEach(a => a());
 	}
 }
