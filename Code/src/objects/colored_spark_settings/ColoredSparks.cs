@@ -55,19 +55,17 @@ public class ColoredSparks : UpdatableAndDeletable {
 			this.AddSpark();
 		}
 
-		Vector2 wind = Custom.DegToVec(this.Data.direction);
+		Vector2 wind = Custom.DegToVec(this.Data.direction * 360f);
 		this.wind += (Custom.RNV() + wind * 0.333f) * 0.1f;
 		this.wind *= 0.98f;
 		this.wind = Vector2.ClampMagnitude(this.wind, 1f);
 	}
 
 	private IntVector2 SparkPosition() {
-		float width = base.room.TileWidth;
-		float height = base.room.TileHeight;
-		Vector2 center = new Vector2(width / 2f, height / 2f);
+		Vector2 center = new Vector2(base.room.TileWidth / 2f, base.room.TileHeight / 2f);
 
-		float rad = (this.Data.direction + this.Data.directionVariation * (Random.value * 2f - 1f)) * 360f * Mathf.Deg2Rad;
-		Vector2 dir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+		float rad = (this.Data.direction + this.Data.directionVariation * (Random.value * 2f - 1f)) * 360f;
+		Vector2 dir = Custom.DegToVec(rad + 180f);
 		Vector2 edgePoint = center + dir * center;
 
 		return new IntVector2(
@@ -129,9 +127,9 @@ public class ColoredSparks : UpdatableAndDeletable {
 
 		public override void Update(bool eu) {
 			base.vel *= 0.99f;
-			Vector2 wind = Custom.DegToVec(this.sparks.Data.direction);
+			Vector2 wind = Custom.DegToVec(this.sparks.Data.direction * 360f);
 			base.vel += wind * 0.11f;
-			base.vel += new Vector2(wind.y, -wind.x) * Custom.LerpMap(this.life, 0f, 0.5f, -0.1f, 0.05f);
+			// base.vel += new Vector2(wind.y, -wind.x) * Custom.LerpMap(this.life, 0f, 0.5f, -0.1f, 0.05f);
 			base.vel += this.dir * 0.2f;
 			this.dir = (this.dir + Custom.RNV() * 0.6f).normalized;
 			this.life -= 1f / this.lifeTime;
