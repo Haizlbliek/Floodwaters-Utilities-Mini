@@ -17,6 +17,8 @@ public static class Objects {
 		On.Player.UpdateAnimation += On_Player_UpdateAnimation;
 		On.Player.MovementUpdate += On_Player_MovementUpdate;
 		On.RainWorldGame.RestartGame += On_RainWorldGame_RestartGame;
+		On.LightSource.InitiateSprites += On_LightSource_InitiateSprites;
+		On.LightSource.DrawSprites += On_LightSource_DrawSprites;
 
 		Futile.atlasManager.LoadAtlas("atlases/Floodwaters-Mini");
 	}
@@ -37,6 +39,8 @@ public static class Objects {
 		On.Player.UpdateAnimation -= On_Player_UpdateAnimation;
 		On.Player.MovementUpdate -= On_Player_MovementUpdate;
 		On.RainWorldGame.RestartGame -= On_RainWorldGame_RestartGame;
+		On.LightSource.InitiateSprites -= On_LightSource_InitiateSprites;
+		On.LightSource.DrawSprites -= On_LightSource_DrawSprites;
 
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
 	}
@@ -169,6 +173,10 @@ public static class Objects {
 			placedObjectRepresentation = new ColoredSparksRepresentation(self.owner, repName, self, pObj, name);
 		}
 
+		else if (tp == Enums.LightSource3dPO) {
+			placedObjectRepresentation = new LightSource3dRepresentation(self.owner, repName, self, pObj, name);
+		}
+
 		if (placedObjectRepresentation != null) {
 			self.tempNodes.Add(placedObjectRepresentation);
 			self.subNodes.Add(placedObjectRepresentation);
@@ -296,6 +304,18 @@ public static class Objects {
 			else if (pObj.type == Enums.ColoredSparksPO) {
 				self.AddObject(new ColoredSparks(self, pObj));
 			}
+			else if (pObj.type == Enums.LightSource3dPO) {
+				LightSource3dData data = pObj.data as LightSource3dData;
+				LightSource3d lightSource = new LightSource3d(pObj.pos, true, Color.white, null);
+				self.AddObject(lightSource);
+				lightSource.setRad = data.Rad;
+				lightSource.setAlpha = data.strength;
+				lightSource.fadeWithSun = data.fadeWithSun;
+				lightSource.colorFromEnvironment = data.colorType == PlacedObject.LightSourceData.ColorType.Environment;
+				lightSource.flat = data.flat;
+				lightSource.effectColor = Math.Max(-1, (int) data.colorType - 2);
+				self.SetLightSourceBlink(lightSource, poIndex);
+			}
 		}
 	}
 
@@ -409,6 +429,11 @@ public static class Objects {
 
 		if (self.type == Enums.ColoredSparksPO) {
 			self.data = new ColoredSparksData(self);
+			return;
+		}
+
+		if (self.type == Enums.LightSource3dPO) {
+			self.data = new LightSource3dData(self);
 			return;
 		}
 	}
@@ -531,5 +556,23 @@ public static class Objects {
 		orig(self);
 
 		CustomVinePreset.presets.Clear();
+	}
+
+	private static void On_LightSource_InitiateSprites(On.LightSource.orig_InitiateSprites orig, LightSource self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
+		if (self is LightSource3d light) {
+			LightSource3d.InitiateSprites(light, sLeaser, rCam);
+			return;
+		}
+
+		orig(self, sLeaser, rCam);
+	}
+
+	private static void On_LightSource_DrawSprites(On.LightSource.orig_DrawSprites orig, LightSource self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
+		if (self is LightSource3d light) {
+			LightSource3d.DrawSprites(light, sLeaser, rCam, timeStacker, camPos);
+			return;
+		}
+
+		orig(self, sLeaser, rCam, timeStacker, camPos);
 	}
 }
