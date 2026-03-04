@@ -29,11 +29,12 @@ public class CustomLightRod : UpdatableAndDeletable, IDrawable {
 	}
 
 	public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContatiner) {
-		newContatiner ??= rCam.ReturnFContainer("Water");
+		newContatiner ??= rCam.ReturnFContainer("GrabShaders");
 
-		foreach (FSprite fsprite in sLeaser.sprites) {
+		for (int i = 0; i < sLeaser.sprites.Length; i++) {
+			FSprite fsprite = sLeaser.sprites[i];
 			fsprite.RemoveFromContainer();
-			newContatiner.AddChild(fsprite);
+			newContatiner.AddChildAtIndex(fsprite, i);
 		}
 	}
 
