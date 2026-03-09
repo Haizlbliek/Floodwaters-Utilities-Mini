@@ -142,7 +142,7 @@ public static class Objects {
 		}
 
 		else if (tp == Enums.ColoredDeepProcessingPO) {
-			placedObjectRepresentation = new ColoredDeepProcessing.ColoredDeepProcessingRepresentation(self.owner, repName, self, pObj, name);
+			placedObjectRepresentation = new ColoredDeepProcessingRepresentation(self.owner, repName, self, pObj, name);
 		}
 
 		else if (tp == Enums.CustomVinePO) {
@@ -393,7 +393,7 @@ public static class Objects {
 		}
 
 		if (self.type == Enums.ColoredDeepProcessingPO) {
-			self.data = new ColoredDeepProcessing.ColoredDeepProcessingData(self);
+			self.data = new ColoredDeepProcessingData(self);
 			return;
 		}
 
@@ -568,11 +568,19 @@ public static class Objects {
 	}
 
 	private static void On_LightSource_DrawSprites(On.LightSource.orig_DrawSprites orig, LightSource self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
+		float darken = rCam.room.darkenLightsFactor;
+		float flickerChance = 0.99f - self.blinkRate * 0.98f;
+		if (self.blinkType == Enums.Flicker && UnityEngine.Random.value < flickerChance) {
+			rCam.room.darkenLightsFactor = 1f;
+		}
+
 		if (self is LightSource3d light) {
 			LightSource3d.DrawSprites(light, sLeaser, rCam, timeStacker, camPos);
+			rCam.room.darkenLightsFactor = darken;
 			return;
 		}
 
 		orig(self, sLeaser, rCam, timeStacker, camPos);
+		rCam.room.darkenLightsFactor = darken;
 	}
 }

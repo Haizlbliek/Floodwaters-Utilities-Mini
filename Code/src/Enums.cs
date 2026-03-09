@@ -85,6 +85,8 @@ public static class Enums {
 
 	public static Enum<SoundID> HeatDangerLoop = new("FW_HeatDangerLoop");
 
+	public static Enum<PlacedObject.LightSourceData.BlinkType> Flicker = new("Flicker");
+
 	public static void Initialize() {
 		CoreRegister.ForEach(a => a());
 	}

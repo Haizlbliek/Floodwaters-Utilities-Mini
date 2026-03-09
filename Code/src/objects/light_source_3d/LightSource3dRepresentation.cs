@@ -123,7 +123,10 @@ public class LightSource3dRepresentation : PlacedObjectRepresentation {
 		(base.subNodes[base.subNodes.Count - 1] as LightSource3dPanel).pos = (pObj.data as LightSource3dData).panelPos;
 		this.light = owner.room.updateList.OfType<LightSource3d>().FirstOrDefault(x => x.Pos == pObj.pos);
 		if (this.light == null) {
-			this.light = new LightSource3d(base.pos, environmentalLight: true, new Color(1f, 1f, 1f), null);
+			this.light = new LightSource3d(base.pos, environmentalLight: true, new Color(1f, 1f, 1f), null) {
+				depth = (base.pObj.data as LightSource3dData).depth,
+				depthRange = (base.pObj.data as LightSource3dData).depthRange,
+			};
 			owner.room.AddObject(this.light);
 		}
 	}
@@ -147,6 +150,7 @@ public class LightSource3dRepresentation : PlacedObjectRepresentation {
 		this.light.fadeWithSun = (base.pObj.data as LightSource3dData).fadeWithSun;
 		this.light.colorFromEnvironment = (base.pObj.data as LightSource3dData).colorType == LightSource3dData.ColorType.Environment;
 		this.light.depth = (base.pObj.data as LightSource3dData).depth;
+		this.light.depthRange = (base.pObj.data as LightSource3dData).depthRange;
 		this.light.effectColor = Math.Max(-1, (int) (base.pObj.data as LightSource3dData).colorType - 2);
 	}
 }
