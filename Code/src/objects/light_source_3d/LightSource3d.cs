@@ -1,5 +1,3 @@
-using System.CodeDom;
-
 namespace Floodwaters.Objects;
 
 public class LightSource3d : LightSource {
@@ -71,7 +69,7 @@ public class LightSource3d : LightSource {
 
 		self.mesh.x = Mathf.Floor(Mathf.Lerp(self.lastPos.x, self.pos.x, timeStacker) - camPos.x) + 0.5f;
 		self.mesh.y = Mathf.Floor(Mathf.Lerp(self.lastPos.y, self.pos.y, timeStacker) - camPos.y) + 0.5f;
-		self.mesh.Color = self.color;
+		self.mesh.Color = self.c;
 		self.mesh.Alpha = Mathf.Lerp(self.lastAlpha, self.Alpha, timeStacker) * Mathf.Lerp(1f, rCam.room.Darkness(self.pos), self.affectedByPaletteDarkness) * self.colorAlpha * num;
 		self.mesh.scale = Mathf.Lerp(self.lastRad, self.rad, timeStacker) / 8f;
 

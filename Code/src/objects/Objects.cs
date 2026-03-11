@@ -179,6 +179,10 @@ public static class Objects {
 			placedObjectRepresentation = new LightSource3dRepresentation(self.owner, repName, self, pObj, name);
 		}
 
+		else if (tp == Enums.ColoredLightSource3dPO) {
+			placedObjectRepresentation = new ColoredLightSource3dRepresentation(self.owner, repName, self, pObj, name);
+		}
+
 		if (placedObjectRepresentation != null) {
 			self.tempNodes.Add(placedObjectRepresentation);
 			self.subNodes.Add(placedObjectRepresentation);
@@ -321,6 +325,21 @@ public static class Objects {
 				lightSource.effectColor = Math.Max(-1, (int) data.colorType - 2);
 				self.SetLightSourceBlink(lightSource, poIndex);
 			}
+			else if (pObj.type == Enums.ColoredLightSource3dPO) {
+				ColoredLightSource3dData data = pObj.data as ColoredLightSource3dData;
+				ColoredLightSource3d light = new ColoredLightSource3d(pObj.pos, true, data.color, null, pObj) {
+					depth = data.depth,
+					depthRange = data.depthRange,
+				};
+				self.AddObject(light);
+				light.setRad = data.Rad;
+				light.setAlpha = data.strength;
+				light.fadeWithSun = data.fadeWithSun;
+				light.colorFromEnvironment = data.colorType == PlacedObject.LightSourceData.ColorType.Environment;
+				light.flat = data.flat;
+				light.effectColor = Math.Max(-1, (int) data.colorType - 2);
+				self.SetLightSourceBlink(light, poIndex);
+			}
 		}
 	}
 
@@ -439,6 +458,11 @@ public static class Objects {
 
 		if (self.type == Enums.LightSource3dPO) {
 			self.data = new LightSource3dData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredLightSource3dPO) {
+			self.data = new ColoredLightSource3dData(self);
 			return;
 		}
 	}
