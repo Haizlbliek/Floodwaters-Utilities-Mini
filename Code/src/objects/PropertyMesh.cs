@@ -102,6 +102,8 @@ public class PropertyMesh : FContainer {
 	}
 
 	public override void Redraw(bool shouldForceDirty, bool shouldUpdateDepth) {
+		if (this.renderer == null || this.rendererNode.stage == null) return;
+
 		base.Redraw(shouldForceDirty, shouldUpdateDepth);
 
 		this.meshRenderer.GetPropertyBlock(mpb);
@@ -121,6 +123,7 @@ public class PropertyMesh : FContainer {
 	}
 
 	public override void HandleRemovedFromStage() {
+		this.RemoveChild(this.rendererNode);
 		base.HandleRemovedFromStage();
 		if (this.renderer != null) UnityEngine.Object.Destroy(this.renderer);
 		if (this.mesh != null) UnityEngine.Object.Destroy(this.mesh);

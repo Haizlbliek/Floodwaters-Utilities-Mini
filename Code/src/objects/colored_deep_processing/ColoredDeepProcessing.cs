@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-
 namespace Floodwaters.Objects;
 
 public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
@@ -48,7 +46,6 @@ public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 		newContatiner ??= rCam.ReturnFContainer("Foreground");
 
 		foreach (FContainer container in sLeaser.containers) {
-			container.RemoveFromContainer();
 			newContatiner.AddChild(container);
 		}
 	}

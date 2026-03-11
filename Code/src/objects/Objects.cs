@@ -11,6 +11,7 @@ public static class Objects {
 		On.Player.Grabability += On_Player_Grabability;
 		On.Player.CanBeSwallowed += On_Player_CanBeSwallowed;
 
+		On.CoralBrain.CoralNeuronSystem.AIMapReady += On_CoralNeuronSystem_AIMapReady;
 		On.Player.Regurgitate += On_Player_Regurgitate;
 		On.CoralBrain.CoralNeuron.DrawSprites += On_CoralNeuron_DrawSprites;
 		IL.Player.UpdateAnimation += IL_Player_UpdateAnimation;
@@ -33,6 +34,7 @@ public static class Objects {
 		On.Player.Grabability -= On_Player_Grabability;
 		On.Player.CanBeSwallowed -= On_Player_CanBeSwallowed;
 
+		On.CoralBrain.CoralNeuronSystem.AIMapReady -= On_CoralNeuronSystem_AIMapReady;
 		On.Player.Regurgitate -= On_Player_Regurgitate;
 		On.CoralBrain.CoralNeuron.DrawSprites -= On_CoralNeuron_DrawSprites;
 		IL.Player.UpdateAnimation -= IL_Player_UpdateAnimation;
@@ -306,7 +308,10 @@ public static class Objects {
 			}
 			else if (pObj.type == Enums.LightSource3dPO) {
 				LightSource3dData data = pObj.data as LightSource3dData;
-				LightSource3d lightSource = new LightSource3d(pObj.pos, true, Color.white, null);
+				LightSource3d lightSource = new LightSource3d(pObj.pos, true, Color.white, null) {
+					depth = data.depth,
+					depthRange = data.depthRange,
+				};
 				self.AddObject(lightSource);
 				lightSource.setRad = data.Rad;
 				lightSource.setAlpha = data.strength;
@@ -473,6 +478,21 @@ public static class Objects {
 
 		if (self.type == Enums.IceCube) {
 			self.realizedObject = new IceCube(self);
+		}
+	}
+
+	private static void On_CoralNeuronSystem_AIMapReady(On.CoralBrain.CoralNeuronSystem.orig_AIMapReady orig, CoralNeuronSystem self) {
+		orig(self);
+
+		foreach (PlacedObject pObj in self.room.roomSettings.placedObjects) {
+			if (!pObj.active) continue;
+
+			if (pObj.type == Enums.ColoredCoralNeuronPO) {
+				ColoredCoralNeuron.ColoredCoralNeuronData data = pObj.data as ColoredCoralNeuron.ColoredCoralNeuronData;
+				ColoredCoralNeuron neuron = new ColoredCoralNeuron(self, self.room, data.handlePos.magnitude, pObj.pos, pObj.pos + data.handlePos, pObj);
+				self.room.AddObject(neuron);
+				self.neurons.Add(neuron);
+			}
 		}
 	}
 
