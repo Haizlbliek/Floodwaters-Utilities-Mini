@@ -29,8 +29,14 @@ public class Plugin : BaseUnityPlugin {
 
 		On.RainWorld.OnModsInit += this.OnModsInit;
 		On.RainWorld.OnModsDisabled += this.OnModsDisabled;
+		On.RainWorld.PostModsInit += this.On_RainWorld_PostModsInit;
 
 		Enums.Initialize();
+	}
+
+	private void On_RainWorld_PostModsInit(On.RainWorld.orig_PostModsInit orig, RainWorld self) {
+		orig(self);
+		Merge.MergeCustomFiles();
 	}
 	
 	private void Initialize() {

@@ -21,6 +21,8 @@ public static class Objects {
 		On.LightSource.InitiateSprites += On_LightSource_InitiateSprites;
 		On.LightSource.DrawSprites += On_LightSource_DrawSprites;
 
+		VerticalGateManager.Initialize();
+
 		Futile.atlasManager.LoadAtlas("atlases/Floodwaters-Mini");
 	}
 
@@ -43,6 +45,8 @@ public static class Objects {
 		On.RainWorldGame.RestartGame -= On_RainWorldGame_RestartGame;
 		On.LightSource.InitiateSprites -= On_LightSource_InitiateSprites;
 		On.LightSource.DrawSprites -= On_LightSource_DrawSprites;
+
+		VerticalGateManager.Cleanup();
 
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
 	}
@@ -76,6 +80,135 @@ public static class Objects {
 		}
 
 		return orig(slugcatIndex, eatenobject);
+	}
+
+	private static void On_PlacedObject_GenerateEmptyData(On.PlacedObject.orig_GenerateEmptyData orig, PlacedObject self) {
+		orig(self);
+
+		if (self.type == Enums.CactusPO) {
+			self.data = new Cactus.CactusData(self);
+			return;
+		}
+
+		if (self.type == Enums.SandDripPO) {
+			self.data = new SandDrip.SandDripData(self);
+			return;
+		}
+
+		if (self.type == Enums.DeerSkullPO) {
+			self.data = new DeerSkull.DeerSkullData(self);
+			return;
+		}
+
+		if (self.type == Enums.CattailPO) {
+			self.data = new Cattail.CattailData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredCattailPO) {
+			self.data = new Cattail.CattailData(self);
+			return;
+		}
+
+		if (self.type == Enums.BubbleEmitterPO) {
+			self.data = new BubbleEmitter.BubbleEmitterData(self);
+			return;
+		}
+
+		if (self.type == Enums.BambooPO) {
+			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredLanternPO) {
+			self.data = new ColoredLantern.ColoredLanternObjectData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredLanternStickPO) {
+			self.data = new ColoredLantern.ColoredLanternStickObjectData(self);
+			return;
+		}
+
+		if (self.type == Enums.LillypadPO) {
+			self.data = new Lillypad.LillypadData(self);
+			return;
+		}
+
+		if (self.type == Enums.WaterDripsPO) {
+			self.data = new GooDripSource.GooDripsData(self);
+			return;
+		}
+
+		if (self.type == Enums.MagmaAreaPO) {
+			self.data = new MagmaArea.MagmaAreaData(self);
+			return;
+		}
+
+		if (self.type == Enums.HeatSourcePO) {
+			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredCoralNeuronPO) {
+			self.data = new ColoredCoralNeuron.ColoredCoralNeuronData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredDeepProcessingPO) {
+			self.data = new ColoredDeepProcessingData(self);
+			return;
+		}
+
+		if (self.type == Enums.CustomVinePO) {
+			self.data = new CustomVineSystem.CustomVineData(self);
+			return;
+		}
+
+		if (self.type == Enums.CustomVineConnectorPO) {
+			self.data = new CustomVineConnectorData(self);
+			return;
+		}
+
+		if (self.type == Enums.CustomLightRodPO) {
+			self.data = new CustomLightRod.CustomLightRodData(self);
+			return;
+		}
+
+		if (self.type == Enums.CustomLightArcPO) {
+			self.data = new CustomLightArc.CustomLightArcData(self);
+			return;
+		}
+
+		if (self.type == Enums.IceCubePO) {
+			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
+		}
+
+		if (self.type == Enums.LittleIceCubesPO) {
+			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredSparksPO) {
+			self.data = new ColoredSparksData(self);
+			return;
+		}
+
+		if (self.type == Enums.LightSource3dPO) {
+			self.data = new LightSource3dData(self);
+			return;
+		}
+
+		if (self.type == Enums.ColoredLightSource3dPO) {
+			self.data = new ColoredLightSource3dData(self);
+			return;
+		}
+
+		if (self.type == Enums.VerticalGatePositionPO) {
+			self.data = new PlacedObject.ResizableObjectData(self);
+			return;
+		}
 	}
 
 	private static void On_ObjectsPage_CreateObjRep(On.DevInterface.ObjectsPage.orig_CreateObjRep orig, ObjectsPage self, PlacedObject.Type tp, PlacedObject pObj) {
@@ -181,6 +314,10 @@ public static class Objects {
 
 		else if (tp == Enums.ColoredLightSource3dPO) {
 			placedObjectRepresentation = new ColoredLightSource3dRepresentation(self.owner, repName, self, pObj, name);
+		}
+
+		else if (tp == Enums.VerticalGatePositionPO) {
+			placedObjectRepresentation = new VerticalGateRepresentation(self.owner, repName, self, pObj, name);
 		}
 
 		if (placedObjectRepresentation != null) {
@@ -340,130 +477,6 @@ public static class Objects {
 				light.effectColor = Math.Max(-1, (int) data.colorType - 2);
 				self.SetLightSourceBlink(light, poIndex);
 			}
-		}
-	}
-
-	private static void On_PlacedObject_GenerateEmptyData(On.PlacedObject.orig_GenerateEmptyData orig, PlacedObject self) {
-		orig(self);
-
-		if (self.type == Enums.CactusPO) {
-			self.data = new Cactus.CactusData(self);
-			return;
-		}
-
-		if (self.type == Enums.SandDripPO) {
-			self.data = new SandDrip.SandDripData(self);
-			return;
-		}
-
-		if (self.type == Enums.DeerSkullPO) {
-			self.data = new DeerSkull.DeerSkullData(self);
-			return;
-		}
-
-		if (self.type == Enums.CattailPO) {
-			self.data = new Cattail.CattailData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredCattailPO) {
-			self.data = new Cattail.CattailData(self);
-			return;
-		}
-
-		if (self.type == Enums.BubbleEmitterPO) {
-			self.data = new BubbleEmitter.BubbleEmitterData(self);
-			return;
-		}
-
-		if (self.type == Enums.BambooPO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredLanternPO) {
-			self.data = new ColoredLantern.ColoredLanternObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredLanternStickPO) {
-			self.data = new ColoredLantern.ColoredLanternStickObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.LillypadPO) {
-			self.data = new Lillypad.LillypadData(self);
-			return;
-		}
-
-		if (self.type == Enums.WaterDripsPO) {
-			self.data = new GooDripSource.GooDripsData(self);
-			return;
-		}
-
-		if (self.type == Enums.MagmaAreaPO) {
-			self.data = new MagmaArea.MagmaAreaData(self);
-			return;
-		}
-
-		if (self.type == Enums.HeatSourcePO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredCoralNeuronPO) {
-			self.data = new ColoredCoralNeuron.ColoredCoralNeuronData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredDeepProcessingPO) {
-			self.data = new ColoredDeepProcessingData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomVinePO) {
-			self.data = new CustomVineSystem.CustomVineData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomVineConnectorPO) {
-			self.data = new CustomVineConnectorData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomLightRodPO) {
-			self.data = new CustomLightRod.CustomLightRodData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomLightArcPO) {
-			self.data = new CustomLightArc.CustomLightArcData(self);
-			return;
-		}
-
-		if (self.type == Enums.IceCubePO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.LittleIceCubesPO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredSparksPO) {
-			self.data = new ColoredSparksData(self);
-			return;
-		}
-
-		if (self.type == Enums.LightSource3dPO) {
-			self.data = new LightSource3dData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredLightSource3dPO) {
-			self.data = new ColoredLightSource3dData(self);
-			return;
 		}
 	}
 

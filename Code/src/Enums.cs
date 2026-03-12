@@ -72,6 +72,7 @@ public static class Enums {
 	public static Enum<PlacedObject.Type> ColoredSparksPO = new("ColoredSparks");
 	public static Enum<PlacedObject.Type> LightSource3dPO = new("3dLightSource");
 	public static Enum<PlacedObject.Type> ColoredLightSource3dPO = new("Colored3dLightSource");
+	public static Enum<PlacedObject.Type> VerticalGatePositionPO = new("VerticalGatePosition");
 
 	public static Enum<ObjectsPage.DevObjectCategories> FloodwatersCategory = new("Floodwaters");
 	public static Enum<RoomSettingsPage.DevEffectsCategories> FloodwatersEffectCategory = new("Floodwaters");
