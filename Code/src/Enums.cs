@@ -55,7 +55,8 @@ public static class Enums {
 	public static Enum<PlacedObject.Type> CattailPO = new("Cattail");
 	public static Enum<PlacedObject.Type> ColoredCattailPO = new("ColoredCattail");
 	public static Enum<PlacedObject.Type> BubbleEmitterPO = new("BubbleEmitter");
-	public static Enum<PlacedObject.Type> BambooPO = new("Bamboo");	public static Enum<PlacedObject.Type> ColoredLanternPO = new("ColoredLantern");
+	public static Enum<PlacedObject.Type> BambooPO = new("Bamboo");
+	public static Enum<PlacedObject.Type> ColoredLanternPO = new("ColoredLantern");
 	public static Enum<PlacedObject.Type> ColoredLanternStickPO = new("ColoredLanternStick");
 	public static Enum<PlacedObject.Type> LillypadPO = new("Lillypad");
 	public static Enum<PlacedObject.Type> WaterDripsPO = new("WaterDrips");

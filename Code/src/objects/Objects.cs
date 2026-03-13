@@ -86,12 +86,12 @@ public static class Objects {
 		orig(self);
 
 		if (self.type == Enums.CactusPO) {
-			self.data = new Cactus.CactusData(self);
+			self.data = new CactusData(self);
 			return;
 		}
 
 		if (self.type == Enums.SandDripPO) {
-			self.data = new SandDrip.SandDripData(self);
+			self.data = new SandDripData(self);
 			return;
 		}
 
@@ -221,11 +221,11 @@ public static class Objects {
 		PlacedObjectRepresentation placedObjectRepresentation = null;
 
 		if (tp == Enums.CactusPO) {
-			placedObjectRepresentation = new Cactus.CactusRepresentation(self.owner, repName, self, pObj, name);
+			placedObjectRepresentation = new CactusRepresentation(self.owner, repName, self, pObj, name);
 		}
 
 		else if (tp == Enums.SandDripPO) {
-			placedObjectRepresentation = new SandDrip.SandDripRepresentation(self.owner, repName, self, pObj, name);
+			placedObjectRepresentation = new SandDripRepresentation(self.owner, repName, self, pObj, name);
 		}
 
 		else if (tp == Enums.DeerSkullPO) {
