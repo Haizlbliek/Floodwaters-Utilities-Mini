@@ -67,7 +67,7 @@ public class Lillypad : PhysicalObject, IDrawable, TerrainManager.ITerrain {
 		return false;
 	}
 
-	public Vector2 SnapToTerrain(Vector2 center, float radius, out Vector2 normal) {
+	public Vector2 SnapToTerrain(Vector2 center, float radius, out Vector2 normal, Vector2? lastCenter = null) {
 		Vector2 point = center - this.firstChunk.pos;
 
 		normal = Vector2.zero;
@@ -181,7 +181,6 @@ public class Lillypad : PhysicalObject, IDrawable, TerrainManager.ITerrain {
 			sLeaser.CleanSpritesAndRemove();
 		}
 	}
-
 
 	public class Stalk : UpdatableAndDeletable, IDrawable {
 		public Stalk(Lillypad pad, Room room, Vector2 fruitPos) {
@@ -311,7 +310,7 @@ public class Lillypad : PhysicalObject, IDrawable, TerrainManager.ITerrain {
 				d = num2;
 			}
 
-			if (base.slatedForDeletetion || this.room != rCam.room) {
+			if (base.slatedForDeletetion) {
 				sLeaser.CleanSpritesAndRemove();
 			}
 		}

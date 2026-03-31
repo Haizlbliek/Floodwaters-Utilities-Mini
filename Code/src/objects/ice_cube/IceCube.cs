@@ -139,7 +139,7 @@ public class IceCube : PhysicalObject, IDrawable, TerrainManager.ITerrain {
 		sLeaser.sprites[0].scale = this.firstChunk.rad;
 		sLeaser.sprites[0].rotation = this.rot;
 
-		if (sLeaser.deleteMeNextFrame || this.slatedForDeletetion || this.room != rCam.room) {
+		if (sLeaser.deleteMeNextFrame || this.slatedForDeletetion) {
 			this.slatedForDeletetion = true;
 			sLeaser.CleanSpritesAndRemove();
 		}
@@ -153,7 +153,7 @@ public class IceCube : PhysicalObject, IDrawable, TerrainManager.ITerrain {
 		return false;
 	}
 
-	public Vector2 SnapToTerrain(Vector2 center, float radius, out Vector2 normal) {
+	public Vector2 SnapToTerrain(Vector2 center, float radius, out Vector2 normal, Vector2? lastCenter = null) {
 		Vector2 point = center - this.firstChunk.pos;
 
 		normal = Vector2.zero;

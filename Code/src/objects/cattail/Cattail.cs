@@ -318,7 +318,7 @@ public class Cattail : Weapon {
 			}
 		}
 
-		if (this.slatedForDeletetion || this.room != rCam.room) {
+		if (this.slatedForDeletetion) {
 			sLeaser.CleanSpritesAndRemove();
 		}
 	}

@@ -128,7 +128,7 @@ public class LittleIceCubes : UpdatableAndDeletable, IDrawable {
 			}
 		}
 
-		if (sLeaser.deleteMeNextFrame || this.slatedForDeletetion || this.room != rCam.room) {
+		if (sLeaser.deleteMeNextFrame || this.slatedForDeletetion) {
 			this.slatedForDeletetion = true;
 			sLeaser.CleanSpritesAndRemove();
 		}

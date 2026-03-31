@@ -84,7 +84,7 @@ public class CustomLightArc : UpdatableAndDeletable, IDrawable {
 		mesh.alpha = 1f - this.Data.depth;
 		mesh.SetPosition(this.pObj.pos - camPos);
 
-		if (base.slatedForDeletetion || this.room != rCam.room) {
+		if (base.slatedForDeletetion) {
 			sLeaser.CleanSpritesAndRemove();
 			foreach (LightVessel light in this.lights) {
 				light.light.RemoveFromRoom();

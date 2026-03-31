@@ -54,7 +54,7 @@ public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 	}
 
 	public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
-		if (base.slatedForDeletetion || this.room != rCam.room) {
+		if (base.slatedForDeletetion) {
 			sLeaser.CleanSpritesAndRemove();
 			return;
 		}

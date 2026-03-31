@@ -58,7 +58,7 @@ public class CustomLightRod : UpdatableAndDeletable, IDrawable {
 		sLeaser.sprites[0].color = Color.Lerp(this.Data.color1, Color.Lerp(rCam.currentPalette.blackColor, rCam.currentPalette.fogColor, t), (1f - rCam.room.ElectricPower) * 0.9f);
 		sLeaser.sprites[1].color = Color.Lerp(this.Data.color2, Color.Lerp(rCam.currentPalette.blackColor, rCam.currentPalette.fogColor, t), (1f - rCam.room.ElectricPower) * 0.9f);
 
-		if (base.slatedForDeletetion || this.room != rCam.room) {
+		if (base.slatedForDeletetion) {
 			sLeaser.CleanSpritesAndRemove();
 			foreach (LightVessel light in this.lights) {
 				light.light.RemoveFromRoom();

@@ -130,7 +130,7 @@ public class CactusFruit : PlayerCarryableItem, IDrawable, IPlayerEdible {
 			sLeaser.sprites[1].color = Color.Lerp(this.color, Color.black, 0.5f);
 		}
 
-		if (base.slatedForDeletetion || this.room != rCam.room) {
+		if (base.slatedForDeletetion) {
 			sLeaser.CleanSpritesAndRemove();
 		}
 	}

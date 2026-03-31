@@ -23,7 +23,7 @@ public class LightSource3d : LightSource {
 		};
 
 		if (rCam.room.water) {
-			sLeaser.sprites[0] = new FSprite("Futile_White") {
+			sLeaser.sprites[1] = new FSprite("Futile_White") {
 				shader = rCam.room.game.rainWorld.Shaders["UnderWaterLight"],
 				color = self.color
 			};

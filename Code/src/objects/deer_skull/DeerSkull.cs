@@ -101,7 +101,7 @@ public class DeerSkull : UpdatableAndDeletable, IDrawable {
 		this.antlers.DrawSprites(this.FirstAntlerSprite, sLeaser, rCam, timeStacker, camPos, this.pObj.pos, this.antlerPos, this.antlerFlip, this.boneColor, this.boneColor);
 		this.antlers.DrawSprites(this.FirstAntlerDetailSprite, sLeaser, rCam, timeStacker, camPos, this.pObj.pos, this.antlerPos, this.antlerFlip, this.paintColor, this.paintColor);
 
-		if (base.slatedForDeletetion || this.room != rCam.room) {
+		if (base.slatedForDeletetion) {
 			sLeaser.CleanSpritesAndRemove();
 		}
 	}
