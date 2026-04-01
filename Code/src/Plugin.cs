@@ -47,6 +47,7 @@ public class Plugin : BaseUnityPlugin {
 		Effects.Effects.Initialize();
 		Creatures.Creatures.Initialize();
 		Assets.Initialize();
+		AcronymFix.Initialize();
 
 		HasInitialized = true;
 	}
@@ -57,6 +58,7 @@ public class Plugin : BaseUnityPlugin {
 		Effects.Effects.Cleanup();
 		Creatures.Creatures.Cleanup();
 		Assets.Cleanup();
+		AcronymFix.Cleanup();
 
 		HasInitialized = false;
 	}
