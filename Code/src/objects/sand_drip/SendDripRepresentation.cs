@@ -15,9 +15,7 @@ public class SandDripRepresentation : PlacedObjectRepresentation {
 		this.lineSprite = this.fSprites.Count - 1;
 		owner.placedObjectsContainer.AddChild(this.fSprites[this.lineSprite]);
 		this.fSprites[this.lineSprite].anchorY = 0f;
-		this.drip = owner.room.updateList.FirstOrDefault(delegate (UpdatableAndDeletable obj) {
-			return obj is SandDrip sandDrip && sandDrip.pObj == pObj;
-		}) as SandDrip;
+		this.drip = owner.room.updateList.OfType<SandDrip>().FirstOrDefault(obj => obj.pObj == pObj);
 
 		if (this.drip == null) {
 			this.drip = new SandDrip(owner.room, pObj);

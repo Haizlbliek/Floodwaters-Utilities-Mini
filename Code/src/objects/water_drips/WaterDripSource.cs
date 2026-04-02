@@ -75,9 +75,7 @@ public class WaterDripSource : UpdatableAndDeletable {
 			this.lineSprite = this.fSprites.Count - 1;
 			owner.placedObjectsContainer.AddChild(this.fSprites[this.lineSprite]);
 			this.fSprites[this.lineSprite].anchorY = 0f;
-			this.drips = owner.room.updateList.FirstOrDefault(delegate(UpdatableAndDeletable obj) {
-				return obj is WaterDripSource waterDripSource && waterDripSource.pObj == pObj;
-			}) as WaterDripSource;
+			this.drips = owner.room.updateList.OfType<WaterDripSource>().FirstOrDefault(w => w.pObj == pObj);
 
 			if (this.drips == null) {
 				this.drips = new WaterDripSource(pObj);

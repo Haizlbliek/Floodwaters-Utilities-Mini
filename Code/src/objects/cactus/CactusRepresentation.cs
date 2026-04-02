@@ -7,7 +7,7 @@ public class CactusRepresentation : PlacedObjectRepresentation {
 		this.subNodes.Add(new CactusPanel(owner, "Cactus_Panel", this, new Vector2(0f, 100f)) {
 			pos = (pObj.data as CactusData).panelPos
 		});
-		this.cactus = (Cactus) owner.room.updateList.FirstOrDefault(obj => obj is Cactus cactus && cactus.pObj == pObj);
+		this.cactus = owner.room.updateList.OfType<Cactus>().FirstOrDefault(obj => obj.pObj == pObj);
 		if (this.cactus == null) {
 			this.cactus = new Cactus(owner.room, pObj);
 			owner.room.AddObject(this.cactus);

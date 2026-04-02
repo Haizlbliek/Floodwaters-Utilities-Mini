@@ -80,9 +80,7 @@ public class BubbleEmitter : UpdatableAndDeletable {
 			this.lineSprite = this.fSprites.Count - 1;
 			owner.placedObjectsContainer.AddChild(this.fSprites[this.lineSprite]);
 			this.fSprites[this.lineSprite].anchorY = 0f;
-			this.emitter = owner.room.updateList.FirstOrDefault(delegate (UpdatableAndDeletable obj) {
-				return obj is BubbleEmitter bubbleEmitter && bubbleEmitter.po == pObj;
-			}) as BubbleEmitter;
+			this.emitter = owner.room.updateList.OfType<BubbleEmitter>().FirstOrDefault(b => b.po == pObj);
 
 			if (this.emitter == null) {
 				this.emitter = new BubbleEmitter(owner.room, pObj);

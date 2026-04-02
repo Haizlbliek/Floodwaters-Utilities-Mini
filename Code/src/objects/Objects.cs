@@ -10,6 +10,7 @@ public static class Objects {
 		On.SlugcatStats.NourishmentOfObjectEaten += On_SlugcatStats_NourishmentOfObjectEaten;
 		On.Player.Grabability += On_Player_Grabability;
 		On.Player.CanBeSwallowed += On_Player_CanBeSwallowed;
+		On.SaveState.AbstractPhysicalObjectFromString += On_SaveState_AbstractPhysicalObjectFromString;
 
 		On.CoralBrain.CoralNeuronSystem.AIMapReady += On_CoralNeuronSystem_AIMapReady;
 		On.Player.Regurgitate += On_Player_Regurgitate;
@@ -61,7 +62,7 @@ public static class Objects {
 		if (obj is Cattail cattail)
 			return cattail.stick != null ? Player.ObjectGrabability.TwoHands : Player.ObjectGrabability.OneHand;
 
-		if (obj is ColoredLantern lantern && !lantern.hasStick)
+		if (obj is ColoredLantern lantern && lantern.stick == null)
 			return Player.ObjectGrabability.OneHand;
 
 		return orig(self, obj);
@@ -121,12 +122,12 @@ public static class Objects {
 		}
 
 		if (self.type == Enums.ColoredLanternPO) {
-			self.data = new ColoredLantern.ColoredLanternObjectData(self);
+			self.data = new ColoredLanternData(self, false);
 			return;
 		}
 
 		if (self.type == Enums.ColoredLanternStickPO) {
-			self.data = new ColoredLantern.ColoredLanternStickObjectData(self);
+			self.data = new ColoredLanternData(self, true);
 			return;
 		}
 
@@ -249,11 +250,11 @@ public static class Objects {
 		}
 
 		else if (tp == Enums.ColoredLanternPO) {
-			placedObjectRepresentation = new ColoredLantern.ColoredLanternRepresentaion(self.owner, repName, self, pObj, name);
+			placedObjectRepresentation = new ColoredLanternRepresentaion(self.owner, repName, self, pObj, name);
 		}
 
 		else if (tp == Enums.ColoredLanternStickPO) {
-			placedObjectRepresentation = new ColoredLantern.ColoredLanternStickRepresentaion(self.owner, repName, self, pObj, name);
+			placedObjectRepresentation = new ColoredLanternRepresentaion(self.owner, repName, self, pObj, name);
 		}
 
 		else if (tp == Enums.LillypadPO) {
@@ -378,16 +379,12 @@ public static class Objects {
 				self.AddObject(bamboo);
 			}
 			else if (pObj.type == Enums.ColoredLanternStickPO) {
-				EntityID newId = self.game.GetNewID();
-				ColoredLantern.AbstractColoredLantern abstractPhysicalObject = new ColoredLantern.AbstractColoredLantern(self.world, Enums.ColoredLantern, null, self.GetWorldCoordinate(pObj.pos), newId, self.abstractRoom.index, poIndex, pObj.data as ColoredLantern.ColoredLanternObjectData, pObj) {
-					isConsumed = false
-				};
-				self.abstractRoom.entities.Add(abstractPhysicalObject);
-				abstractPhysicalObject.placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(self.abstractRoom.name, poIndex);
+				self.AddObject(new ColoredLanternStick(self, pObj, self.abstractRoom.index, poIndex));
 			}
 			else if (pObj.type == Enums.ColoredLanternPO && (!(self.game.session as StoryGameSession)?.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, poIndex) ?? true)) {
 				EntityID newId = self.game.GetNewID();
-				ColoredLantern.AbstractColoredLantern abstractPhysicalObject = new ColoredLantern.AbstractColoredLantern(self.world, Enums.ColoredLantern, null, self.GetWorldCoordinate(pObj.pos), newId, self.abstractRoom.index, poIndex, pObj.data as ColoredLantern.ColoredLanternObjectData, pObj) {
+				ColoredLanternData data = pObj.data as ColoredLanternData;
+				AbstractColoredLantern abstractPhysicalObject = new AbstractColoredLantern(self.world, null, self.GetWorldCoordinate(pObj.pos), newId, self.abstractRoom.index, poIndex, data.color1, data.color2, data.dead, data) {
 					isConsumed = false
 				};
 				self.abstractRoom.entities.Add(abstractPhysicalObject);
@@ -506,7 +503,7 @@ public static class Objects {
 		}
 
 		if (self.type == Enums.ColoredLantern) {
-			self.realizedObject = new ColoredLantern(self as ColoredLantern.AbstractColoredLantern);
+			self.realizedObject = new ColoredLantern(self as AbstractColoredLantern);
 		}
 
 		if (self.type == Enums.Lillypad) {
@@ -531,6 +528,31 @@ public static class Objects {
 				self.neurons.Add(neuron);
 			}
 		}
+	}
+
+	private static AbstractPhysicalObject On_SaveState_AbstractPhysicalObjectFromString(On.SaveState.orig_AbstractPhysicalObjectFromString orig, World world, string objString) {
+		AbstractPhysicalObject apo = orig(world, objString);
+
+		try {
+			string[] array = Regex.Split(objString, "<oA>");
+			if (apo.type == Enums.ColoredLantern) {
+				return new AbstractColoredLantern(
+					world, null, apo.pos, apo.ID,
+					int.Parse(array[3], NumberStyles.Any, CultureInfo.InvariantCulture),
+					int.Parse(array[4], NumberStyles.Any, CultureInfo.InvariantCulture),
+					Custom.hexToColor(array[5]),
+					Custom.hexToColor(array[6]),
+					array[7] == "dead",
+					null
+				) {
+					unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 8)
+				};
+			}
+		} catch (Exception ex) {
+			Plugin.Log($"Failed to parse: {ex}");
+		}
+
+		return apo;
 	}
 
 	private static void On_Player_Regurgitate(On.Player.orig_Regurgitate orig, Player self) {
