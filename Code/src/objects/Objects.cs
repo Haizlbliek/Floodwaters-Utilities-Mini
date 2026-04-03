@@ -1,7 +1,11 @@
+using Floodwaters.Registry;
+
 namespace Floodwaters.Objects;
 
 public static class Objects {
 	public static void Initialize() {
+		RegisterPlaceableObjects();
+
 		On.AbstractPhysicalObject.Realize += On_AbstractPhysicalObject_Realize;
 		On.DevInterface.ObjectsPage.DevObjectGetCategoryFromPlacedType += On_ObjectsPage_DevObjectGetCategoryFromPlacedType;
 		On.DevInterface.ObjectsPage.CreateObjRep += On_ObjectsPage_CreateObjRep;
@@ -52,6 +56,340 @@ public static class Objects {
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
 	}
 
+	private static void RegisterPlaceableObjects() {
+		ObjectRegistry.Register(
+			new PlaceableDefinition<Cactus>(
+				"Cactus",
+				Enums.CactusPO,
+				pObj => new CactusData(pObj),
+				(owner, idString, parentNode, pObj, name) => new CactusRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new Cactus(self, pObj)
+			) {
+				FirstTimeOnly = true,
+			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<SandDrip>(
+				"SandDrip",
+				Enums.SandDripPO,
+				pObj => new SandDripData(pObj),
+				(owner, idString, parentNode, pObj, name) => new SandDripRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new SandDrip(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<DeerSkull>(
+				"DeerSkull",
+				Enums.DeerSkullPO,
+				pObj => new DeerSkull.DeerSkullData(pObj),
+				(owner, idString, parentNode, pObj, name) => new DeerSkull.DeerSkullRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new DeerSkull(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new AbstractPlaceableDefinition<Cattail, Cattail.AbstractCattail>(
+				"Cattail",
+				Enums.CattailPO,
+				Enums.Cattail,
+				pObj => new Cattail.CattailData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, false),
+				(pObj, self) => new Cattail.AbstractCattail(self.world, Enums.Cattail, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), Color.black),
+				self => new Cattail(self)
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					if (!firstTimeRealized) return;
+
+					AbstractPhysicalObject abstr = def.CreateAbstractObject(pObj, self);
+					self.abstractRoom.entities.Add(abstr);
+					abstr.Realize();
+					CattailStick cattailStick = new CattailStick(self, pObj, abstr.realizedObject as Cattail);
+					self.AddObject(cattailStick);
+				}
+			}
+		);
+
+		ObjectRegistry.Register(
+			new AbstractPlaceableDefinition<Cattail, Cattail.AbstractCattail>(
+				"ColoredCattail",
+				Enums.ColoredCattailPO,
+				Enums.Cattail,
+				pObj => new Cattail.CattailData(pObj),
+				(owner, idString, parentNode, pObj, name) => new Cattail.ColoredCattailRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => {
+					float hue = (pObj.data as Cattail.CattailData).hue;
+					Color color = Custom.HSL2RGB(
+						hue % 1f,
+						Mathf.Lerp(0.25f, 0.75f, UnityEngine.Random.value),
+						Mathf.Lerp(0.5f, 0.75f, UnityEngine.Random.value)
+					);
+					return new Cattail.AbstractCattail(self.world, Enums.Cattail, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), color);
+				},
+				self => new Cattail(self)
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					if (!firstTimeRealized) return;
+
+					AbstractPhysicalObject abstr = def.CreateAbstractObject(pObj, self);
+					self.abstractRoom.entities.Add(abstr);
+					abstr.Realize();
+					CattailStick cattailStick = new CattailStick(self, pObj, abstr.realizedObject as Cattail);
+					self.AddObject(cattailStick);
+				}
+			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<BubbleEmitter>(
+				"BubbleEmitter",
+				Enums.BubbleEmitterPO,
+				po => new BubbleEmitter.BubbleEmitterData(po),
+				(owner, idString, parentNode, pObj, name) => new BubbleEmitter.BubbleEmitterRepresentation(owner, idString, parentNode, pObj, name),
+				(po, self) => new BubbleEmitter(self, po)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<Bamboo>(
+				"Bamboo",
+				Enums.BambooPO,
+				pObj => new PlacedObject.ResizableObjectData(pObj),
+				(owner, idString, parentNode, pObj, name) => new Bamboo.BambooRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new Bamboo(self, pObj)
+			)
+		);
+
+		// TODO: Colored Lanterns
+
+		ObjectRegistry.Register(
+			new AbstractPlaceableDefinition<Lillypad, Lillypad.AbstractLillypad>(
+				"Lillypad",
+				Enums.LillypadPO,
+				Enums.Lillypad,
+				pObj => new Lillypad.LillypadData(pObj),
+				(owner, idString, parentNode, pObj, name) => new Lillypad.LillypadRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new Lillypad.AbstractLillypad(self.world, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), pObj),
+				self => new Lillypad(self)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<WaterDripSource>(
+				"WaterDrips",
+				Enums.WaterDripsPO,
+				pObj => new GooDripSource.GooDripsData(pObj),
+				(owner, idString, parentNode, pObj, name) => new WaterDripSource.WaterDripsRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new WaterDripSource(pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<MagmaArea>(
+				"MagmaArea",
+				Enums.MagmaAreaPO,
+				pObj => new MagmaArea.MagmaAreaData(pObj),
+				(owner, idString, parentNode, pObj, name) => new MagmaArea.MagmaAreaRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new MagmaArea(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<HeatSource>(
+				"HeatSource",
+				Enums.HeatSourcePO,
+				pObj => new PlacedObject.ResizableObjectData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, true),
+				(pObj, self) => new HeatSource(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<ColoredCoralNeuron>(
+				"ColoredCoralNeuron",
+				Enums.ColoredCoralNeuronPO,
+				pObj => new ColoredCoralNeuron.ColoredCoralNeuronData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ColoredCoralNeuron.ColoredCoralNeuronRepresentation(owner, idString, parentNode, pObj, name),
+				null
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					if (!self.updateList.OfType<CoralNeuronSystem>().Any()) {
+						self.AddObject(new CoralNeuronSystem());
+					}
+					self.waitToEnterAfterFullyLoaded = Mathf.Max(self.waitToEnterAfterFullyLoaded, 80);
+				}
+			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<ColoredDeepProcessing>(
+				"ColoredDeepProcessing",
+				Enums.ColoredDeepProcessingPO,
+				po => new ColoredDeepProcessingData(po),
+				(owner, idString, parentNode, pObj, name) => new ColoredDeepProcessingRepresentation(owner, idString, parentNode, pObj, name),
+				(po, self) => new ColoredDeepProcessing(po, self)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<UpdatableAndDeletable>(
+				"CustomVine",
+				Enums.CustomVinePO,
+				po => new CustomVineSystem.CustomVineData(po),
+				(owner, idString, parentNode, pObj, name) => new CustomVineSystem.CustomVineRepresentation(owner, idString, parentNode, pObj, name),
+				null
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					CustomVineSystem customVineSystem = self.updateList.OfType<CustomVineSystem>().FirstOrDefault();
+					if (customVineSystem == null) {
+						customVineSystem = new CustomVineSystem(self);
+						self.AddObject(customVineSystem);
+					}
+
+					customVineSystem.AddVine(pObj);
+				}
+			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<UpdatableAndDeletable>(
+				"CustomVineConnector",
+				Enums.CustomVineConnectorPO,
+				po => new CustomVineConnectorData(po),
+				(owner, idString, parentNode, pObj, name) => new CustomVineConnectorRepresentation(owner, idString, parentNode, pObj, name),
+				null
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					CustomVineSystem customVineSystem = self.updateList.OfType<CustomVineSystem>().FirstOrDefault();
+					if (customVineSystem == null) {
+						customVineSystem = new CustomVineSystem(self);
+						self.AddObject(customVineSystem);
+					}
+
+					customVineSystem.AddConnector(pObj);
+				}
+			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<CustomLightRod>(
+				"CustomLightRod",
+				Enums.CustomLightRodPO,
+				po => new CustomLightRod.CustomLightRodData(po),
+				(owner, idString, parentNode, pObj, name) => new CustomLightRod.CustomLightRodRepresentation(owner, idString, parentNode, pObj),
+				(po, self) => new CustomLightRod(po, self)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<CustomLightArc>(
+				"CustomLightArc",
+				Enums.CustomLightArcPO,
+				po => new CustomLightArc.CustomLightArcData(po),
+				(owner, idString, parentNode, pObj, name) => new CustomLightArc.CustomLightArcRepresentation(owner, idString, parentNode, pObj),
+				(po, self) => new CustomLightArc(po, self)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new AbstractPlaceableDefinition<IceCube, IceCube.AbstractIceCube>(
+				"IceCube",
+				Enums.IceCubePO,
+				Enums.IceCube,
+				po => new PlacedObject.ResizableObjectData(po),
+				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, true),
+				(po, self) => new IceCube.AbstractIceCube(self.world, null, self.GetWorldCoordinate(po.pos), self.game.GetNewID(), po),
+				self => new IceCube(self)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<LittleIceCubes>(
+				"LittleIceCubes",
+				Enums.LittleIceCubesPO,
+				po => new PlacedObject.ResizableObjectData(po),
+				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, true),
+				(po, self) => new LittleIceCubes(self, po)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<ColoredSparks>(
+				"ColoredSparks",
+				Enums.ColoredSparksPO,
+				pObj => new ColoredSparksData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ColoredSparksRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new ColoredSparks(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<LightSource3d>(
+				"3dLightSource",
+				Enums.LightSource3dPO,
+				pObj => new LightSource3dData(pObj),
+				(owner, idString, parentNode, pObj, name) => new LightSource3dRepresentation(owner, idString, parentNode, pObj, name),
+				null
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					int poIndex = self.roomSettings.placedObjects.IndexOf(pObj);
+					LightSource3dData data = pObj.data as LightSource3dData;
+					LightSource3d lightSource = new LightSource3d(pObj.pos, true, Color.white, null) {
+						depth = data.depth,
+						depthRange = data.depthRange,
+					};
+					self.AddObject(lightSource);
+					lightSource.setRad = data.Rad;
+					lightSource.setAlpha = data.strength;
+					lightSource.fadeWithSun = data.fadeWithSun;
+					lightSource.colorFromEnvironment = data.colorType == PlacedObject.LightSourceData.ColorType.Environment;
+					lightSource.flat = data.flat;
+					lightSource.effectColor = Math.Max(-1, (int) data.colorType - 2);
+					self.SetLightSourceBlink(lightSource, poIndex);
+				}
+			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<ColoredLightSource3d>(
+				"Colored3dLightSource",
+				Enums.ColoredLightSource3dPO,
+				pObj => new ColoredLightSource3dData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ColoredLightSource3dRepresentation(owner, idString, parentNode, pObj, name),
+				null
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					int poIndex = self.roomSettings.placedObjects.IndexOf(pObj);
+					ColoredLightSource3dData data = pObj.data as ColoredLightSource3dData;
+					ColoredLightSource3d light = new ColoredLightSource3d(pObj.pos, true, data.color, null, pObj) {
+						depth = data.depth,
+						depthRange = data.depthRange,
+					};
+					self.AddObject(light);
+					light.setRad = data.Rad;
+					light.setAlpha = data.strength;
+					light.fadeWithSun = data.fadeWithSun;
+					light.colorFromEnvironment = data.colorType == PlacedObject.LightSourceData.ColorType.Environment;
+					light.flat = data.flat;
+					light.effectColor = Math.Max(-1, (int) data.colorType - 2);
+					self.SetLightSourceBlink(light, poIndex);
+				}
+			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<UpdatableAndDeletable>(
+				"VerticalGatePosition",
+				Enums.VerticalGatePositionPO,
+				pObj => new PlacedObject.ResizableObjectData(pObj),
+				(owner, idString, parentNode, pObj, name) => new VerticalGateRepresentation(owner, idString, parentNode, pObj, name),
+				null
+			)
+		);
+	}
+
+
 	private static Player.ObjectGrabability On_Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj) {
 		if (obj is CactusFruit)
 			return Player.ObjectGrabability.OneHand;
@@ -86,129 +424,19 @@ public static class Objects {
 	private static void On_PlacedObject_GenerateEmptyData(On.PlacedObject.orig_GenerateEmptyData orig, PlacedObject self) {
 		orig(self);
 
-		if (self.type == Enums.CactusPO) {
-			self.data = new CactusData(self);
-			return;
-		}
-
-		if (self.type == Enums.SandDripPO) {
-			self.data = new SandDripData(self);
-			return;
-		}
-
-		if (self.type == Enums.DeerSkullPO) {
-			self.data = new DeerSkull.DeerSkullData(self);
-			return;
-		}
-
-		if (self.type == Enums.CattailPO) {
-			self.data = new Cattail.CattailData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredCattailPO) {
-			self.data = new Cattail.CattailData(self);
-			return;
-		}
-
-		if (self.type == Enums.BubbleEmitterPO) {
-			self.data = new BubbleEmitter.BubbleEmitterData(self);
-			return;
-		}
-
-		if (self.type == Enums.BambooPO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
+		if (ObjectRegistry.TryGetDefinition(self.type, out var def)) {
+			PlacedObject.Data data = def.CreateData(self);
+			if (data != null) {
+				self.data = data;
+				return;
+			}
 		}
 
 		if (self.type == Enums.ColoredLanternPO) {
 			self.data = new ColoredLanternData(self, false);
-			return;
 		}
-
-		if (self.type == Enums.ColoredLanternStickPO) {
+		else if (self.type == Enums.ColoredLanternStickPO) {
 			self.data = new ColoredLanternData(self, true);
-			return;
-		}
-
-		if (self.type == Enums.LillypadPO) {
-			self.data = new Lillypad.LillypadData(self);
-			return;
-		}
-
-		if (self.type == Enums.WaterDripsPO) {
-			self.data = new GooDripSource.GooDripsData(self);
-			return;
-		}
-
-		if (self.type == Enums.MagmaAreaPO) {
-			self.data = new MagmaArea.MagmaAreaData(self);
-			return;
-		}
-
-		if (self.type == Enums.HeatSourcePO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredCoralNeuronPO) {
-			self.data = new ColoredCoralNeuron.ColoredCoralNeuronData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredDeepProcessingPO) {
-			self.data = new ColoredDeepProcessingData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomVinePO) {
-			self.data = new CustomVineSystem.CustomVineData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomVineConnectorPO) {
-			self.data = new CustomVineConnectorData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomLightRodPO) {
-			self.data = new CustomLightRod.CustomLightRodData(self);
-			return;
-		}
-
-		if (self.type == Enums.CustomLightArcPO) {
-			self.data = new CustomLightArc.CustomLightArcData(self);
-			return;
-		}
-
-		if (self.type == Enums.IceCubePO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.LittleIceCubesPO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredSparksPO) {
-			self.data = new ColoredSparksData(self);
-			return;
-		}
-
-		if (self.type == Enums.LightSource3dPO) {
-			self.data = new LightSource3dData(self);
-			return;
-		}
-
-		if (self.type == Enums.ColoredLightSource3dPO) {
-			self.data = new ColoredLightSource3dData(self);
-			return;
-		}
-
-		if (self.type == Enums.VerticalGatePositionPO) {
-			self.data = new PlacedObject.ResizableObjectData(self);
-			return;
 		}
 	}
 
@@ -221,104 +449,21 @@ public static class Objects {
 
 		PlacedObjectRepresentation placedObjectRepresentation = null;
 
-		if (tp == Enums.CactusPO) {
-			placedObjectRepresentation = new CactusRepresentation(self.owner, repName, self, pObj, name);
+		if (ObjectRegistry.TryGetDefinition(tp, out var regDef)) {
+			placedObjectRepresentation = regDef.CreateRepresentation(self.owner, repName, self, pObj, name);
+			if (placedObjectRepresentation != null) {
+				self.tempNodes.Add(placedObjectRepresentation);
+				self.subNodes.Add(placedObjectRepresentation);
+				return;
+			}
 		}
 
-		else if (tp == Enums.SandDripPO) {
-			placedObjectRepresentation = new SandDripRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.DeerSkullPO) {
-			placedObjectRepresentation = new DeerSkull.DeerSkullRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.CattailPO) {
-			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, false);
-		}
-
-		else if (tp == Enums.ColoredCattailPO) {
-			placedObjectRepresentation = new Cattail.ColoredCattailRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.BubbleEmitterPO) {
-			placedObjectRepresentation = new BubbleEmitter.BubbleEmitterRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.BambooPO) {
-			placedObjectRepresentation = new Bamboo.BambooRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.ColoredLanternPO) {
+		if (tp == Enums.ColoredLanternPO) {
 			placedObjectRepresentation = new ColoredLanternRepresentaion(self.owner, repName, self, pObj, name);
 		}
 
 		else if (tp == Enums.ColoredLanternStickPO) {
 			placedObjectRepresentation = new ColoredLanternRepresentaion(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.LillypadPO) {
-			placedObjectRepresentation = new Lillypad.LillypadRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.WaterDripsPO) {
-			placedObjectRepresentation = new WaterDripSource.WaterDripsRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.MagmaAreaPO) {
-			placedObjectRepresentation = new MagmaArea.MagmaAreaRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.HeatSourcePO) {
-			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, true);
-		}
-
-		else if (tp == Enums.ColoredCoralNeuronPO) {
-			placedObjectRepresentation = new ColoredCoralNeuron.ColoredCoralNeuronRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.ColoredDeepProcessingPO) {
-			placedObjectRepresentation = new ColoredDeepProcessingRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.CustomVinePO) {
-			placedObjectRepresentation = new CustomVineSystem.CustomVineRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.CustomVineConnectorPO) {
-			placedObjectRepresentation = new CustomVineConnectorRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.CustomLightRodPO) {
-			placedObjectRepresentation = new CustomLightRod.CustomLightRodRepresentation(self.owner, repName, self, pObj);
-		}
-
-		else if (tp == Enums.CustomLightArcPO) {
-			placedObjectRepresentation = new CustomLightArc.CustomLightArcRepresentation(self.owner, repName, self, pObj);
-		}
-
-		else if (tp == Enums.IceCubePO) {
-			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, true);
-		}
-
-		else if (tp == Enums.LittleIceCubesPO) {
-			placedObjectRepresentation = new ResizeableObjectRepresentation(self.owner, repName, self, pObj, name, true);
-		}
-
-		else if (tp == Enums.ColoredSparksPO) {
-			placedObjectRepresentation = new ColoredSparksRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.LightSource3dPO) {
-			placedObjectRepresentation = new LightSource3dRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.ColoredLightSource3dPO) {
-			placedObjectRepresentation = new ColoredLightSource3dRepresentation(self.owner, repName, self, pObj, name);
-		}
-
-		else if (tp == Enums.VerticalGatePositionPO) {
-			placedObjectRepresentation = new VerticalGateRepresentation(self.owner, repName, self, pObj, name);
 		}
 
 		if (placedObjectRepresentation != null) {
@@ -335,50 +480,15 @@ public static class Objects {
 		if (self.game == null)
 			return;
 
-		bool hasCoralNeuronSystem = self.updateList.Any(x => x is CoralNeuronSystem);
-		CustomVineSystem customVineSystem = self.updateList.OfType<CustomVineSystem>().FirstOrDefault();
-
 		for (int poIndex = 0; poIndex < self.roomSettings.placedObjects.Count; poIndex++) {
 			PlacedObject pObj = self.roomSettings.placedObjects[poIndex];
 
-			if (pObj.type == Enums.CactusPO && firstTimeRealized) {
-				self.AddObject(new Cactus(self, pObj));
+			if (ObjectRegistry.TryGetDefinition(pObj.type, out var regDef)) {
+				regDef.OnRoomLoaded(self, pObj, firstTimeRealized);
+				continue;
 			}
-			else if (pObj.type == Enums.SandDripPO) {
-				self.AddObject(new SandDrip(self, pObj));
-			}
-			else if (pObj.type == Enums.DeerSkullPO) {
-				self.AddObject(new DeerSkull(self, pObj));
-			}
-			else if (pObj.type == Enums.CattailPO) {
-				Cattail.AbstractCattail abstractPhysicalObject = new Cattail.AbstractCattail(self.world, Enums.Cattail, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), Color.black);
-				self.abstractRoom.entities.Add(abstractPhysicalObject);
-				abstractPhysicalObject.Realize();
 
-				CattailStick cattailStick = new CattailStick(self, pObj, abstractPhysicalObject.realizedObject as Cattail);
-				self.AddObject(cattailStick);
-			}
-			else if (pObj.type == Enums.ColoredCattailPO) {
-				// (UnityEngine.Random.value > 0.5f) ? Mathf.Lerp(0.45f, 0.55f, UnityEngine.Random.value) : Mathf.Lerp(0.05f, 0.1f, UnityEngine.Random.value),
-				float hue = (pObj.data as Cattail.CattailData).hue;
-				Color color = Custom.HSL2RGB(
-					hue >= 1f ? 0f : hue,
-					Mathf.Lerp(0.25f, 0.75f, UnityEngine.Random.value),
-					Mathf.Lerp(0.5f, 0.75f, UnityEngine.Random.value)
-				);
-				Cattail.AbstractCattail abstractPhysicalObject = new Cattail.AbstractCattail(self.world, Enums.Cattail, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), color);
-				self.abstractRoom.entities.Add(abstractPhysicalObject);
-				abstractPhysicalObject.Realize();
-			}
-			else if (pObj.type == Enums.BubbleEmitterPO) {
-				BubbleEmitter bubbleEmitter = new BubbleEmitter(self, pObj);
-				self.AddObject(bubbleEmitter);
-			}
-			else if (pObj.type == Enums.BambooPO) {
-				Bamboo bamboo = new Bamboo(self, pObj);
-				self.AddObject(bamboo);
-			}
-			else if (pObj.type == Enums.ColoredLanternStickPO) {
+			if (pObj.type == Enums.ColoredLanternStickPO) {
 				self.AddObject(new ColoredLanternStick(self, pObj, self.abstractRoom.index, poIndex));
 			}
 			else if (pObj.type == Enums.ColoredLanternPO && (!(self.game.session as StoryGameSession)?.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, poIndex) ?? true)) {
@@ -389,90 +499,6 @@ public static class Objects {
 				};
 				self.abstractRoom.entities.Add(abstractPhysicalObject);
 				abstractPhysicalObject.placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(self.abstractRoom.name, poIndex);
-			}
-			else if (pObj.type == Enums.LillypadPO && firstTimeRealized) {
-				Lillypad.AbstractLillypad abstractLillypad = new Lillypad.AbstractLillypad(self.world, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), pObj);
-				self.abstractRoom.entities.Add(abstractLillypad);
-			}
-			else if (pObj.type == Enums.WaterDripsPO) {
-				self.AddObject(new WaterDripSource(pObj));
-			}
-			else if (pObj.type == Enums.MagmaAreaPO) {
-				self.AddObject(new MagmaArea(self, pObj));
-			}
-			else if (pObj.type == Enums.HeatSourcePO) {
-				self.AddObject(new HeatSource(self, pObj));
-			}
-			else if (pObj.type == Enums.ColoredCoralNeuronPO) {
-				if (!hasCoralNeuronSystem) {
-					self.AddObject(new CoralNeuronSystem());
-					hasCoralNeuronSystem = true;
-				}
-				self.waitToEnterAfterFullyLoaded = Mathf.Max(self.waitToEnterAfterFullyLoaded, 80);
-			}
-			else if (pObj.type == Enums.ColoredDeepProcessingPO) {
-				self.AddObject(new ColoredDeepProcessing(pObj, self));
-			}
-			else if (pObj.type == Enums.CustomVinePO) {
-				if (customVineSystem == null) {
-					customVineSystem = new CustomVineSystem(self);
-					self.AddObject(customVineSystem);
-				}
-
-				customVineSystem.AddVine(pObj);
-			}
-			else if (pObj.type == Enums.CustomVineConnectorPO) {
-				if (customVineSystem == null) {
-					customVineSystem = new CustomVineSystem(self);
-					self.AddObject(customVineSystem);
-				}
-
-				customVineSystem.AddConnector(pObj);
-			}
-			else if (pObj.type == Enums.CustomLightRodPO) {
-				self.AddObject(new CustomLightRod(pObj, self));
-			}
-			else if (pObj.type == Enums.CustomLightArcPO) {
-				self.AddObject(new CustomLightArc(pObj, self));
-			}
-			else if (pObj.type == Enums.IceCubePO && firstTimeRealized) {
-				self.abstractRoom.AddEntity(new IceCube.AbstractIceCube(self.world, Enums.IceCube, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), pObj));
-			}
-			else if (pObj.type == Enums.LittleIceCubesPO) {
-				self.AddObject(new LittleIceCubes(self, pObj));
-			}
-			else if (pObj.type == Enums.ColoredSparksPO) {
-				self.AddObject(new ColoredSparks(self, pObj));
-			}
-			else if (pObj.type == Enums.LightSource3dPO) {
-				LightSource3dData data = pObj.data as LightSource3dData;
-				LightSource3d lightSource = new LightSource3d(pObj.pos, true, Color.white, null) {
-					depth = data.depth,
-					depthRange = data.depthRange,
-				};
-				self.AddObject(lightSource);
-				lightSource.setRad = data.Rad;
-				lightSource.setAlpha = data.strength;
-				lightSource.fadeWithSun = data.fadeWithSun;
-				lightSource.colorFromEnvironment = data.colorType == PlacedObject.LightSourceData.ColorType.Environment;
-				lightSource.flat = data.flat;
-				lightSource.effectColor = Math.Max(-1, (int) data.colorType - 2);
-				self.SetLightSourceBlink(lightSource, poIndex);
-			}
-			else if (pObj.type == Enums.ColoredLightSource3dPO) {
-				ColoredLightSource3dData data = pObj.data as ColoredLightSource3dData;
-				ColoredLightSource3d light = new ColoredLightSource3d(pObj.pos, true, data.color, null, pObj) {
-					depth = data.depth,
-					depthRange = data.depthRange,
-				};
-				self.AddObject(light);
-				light.setRad = data.Rad;
-				light.setAlpha = data.strength;
-				light.fadeWithSun = data.fadeWithSun;
-				light.colorFromEnvironment = data.colorType == PlacedObject.LightSourceData.ColorType.Environment;
-				light.flat = data.flat;
-				light.effectColor = Math.Max(-1, (int) data.colorType - 2);
-				self.SetLightSourceBlink(light, poIndex);
 			}
 		}
 	}
@@ -490,6 +516,11 @@ public static class Objects {
 		if (self.realizedObject != null)
 			return;
 
+		if (ObjectRegistry.TryGetDefinition(self.type, out IAbstractPlaceableDefinition regDef)) {
+			self.realizedObject = regDef.CreateRealizedObject(self);
+			return;
+		}
+
 		if (self.type == Enums.CactusFruit) {
 			self.realizedObject = new CactusFruit(self);
 		}
@@ -498,20 +529,8 @@ public static class Objects {
 			self.realizedObject = new CactusSpear(self);
 		}
 
-		if (self.type == Enums.Cattail) {
-			self.realizedObject = new Cattail(self);
-		}
-
 		if (self.type == Enums.ColoredLantern) {
 			self.realizedObject = new ColoredLantern(self as AbstractColoredLantern);
-		}
-
-		if (self.type == Enums.Lillypad) {
-			self.realizedObject = new Lillypad(self as Lillypad.AbstractLillypad);
-		}
-
-		if (self.type == Enums.IceCube) {
-			self.realizedObject = new IceCube(self);
 		}
 	}
 

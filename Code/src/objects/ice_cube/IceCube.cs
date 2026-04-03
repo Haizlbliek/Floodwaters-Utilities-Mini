@@ -197,7 +197,7 @@ public class IceCube : PhysicalObject, IDrawable, TerrainManager.ITerrain {
 	public class AbstractIceCube : AbstractPhysicalObject {
 		public PlacedObject pObj;
 
-		public AbstractIceCube(World world, AbstractObjectType type, PhysicalObject realizedObject, WorldCoordinate pos, EntityID ID, PlacedObject pObj) : base(world, type, realizedObject, pos, ID) {
+		public AbstractIceCube(World world, PhysicalObject realizedObject, WorldCoordinate pos, EntityID ID, PlacedObject pObj) : base(world, Enums.IceCube, realizedObject, pos, ID) {
 			this.pObj = pObj;
 		}
 	}
