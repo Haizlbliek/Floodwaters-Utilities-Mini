@@ -136,4 +136,13 @@ public class PropertyMesh : FContainer {
 			this.meshDirty = true;
 		}
 	}
+
+	public Color GetVertexColor(int index) {
+		return this.vertexColors[index];
+	}
+
+	public void SetVertexColor(int index, Color color) {
+		this.vertexColors[index] = color;
+		this.meshDirty = true;
+	}
 }

@@ -23,7 +23,7 @@ public class CustomLightRod : UpdatableAndDeletable, IDrawable {
 		sLeaser.sprites[1] = new FSprite("Futile_White", true) {
 			anchorY = 0f,
 			scaleX = 0.25f,
-			shader = rCam.game.rainWorld.Shaders["CustomDepthGradient"]
+			shader = rCam.game.rainWorld.Shaders["FWCustomDepthGradient"]
 		};
 		this.AddToContainer(sLeaser, rCam, null);
 	}

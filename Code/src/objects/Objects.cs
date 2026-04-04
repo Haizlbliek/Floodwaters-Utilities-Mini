@@ -27,6 +27,7 @@ public static class Objects {
 		On.LightSource.DrawSprites += On_LightSource_DrawSprites;
 
 		VerticalGateManager.Initialize();
+		ColoredFlameJet.Initialize();
 
 		Futile.atlasManager.LoadAtlas("atlases/Floodwaters-Mini");
 	}
@@ -52,6 +53,7 @@ public static class Objects {
 		On.LightSource.DrawSprites -= On_LightSource_DrawSprites;
 
 		VerticalGateManager.Cleanup();
+		ColoredFlameJet.Cleanup();
 
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
 	}
@@ -386,6 +388,22 @@ public static class Objects {
 				(owner, idString, parentNode, pObj, name) => new VerticalGateRepresentation(owner, idString, parentNode, pObj, name),
 				null
 			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<ColoredFlameJet>(
+				"ColoredFlameJet",
+				Enums.ColoredFlameJetPO,
+				pObj => new ColoredFlameJetData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ColoredFlameJetRepresentation(owner, idString, parentNode, pObj),
+				(pObj, self) => new ColoredFlameJet(self, pObj.data as ColoredFlameJetData)
+			) {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					ColoredFlameJet jet = def.CreateObject(pObj, self) as ColoredFlameJet;
+					self.AddObject(jet);
+					(pObj.data as ColoredFlameJetData).obj = jet;
+				}
+			}
 		);
 	}
 
