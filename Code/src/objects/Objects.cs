@@ -399,6 +399,15 @@ public static class Objects {
 				(pObj, self) => new EffectOverride(self, pObj)
 			)
 		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<SmokePipe>(
+				Enums.SmokePipe,
+				pObj => new SmokePipeData(pObj),
+				(owner, idString, parentNode, pObj, name) => new SmokePipeRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new SmokePipe(self, pObj)
+			)
+		);
 	}
 
 

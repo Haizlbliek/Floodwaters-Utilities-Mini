@@ -35,6 +35,7 @@ public class EffectOverrideData : PlacedObject.ResizableObjectData {
 			this.fromDepth = int.Parse(array[12]);
 			this.toDepth = int.Parse(array[13]);
 			this.gradient = float.Parse(array[14]);
+			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 15);
 		}
 		catch (Exception) {}
 	}
