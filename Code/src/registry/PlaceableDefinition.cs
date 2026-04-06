@@ -1,7 +1,6 @@
 namespace Floodwaters.Registry;
 
 public interface IPlaceableDefinition {
-	string Id { get; }
 	PlacedObject.Type PlacedType { get; }
 
 	PlacedObject.Data CreateData(PlacedObject pObj);
@@ -18,7 +17,6 @@ public interface IAbstractPlaceableDefinition : IPlaceableDefinition {
 }
 
 public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject : UpdatableAndDeletable {
-	public string Id { get; }
 	public Enums.Enum<PlacedObject.Type> PlacedTypeEnum { get; }
 	public PlacedObject.Type PlacedType => this.PlacedTypeEnum;
 
@@ -33,12 +31,11 @@ public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject :
 	public bool FirstTimeOnly = false;
 
 	public PlaceableDefinition(
-		string id, Enums.Enum<PlacedObject.Type> placedType,
+		Enums.Enum<PlacedObject.Type> placedType,
 		Func<PlacedObject, PlacedObject.Data> createDataFunc,
 		Func<DevUI, string, DevUINode, PlacedObject, string, PlacedObjectRepresentation> createRepresentationFunc,
 		Func<PlacedObject, Room, TObject> createObjectFunc
 	) {
-		this.Id = id;
 		this.PlacedTypeEnum = placedType;
 		this.CreateDataFunc = createDataFunc;
 		this.CreateObjectFunc = createObjectFunc;
@@ -85,13 +82,12 @@ public class AbstractPlaceableDefinition<TObject, TAbstractObject> : PlaceableDe
 	public new Action<AbstractPlaceableDefinition<TObject, TAbstractObject>, Room, PlacedObject, bool> OnRoomLoadedAction { get; set; }
 
 	public AbstractPlaceableDefinition(
-		string id,
 		Enums.Enum<PlacedObject.Type> placedType, Enums.Enum<AbstractPhysicalObject.AbstractObjectType> abstractType,
 		Func<PlacedObject, PlacedObject.Data> createDataFunc,
 		Func<DevUI, string, DevUINode, PlacedObject, string, PlacedObjectRepresentation> createRepresentationFunc,
 		Func<PlacedObject, Room, TAbstractObject> createAbstractObjectFunc,
 		Func<TAbstractObject, TObject> createRealizedObjectFunc
-	) : base(id, placedType, createDataFunc, createRepresentationFunc, null) {
+	) : base(placedType, createDataFunc, createRepresentationFunc, null) {
 		this.AbstractTypeEnum = abstractType;
 		this.CreateAbstractObjectFunc = createAbstractObjectFunc;
 		this.CreateRealizedObjectFunc = createRealizedObjectFunc;

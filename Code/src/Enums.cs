@@ -75,6 +75,8 @@ public static class Enums {
 	public static Enum<PlacedObject.Type> ColoredLightSource3dPO = new("Colored3dLightSource");
 	public static Enum<PlacedObject.Type> VerticalGatePositionPO = new("VerticalGatePosition");
 	public static Enum<PlacedObject.Type> ColoredFlameJetPO = new("ColoredFlameJet");
+	public static Enum<PlacedObject.Type> EffectOverrideRectPO = new("EffectOverrideRect");
+	public static Enum<PlacedObject.Type> EffectOverrideCirclePO = new("EffectOverrideCircle");
 
 	public static Enum<ObjectsPage.DevObjectCategories> FloodwatersCategory = new("Floodwaters");
 	public static Enum<RoomSettingsPage.DevEffectsCategories> FloodwatersEffectCategory = new("Floodwaters");
@@ -83,6 +85,10 @@ public static class Enums {
 	public static Enum<RoomSettings.RoomEffect.Type> FWChromaticEffect = new("Chromatic");
 	public static Enum<RoomSettings.RoomEffect.Type> FWNoiseEffect = new("Noise");
 	public static Enum<RoomSettings.RoomEffect.Type> EoCFanSpeedEffect = new("EoCFanSpeed");
+	public static Enum<RoomSettings.RoomEffect.Type> WaterSlush = new("WaterSlush");
+	public static Enum<RoomSettings.RoomEffect.Type> WaterSludge = new("WaterSludge");
+	public static Enum<RoomSettings.RoomEffect.Type> StraightDeepWater = new("StraightDeepWater");
+	public static Enum<RoomSettings.RoomEffect.Type> Hypothermia = new("Hypothermia");
 
 	public static Enum<RoomRain.DangerType> HeatDanger = new("Heat");
 	public static Enum<Creature.DamageType> BurnDamageType = new("Burn");

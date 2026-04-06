@@ -8,6 +8,8 @@ public static class Effects {
 		On.Room.Loaded += On_Room_Loaded;
 		On.RoomPreprocessor.DecompressStringToAImaps += a;
 		EoCFanSpeed.Initialize();
+		Hypothermia.Initialize();
+		WaterEffects.Initialize();
 	}
 
 	public static void Cleanup() {
@@ -16,6 +18,8 @@ public static class Effects {
 		On.Room.Loaded -= On_Room_Loaded;
 		On.RoomPreprocessor.DecompressStringToAImaps -= a;
 		EoCFanSpeed.Cleanup();
+		Hypothermia.Cleanup();
+		WaterEffects.Cleanup();
 	}
 
 	private static CreatureSpecificAImap[] a(On.RoomPreprocessor.orig_DecompressStringToAImaps orig, string s, AImap aimap) {
@@ -23,7 +27,7 @@ public static class Effects {
 	}
 
 	private static RoomSettingsPage.DevEffectsCategories On_RoomSettingsPage_DevEffectGetCategoryFromEffectType(On.DevInterface.RoomSettingsPage.orig_DevEffectGetCategoryFromEffectType orig, RoomSettingsPage self, RoomSettings.RoomEffect.Type type) {
-		if (type == Enums.FWFogEffect || type == Enums.FWChromaticEffect || type == Enums.FWNoiseEffect || type == Enums.EoCFanSpeedEffect)
+		if (Enums.Has(type))
 			return Enums.FloodwatersEffectCategory;
 
 		return orig(self, type);

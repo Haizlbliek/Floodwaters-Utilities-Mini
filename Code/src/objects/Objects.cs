@@ -61,7 +61,6 @@ public static class Objects {
 	private static void RegisterPlaceableObjects() {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<Cactus>(
-				"Cactus",
 				Enums.CactusPO,
 				pObj => new CactusData(pObj),
 				(owner, idString, parentNode, pObj, name) => new CactusRepresentation(owner, idString, parentNode, pObj, name),
@@ -73,7 +72,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<SandDrip>(
-				"SandDrip",
 				Enums.SandDripPO,
 				pObj => new SandDripData(pObj),
 				(owner, idString, parentNode, pObj, name) => new SandDripRepresentation(owner, idString, parentNode, pObj, name),
@@ -83,7 +81,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<DeerSkull>(
-				"DeerSkull",
 				Enums.DeerSkullPO,
 				pObj => new DeerSkull.DeerSkullData(pObj),
 				(owner, idString, parentNode, pObj, name) => new DeerSkull.DeerSkullRepresentation(owner, idString, parentNode, pObj, name),
@@ -93,7 +90,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new AbstractPlaceableDefinition<Cattail, Cattail.AbstractCattail>(
-				"Cattail",
 				Enums.CattailPO,
 				Enums.Cattail,
 				pObj => new Cattail.CattailData(pObj),
@@ -115,7 +111,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new AbstractPlaceableDefinition<Cattail, Cattail.AbstractCattail>(
-				"ColoredCattail",
 				Enums.ColoredCattailPO,
 				Enums.Cattail,
 				pObj => new Cattail.CattailData(pObj),
@@ -145,7 +140,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<BubbleEmitter>(
-				"BubbleEmitter",
 				Enums.BubbleEmitterPO,
 				po => new BubbleEmitter.BubbleEmitterData(po),
 				(owner, idString, parentNode, pObj, name) => new BubbleEmitter.BubbleEmitterRepresentation(owner, idString, parentNode, pObj, name),
@@ -155,7 +149,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<Bamboo>(
-				"Bamboo",
 				Enums.BambooPO,
 				pObj => new PlacedObject.ResizableObjectData(pObj),
 				(owner, idString, parentNode, pObj, name) => new Bamboo.BambooRepresentation(owner, idString, parentNode, pObj, name),
@@ -167,7 +160,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new AbstractPlaceableDefinition<Lillypad, Lillypad.AbstractLillypad>(
-				"Lillypad",
 				Enums.LillypadPO,
 				Enums.Lillypad,
 				pObj => new Lillypad.LillypadData(pObj),
@@ -179,7 +171,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<WaterDripSource>(
-				"WaterDrips",
 				Enums.WaterDripsPO,
 				pObj => new GooDripSource.GooDripsData(pObj),
 				(owner, idString, parentNode, pObj, name) => new WaterDripSource.WaterDripsRepresentation(owner, idString, parentNode, pObj, name),
@@ -189,7 +180,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<MagmaArea>(
-				"MagmaArea",
 				Enums.MagmaAreaPO,
 				pObj => new MagmaArea.MagmaAreaData(pObj),
 				(owner, idString, parentNode, pObj, name) => new MagmaArea.MagmaAreaRepresentation(owner, idString, parentNode, pObj, name),
@@ -199,7 +189,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<HeatSource>(
-				"HeatSource",
 				Enums.HeatSourcePO,
 				pObj => new PlacedObject.ResizableObjectData(pObj),
 				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, true),
@@ -209,7 +198,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<ColoredCoralNeuron>(
-				"ColoredCoralNeuron",
 				Enums.ColoredCoralNeuronPO,
 				pObj => new ColoredCoralNeuron.ColoredCoralNeuronData(pObj),
 				(owner, idString, parentNode, pObj, name) => new ColoredCoralNeuron.ColoredCoralNeuronRepresentation(owner, idString, parentNode, pObj, name),
@@ -226,7 +214,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<ColoredDeepProcessing>(
-				"ColoredDeepProcessing",
 				Enums.ColoredDeepProcessingPO,
 				po => new ColoredDeepProcessingData(po),
 				(owner, idString, parentNode, pObj, name) => new ColoredDeepProcessingRepresentation(owner, idString, parentNode, pObj, name),
@@ -236,7 +223,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<UpdatableAndDeletable>(
-				"CustomVine",
 				Enums.CustomVinePO,
 				po => new CustomVineSystem.CustomVineData(po),
 				(owner, idString, parentNode, pObj, name) => new CustomVineSystem.CustomVineRepresentation(owner, idString, parentNode, pObj, name),
@@ -256,7 +242,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<UpdatableAndDeletable>(
-				"CustomVineConnector",
 				Enums.CustomVineConnectorPO,
 				po => new CustomVineConnectorData(po),
 				(owner, idString, parentNode, pObj, name) => new CustomVineConnectorRepresentation(owner, idString, parentNode, pObj, name),
@@ -276,7 +261,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<CustomLightRod>(
-				"CustomLightRod",
 				Enums.CustomLightRodPO,
 				po => new CustomLightRod.CustomLightRodData(po),
 				(owner, idString, parentNode, pObj, name) => new CustomLightRod.CustomLightRodRepresentation(owner, idString, parentNode, pObj),
@@ -286,7 +270,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<CustomLightArc>(
-				"CustomLightArc",
 				Enums.CustomLightArcPO,
 				po => new CustomLightArc.CustomLightArcData(po),
 				(owner, idString, parentNode, pObj, name) => new CustomLightArc.CustomLightArcRepresentation(owner, idString, parentNode, pObj),
@@ -296,7 +279,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new AbstractPlaceableDefinition<IceCube, IceCube.AbstractIceCube>(
-				"IceCube",
 				Enums.IceCubePO,
 				Enums.IceCube,
 				po => new PlacedObject.ResizableObjectData(po),
@@ -308,7 +290,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<LittleIceCubes>(
-				"LittleIceCubes",
 				Enums.LittleIceCubesPO,
 				po => new PlacedObject.ResizableObjectData(po),
 				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, true),
@@ -318,7 +299,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<ColoredSparks>(
-				"ColoredSparks",
 				Enums.ColoredSparksPO,
 				pObj => new ColoredSparksData(pObj),
 				(owner, idString, parentNode, pObj, name) => new ColoredSparksRepresentation(owner, idString, parentNode, pObj, name),
@@ -328,7 +308,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<LightSource3d>(
-				"3dLightSource",
 				Enums.LightSource3dPO,
 				pObj => new LightSource3dData(pObj),
 				(owner, idString, parentNode, pObj, name) => new LightSource3dRepresentation(owner, idString, parentNode, pObj, name),
@@ -355,7 +334,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<ColoredLightSource3d>(
-				"Colored3dLightSource",
 				Enums.ColoredLightSource3dPO,
 				pObj => new ColoredLightSource3dData(pObj),
 				(owner, idString, parentNode, pObj, name) => new ColoredLightSource3dRepresentation(owner, idString, parentNode, pObj, name),
@@ -382,7 +360,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<UpdatableAndDeletable>(
-				"VerticalGatePosition",
 				Enums.VerticalGatePositionPO,
 				pObj => new PlacedObject.ResizableObjectData(pObj),
 				(owner, idString, parentNode, pObj, name) => new VerticalGateRepresentation(owner, idString, parentNode, pObj, name),
@@ -392,7 +369,6 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<ColoredFlameJet>(
-				"ColoredFlameJet",
 				Enums.ColoredFlameJetPO,
 				pObj => new ColoredFlameJetData(pObj),
 				(owner, idString, parentNode, pObj, name) => new ColoredFlameJetRepresentation(owner, idString, parentNode, pObj),
@@ -404,6 +380,24 @@ public static class Objects {
 					(pObj.data as ColoredFlameJetData).obj = jet;
 				}
 			}
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<EffectOverride>(
+				Enums.EffectOverrideRectPO,
+				pObj => new EffectOverrideData(pObj),
+				(owner, idString, parentNode, pObj, name) => new EffectOverrideRectRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new EffectOverride(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<EffectOverride>(
+				Enums.EffectOverrideCirclePO,
+				pObj => new EffectOverrideData(pObj),
+				(owner, idString, parentNode, pObj, name) => new EffectOverrideCircleRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new EffectOverride(self, pObj)
+			)
 		);
 	}
 

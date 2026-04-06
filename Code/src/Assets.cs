@@ -1,7 +1,15 @@
 namespace Floodwaters;
 
 public static class Assets {
-	public static readonly string[] shaders = [ "FWFog", "FWChromatic", "FWStatic", "FWCustomDepthVectorCircle", "FWColoredDeepProcessing", "FWCustomDepthGradient", "FW3dLightSource", "FWColoredFlameJet", "FWColoredFlameJetGlow" ];
+	public static readonly string[] shaders = [
+		"FWFog", "FWChromatic", "FWStatic",
+		"FWCustomDepthVectorCircle", "FWCustomDepthGradient",
+		"FW3dLightSource",
+		"FWColoredDeepProcessing",
+		"FWColoredFlameJet", "FWColoredFlameJetGlow",
+		"FWWaterSlush", "FWWaterSludge", "FWStraightDeepWater",
+		"FWEffectColor", "FWEffectColorCircle"
+	];
 
 	public static readonly int ShadPropFWBloomType = Shader.PropertyToID("_FWBloomType");
 
