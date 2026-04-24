@@ -43,7 +43,7 @@ public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 	}
 
 	public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContatiner) {
-		newContatiner ??= rCam.ReturnFContainer("Foreground");
+		newContatiner ??= rCam.ReturnFContainer("ForegroundLights");
 
 		foreach (FContainer container in sLeaser.containers) {
 			newContatiner.AddChild(container);

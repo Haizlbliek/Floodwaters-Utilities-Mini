@@ -1,8 +1,8 @@
 {
   "id": "floodwaters_utilities_mini",
   "name": "Floodwaters Utilities Mini",
-  "version": "1.0.16",
-  "target_game_version": "v1.11.7b",
+  "version": "1.0.17",
+  "target_game_version": "v1.11.8",
   "authors": "Haizlbliek",
   "description": "",
   "requirements": [],
