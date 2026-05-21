@@ -11,12 +11,8 @@ public class Cattail : Weapon {
 	private SharedPhysics.TerrainCollisionData scratchTerrainCollisionData;
 
 	public AbstractCattail AbstrCattail => this.abstractPhysicalObject as AbstractCattail;
-	
-	private Color SporeColor {
-		get {
-			return Color.Lerp(this.AbstrCattail.HasDye ? this.AbstrCattail.dyeColor : new Color(0.8f, 0.75f, 0.6f), this.color, Random.Range(0.0f, 0.25f));
-		}
-	}
+
+	private Color SporeColor => Color.Lerp(this.AbstrCattail.HasDye ? this.AbstrCattail.dyeColor : new Color(0.8f, 0.75f, 0.6f), this.color, Random.Range(0.0f, 0.25f));
 
 	public Cattail(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject, abstractPhysicalObject.world) {
 		this.bodyChunks = new BodyChunk[1];
@@ -399,11 +395,7 @@ public class Cattail : Weapon {
 	}
 
 	public class ColoredCattailRepresentation : ResizeableObjectRepresentation {
-		private CattailData Data {
-			get {
-				return this.pObj.data as CattailData;
-			}
-		}
+		private CattailData Data => this.pObj.data as CattailData;
 
 		public ColoredCattailRepresentation(DevUI owner, string IDstring, DevUINode parentNode, PlacedObject po, string name) : base(owner, IDstring, parentNode, po, name, false) {
 			this.controlPanel = new CattailControlPanel(owner, "Cattail_Panel", this, new Vector2(0f, 100f));
@@ -438,17 +430,9 @@ public class Cattail : Weapon {
 			}
 
 			public class CattailSlider : Slider {
-				private ColoredCattailRepresentation Rep {
-					get {
-						return this.parentNode.parentNode as ColoredCattailRepresentation;
-					}
-				}
+				private ColoredCattailRepresentation Rep => this.parentNode.parentNode as ColoredCattailRepresentation;
 
-				private CattailData Data {
-					get {
-						return this.Rep.pObj.data as CattailData;
-					}
-				}
+				private CattailData Data => this.Rep.pObj.data as CattailData;
 
 				public CattailSlider(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos, string title) : base(owner, IDstring, parentNode, pos, title, false, 60f) {
 				}

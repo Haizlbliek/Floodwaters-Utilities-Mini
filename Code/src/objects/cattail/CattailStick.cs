@@ -16,11 +16,7 @@ public class CattailStick : UpdatableAndDeletable, IDrawable {
 
 	private StaticSoundLoop pullingSoundLoop;
 
-	private PlacedObject.ResizableObjectData Data {
-		get {
-			return this.po.data as PlacedObject.ResizableObjectData;
-		}
-	}
+	private PlacedObject.ResizableObjectData Data => this.po.data as PlacedObject.ResizableObjectData;
 
 	public CattailStick(Room room, PlacedObject po, Cattail cattail) {
 		this.room = room;

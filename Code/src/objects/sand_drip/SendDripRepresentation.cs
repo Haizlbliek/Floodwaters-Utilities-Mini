@@ -1,11 +1,7 @@
 namespace Floodwaters.Objects;
 
 public class SandDripRepresentation : PlacedObjectRepresentation {
-	private SandDripData Data {
-		get {
-			return this.pObj.data as SandDripData;
-		}
-	}
+	private SandDripData Data => this.pObj.data as SandDripData;
 
 	public SandDripRepresentation(DevUI owner, string IDstring, DevUINode parentNode, PlacedObject pObj, string name) : base(owner, IDstring, parentNode, pObj, name) {
 		this.controlPanel = new SandDripControlPanel(owner, "Sand_Drips_Panel", this, new Vector2(0f, 100f));
@@ -51,17 +47,9 @@ public class SandDripRepresentation : PlacedObjectRepresentation {
 		}
 
 		public class SandDripSlider : Slider {
-			private SandDripRepresentation Rep {
-				get {
-					return this.parentNode.parentNode as SandDripRepresentation;
-				}
-			}
+			private SandDripRepresentation Rep => this.parentNode.parentNode as SandDripRepresentation;
 
-			private SandDripData Data {
-				get {
-					return this.Rep.pObj.data as SandDripData;
-				}
-			}
+			private SandDripData Data => this.Rep.pObj.data as SandDripData;
 
 			public SandDripSlider(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos, string title) : base(owner, IDstring, parentNode, pos, title, false, 60f) {
 			}

@@ -197,22 +197,10 @@ public class Cactus : UpdatableAndDeletable, IDrawable {
 			return this.size * (Custom.DegToVec(this.Rotation) * 18f + Custom.DegToVec(rotation) * 5f);
 		}
 
-		public float Rotation {
-			get {
-				return this.relativeRot + Mathf.Cos(this.cactus.time * this.timeScale + this.timeOffset) * 5f;
-			}
-		}
+		public float Rotation => this.relativeRot + Mathf.Cos(this.cactus.time * this.timeScale + this.timeOffset) * 5f;
 
-		public Vector2 GlobalPos {
-			get {
-				return this.parent == null ? Vector2.zero : (this.parent.GlobalPos + this.parent.OffshootPosition(this.Rotation));
-			}
-		}
+		public Vector2 GlobalPos => this.parent == null ? Vector2.zero : (this.parent.GlobalPos + this.parent.OffshootPosition(this.Rotation));
 
-		public float GlobalRot {
-			get {
-				return this.parent == null ? this.Rotation : (this.Rotation + this.parent.GlobalRot);
-			}
-		}
+		public float GlobalRot => this.parent == null ? this.Rotation : (this.Rotation + this.parent.GlobalRot);
 	}
 }

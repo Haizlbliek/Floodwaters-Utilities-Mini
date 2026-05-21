@@ -168,11 +168,7 @@ public class Bamboo : UpdatableAndDeletable, IClimbableVine, IDrawable {
 		public Vector2 End => this.pos + Custom.DegToVec(this.rot) * 20f;
 		public Vector2 Center => this.pos + Custom.DegToVec(this.rot) * 10f;
 
-		public Vector2 Side {
-			get {
-				return Custom.DegToVec(this.rot + 90f);
-			}
-		}
+		public Vector2 Side => Custom.DegToVec(this.rot + 90f);
 
 		public Segment(Vector2 pos, float rot) {
 			this.lastPos = pos;

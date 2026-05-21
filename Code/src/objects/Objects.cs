@@ -82,8 +82,8 @@ public static class Objects {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<DeerSkull>(
 				Enums.DeerSkullPO,
-				pObj => new DeerSkull.DeerSkullData(pObj),
-				(owner, idString, parentNode, pObj, name) => new DeerSkull.DeerSkullRepresentation(owner, idString, parentNode, pObj, name),
+				pObj => new DeerSkullData(pObj),
+				(owner, idString, parentNode, pObj, name) => new DeerSkullRepresentation(owner, idString, parentNode, pObj, name),
 				(pObj, self) => new DeerSkull(self, pObj)
 			)
 		);
@@ -141,8 +141,8 @@ public static class Objects {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<BubbleEmitter>(
 				Enums.BubbleEmitterPO,
-				po => new BubbleEmitter.BubbleEmitterData(po),
-				(owner, idString, parentNode, pObj, name) => new BubbleEmitter.BubbleEmitterRepresentation(owner, idString, parentNode, pObj, name),
+				po => new BubbleEmitterData(po),
+				(owner, idString, parentNode, pObj, name) => new BubbleEmitterRepresentation(owner, idString, parentNode, pObj, name),
 				(po, self) => new BubbleEmitter(self, po)
 			)
 		);
@@ -162,8 +162,8 @@ public static class Objects {
 			new AbstractPlaceableDefinition<Lillypad, Lillypad.AbstractLillypad>(
 				Enums.LillypadPO,
 				Enums.Lillypad,
-				pObj => new Lillypad.LillypadData(pObj),
-				(owner, idString, parentNode, pObj, name) => new Lillypad.LillypadRepresentation(owner, idString, parentNode, pObj, name),
+				pObj => new LillypadData(pObj),
+				(owner, idString, parentNode, pObj, name) => new LillypadRepresentation(owner, idString, parentNode, pObj, name),
 				(pObj, self) => new Lillypad.AbstractLillypad(self.world, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), pObj),
 				self => new Lillypad(self)
 			)
@@ -181,8 +181,8 @@ public static class Objects {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<MagmaArea>(
 				Enums.MagmaAreaPO,
-				pObj => new MagmaArea.MagmaAreaData(pObj),
-				(owner, idString, parentNode, pObj, name) => new MagmaArea.MagmaAreaRepresentation(owner, idString, parentNode, pObj, name),
+				pObj => new MagmaAreaData(pObj),
+				(owner, idString, parentNode, pObj, name) => new MagmaAreaRepresentation(owner, idString, parentNode, pObj, name),
 				(pObj, self) => new MagmaArea(self, pObj)
 			)
 		);
@@ -199,8 +199,8 @@ public static class Objects {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<ColoredCoralNeuron>(
 				Enums.ColoredCoralNeuronPO,
-				pObj => new ColoredCoralNeuron.ColoredCoralNeuronData(pObj),
-				(owner, idString, parentNode, pObj, name) => new ColoredCoralNeuron.ColoredCoralNeuronRepresentation(owner, idString, parentNode, pObj, name),
+				pObj => new ColoredCoralNeuronData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ColoredCoralNeuronRepresentation(owner, idString, parentNode, pObj, name),
 				null
 			) {
 				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
@@ -224,8 +224,8 @@ public static class Objects {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<UpdatableAndDeletable>(
 				Enums.CustomVinePO,
-				po => new CustomVineSystem.CustomVineData(po),
-				(owner, idString, parentNode, pObj, name) => new CustomVineSystem.CustomVineRepresentation(owner, idString, parentNode, pObj, name),
+				po => new CustomVineData(po),
+				(owner, idString, parentNode, pObj, name) => new CustomVineRepresentation(owner, idString, parentNode, pObj, name),
 				null
 			) {
 				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
@@ -262,8 +262,8 @@ public static class Objects {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<CustomLightRod>(
 				Enums.CustomLightRodPO,
-				po => new CustomLightRod.CustomLightRodData(po),
-				(owner, idString, parentNode, pObj, name) => new CustomLightRod.CustomLightRodRepresentation(owner, idString, parentNode, pObj),
+				po => new CustomLightRodData(po),
+				(owner, idString, parentNode, pObj, name) => new CustomLightRodRepresentation(owner, idString, parentNode, pObj),
 				(po, self) => new CustomLightRod(po, self)
 			)
 		);
@@ -271,8 +271,8 @@ public static class Objects {
 		ObjectRegistry.Register(
 			new PlaceableDefinition<CustomLightArc>(
 				Enums.CustomLightArcPO,
-				po => new CustomLightArc.CustomLightArcData(po),
-				(owner, idString, parentNode, pObj, name) => new CustomLightArc.CustomLightArcRepresentation(owner, idString, parentNode, pObj),
+				po => new CustomLightArcData(po),
+				(owner, idString, parentNode, pObj, name) => new CustomLightArcRepresentation(owner, idString, parentNode, pObj),
 				(po, self) => new CustomLightArc(po, self)
 			)
 		);
@@ -562,7 +562,7 @@ public static class Objects {
 			if (!pObj.active) continue;
 
 			if (pObj.type == Enums.ColoredCoralNeuronPO) {
-				ColoredCoralNeuron.ColoredCoralNeuronData data = pObj.data as ColoredCoralNeuron.ColoredCoralNeuronData;
+				ColoredCoralNeuronData data = pObj.data as ColoredCoralNeuronData;
 				ColoredCoralNeuron neuron = new ColoredCoralNeuron(self, self.room, data.handlePos.magnitude, pObj.pos, pObj.pos + data.handlePos, pObj);
 				self.room.AddObject(neuron);
 				self.neurons.Add(neuron);

@@ -61,11 +61,7 @@ public class WaterDripSource : UpdatableAndDeletable {
 
 
 	public class WaterDripsRepresentation : ResizeableObjectRepresentation {
-		private GooDripSource.GooDripsData Data {
-			get {
-				return this.pObj.data as GooDripSource.GooDripsData;
-			}
-		}
+		private GooDripSource.GooDripsData Data => this.pObj.data as GooDripSource.GooDripsData;
 
 		public WaterDripsRepresentation(DevUI owner, string IDstring, DevUINode parentNode, PlacedObject pObj, string name) : base(owner, IDstring, parentNode, pObj, name, true) {
 			this.controlPanel = new WaterDripsControlPanel(owner, "Goo_Drips_Panel", this, new Vector2(0f, 100f));
@@ -109,17 +105,9 @@ public class WaterDripSource : UpdatableAndDeletable {
 			}
 
 			public class WaterDripsSlider : Slider {
-				private WaterDripsRepresentation Rep {
-					get {
-						return this.parentNode.parentNode as WaterDripsRepresentation;
-					}
-				}
+				private WaterDripsRepresentation Rep => this.parentNode.parentNode as WaterDripsRepresentation;
 
-				private GooDripSource.GooDripsData Data {
-					get {
-						return this.Rep.pObj.data as GooDripSource.GooDripsData;
-					}
-				}
+				private GooDripSource.GooDripsData Data => this.Rep.pObj.data as GooDripSource.GooDripsData;
 
 				public WaterDripsSlider(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos, string title) : base(owner, IDstring, parentNode, pos, title, false, 110f) {
 				}
