@@ -7,6 +7,7 @@ public static class Effects {
 		On.RoomCamera.ApplyPalette += On_RoomCamera_ApplyPalette;
 		On.Room.Loaded += On_Room_Loaded;
 		On.RoomPreprocessor.DecompressStringToAImaps += a;
+		On.DeathFallGraphic.RoomRequiresDeathFall += On_DeathFallGraphic_RoomRequiresDeathFall;
 		EoCFanSpeed.Initialize();
 		Hypothermia.Initialize();
 		WaterEffects.Initialize();
@@ -17,6 +18,7 @@ public static class Effects {
 		On.RoomCamera.ApplyPalette -= On_RoomCamera_ApplyPalette;
 		On.Room.Loaded -= On_Room_Loaded;
 		On.RoomPreprocessor.DecompressStringToAImaps -= a;
+		On.DeathFallGraphic.RoomRequiresDeathFall -= On_DeathFallGraphic_RoomRequiresDeathFall;
 		EoCFanSpeed.Cleanup();
 		Hypothermia.Cleanup();
 		WaterEffects.Cleanup();
@@ -103,5 +105,13 @@ public static class Effects {
 		if (self.roomSettings.DangerType == Enums.HeatDanger) {
 			self.AddObject(new HeatDanger(self));
 		}
+	}
+
+	private static bool On_DeathFallGraphic_RoomRequiresDeathFall(On.DeathFallGraphic.orig_RoomRequiresDeathFall orig, Room room) {
+		if (room.roomSettings.GetEffectAmount(Enums.NoDeathFallGradient) > 0f) {
+			return false;
+		}
+
+		return orig(room);
 	}
 }

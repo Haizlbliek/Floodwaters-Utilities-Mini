@@ -90,6 +90,7 @@ public static class Enums {
 	public static Enum<RoomSettings.RoomEffect.Type> WaterSludge = new("WaterSludge");
 	public static Enum<RoomSettings.RoomEffect.Type> StraightDeepWater = new("StraightDeepWater");
 	public static Enum<RoomSettings.RoomEffect.Type> Hypothermia = new("Hypothermia");
+	public static Enum<RoomSettings.RoomEffect.Type> NoDeathFallGradient = new("NoDeathFallGradient");
 
 	public static Enum<RoomRain.DangerType> HeatDanger = new("Heat");
 	public static Enum<Creature.DamageType> BurnDamageType = new("Burn");
