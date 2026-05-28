@@ -6,11 +6,15 @@ public class Creatures {
 	public static bool DisableBodyChunkTerrainCollision = false;
 
 	public static void Initialize() {
+		CustomAlternateVariants.Initialize();
+
 		On.BodyChunk.CheckVerticalCollision += On_BodyChunk_CheckVerticalCollision;
 		On.StaticWorld.InitCustomTemplates += On_StaticWorld_InitCustomTemplates;
 	}
 
 	public static void Cleanup() {
+		CustomAlternateVariants.Cleanup();
+
 		On.BodyChunk.CheckVerticalCollision -= On_BodyChunk_CheckVerticalCollision;
 		On.StaticWorld.InitCustomTemplates -= On_StaticWorld_InitCustomTemplates;
 	}
