@@ -472,14 +472,9 @@ public static class Objects {
 
 		if (ObjectRegistry.TryGetDefinition(tp, out var regDef)) {
 			placedObjectRepresentation = regDef.CreateRepresentation(self.owner, repName, self, pObj, name);
-			if (placedObjectRepresentation != null) {
-				self.tempNodes.Add(placedObjectRepresentation);
-				self.subNodes.Add(placedObjectRepresentation);
-				return;
-			}
 		}
 
-		if (tp == Enums.ColoredLanternPO) {
+		else if (tp == Enums.ColoredLanternPO) {
 			placedObjectRepresentation = new ColoredLanternRepresentaion(self.owner, repName, self, pObj, name);
 		}
 
@@ -488,6 +483,8 @@ public static class Objects {
 		}
 
 		if (placedObjectRepresentation != null) {
+			self.tempNodes.Pop();
+			self.subNodes.Pop().ClearSprites();
 			self.tempNodes.Add(placedObjectRepresentation);
 			self.subNodes.Add(placedObjectRepresentation);
 		}
