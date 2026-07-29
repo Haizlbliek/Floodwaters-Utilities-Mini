@@ -3,19 +3,18 @@ namespace Floodwaters.Objects;
 public class LightSource3d : LightSource {
 	public int depth;
 	public int depthRange;
-	protected PropertyCircularMesh mesh;
 
 	public LightSource3d(Vector2 initPos, bool environmentalLight, Color color, UpdatableAndDeletable tiedToObject) : base(initPos, environmentalLight, color, tiedToObject) {
 	}
 
 	public static void InitiateSprites(LightSource3d self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
-		self.mesh = new PropertyCircularMesh("FW3dLightSource", self.ElementName, mpb => {
+		PropertyMesh mesh = new PropertyCircularMesh("FW3dLightSource", self.ElementName, mpb => {
 			mpb.SetInt("_Depth", self.depth);
 			mpb.SetInt("_DepthRange", self.depthRange);
 		}) {
 			Color = self.color,
 		};
-		sLeaser.containers = [ self.mesh ];
+		sLeaser.containers = [ mesh ];
 
 		sLeaser.sprites = new FSprite[rCam.room.water ? 2 : 1];
 		sLeaser.sprites[0] = new CircularSprite(self.ElementName) {
@@ -67,13 +66,16 @@ public class LightSource3d : LightSource {
 		}
 		sLeaser.sprites[0].isVisible = false;
 
-		self.mesh.x = Mathf.Floor(Mathf.Lerp(self.lastPos.x, self.pos.x, timeStacker) - camPos.x) + 0.5f;
-		self.mesh.y = Mathf.Floor(Mathf.Lerp(self.lastPos.y, self.pos.y, timeStacker) - camPos.y) + 0.5f;
-		self.mesh.Color = self.c;
-		self.mesh.Alpha = Mathf.Lerp(self.lastAlpha, self.Alpha, timeStacker) * Mathf.Lerp(1f, rCam.room.Darkness(self.pos), self.affectedByPaletteDarkness) * self.colorAlpha * num;
-		self.mesh.scale = Mathf.Lerp(self.lastRad, self.rad, timeStacker) / 8f;
+		PropertyMesh mesh = sLeaser.containers[0] as PropertyMesh;
+		mesh.x = Mathf.Floor(Mathf.Lerp(self.lastPos.x, self.pos.x, timeStacker) - camPos.x) + 0.5f;
+		mesh.y = Mathf.Floor(Mathf.Lerp(self.lastPos.y, self.pos.y, timeStacker) - camPos.y) + 0.5f;
+		mesh.Color = self.c;
+		mesh.Alpha = Mathf.Lerp(self.lastAlpha, self.Alpha, timeStacker) * Mathf.Lerp(1f, rCam.room.Darkness(self.pos), self.affectedByPaletteDarkness) * self.colorAlpha * num;
+		mesh.scale = Mathf.Lerp(self.lastRad, self.rad, timeStacker) / 8f;
 
-		if (self.slatedForDeletetion || self.room != rCam.room) {
+		if (self.slatedForDeletetion) {
+			mesh.Destroy();
+			mesh.RemoveFromContainer();
 			sLeaser.CleanSpritesAndRemove();
 		}
 	}

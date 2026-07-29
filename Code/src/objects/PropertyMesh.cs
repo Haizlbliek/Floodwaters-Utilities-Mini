@@ -122,9 +122,9 @@ public class PropertyMesh : FContainer {
 		}
 	}
 
-	public override void HandleRemovedFromStage() {
-		this.RemoveChild(this.rendererNode);
-		base.HandleRemovedFromStage();
+	public void Destroy() {
+		this.RemoveAllChildren();
+
 		if (this.renderer != null) UnityEngine.Object.Destroy(this.renderer);
 		if (this.mesh != null) UnityEngine.Object.Destroy(this.mesh);
 	}

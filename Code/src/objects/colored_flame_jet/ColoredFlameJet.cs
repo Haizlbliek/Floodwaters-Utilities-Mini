@@ -13,12 +13,6 @@ public class ColoredFlameJet : FlameJet {
 		On.Watcher.FlameJet.DrawSprites -= DrawSprites;
 	}
 
-	public PropertyMesh jetMesh;
-	public PropertyMesh glowMesh;
-	public PropertyCircularMesh light0;
-	public PropertyCircularMesh light1;
-	public PropertyCircularMesh light2;
-
 	public ColoredFlameJetData data;
 
 	public ColoredFlameJet(Room room, ColoredFlameJetData data) : base(room, data) {
@@ -38,9 +32,9 @@ public class ColoredFlameJet : FlameJet {
 			anchorY = 0.2f
 		};
 
-		jet.light0 = new PropertyCircularMesh("FW3dLightSource", "Futile_White", mpb => jet.SetMPBLight(mpb, false));
-		jet.light1 = new PropertyCircularMesh("FW3dLightSource", "Futile_White", mpb => jet.SetMPBLight(mpb, true));
-		jet.light2 = new PropertyCircularMesh("FW3dLightSource", "Futile_White", mpb => jet.SetMPBLight(mpb, true));
+		PropertyMesh light0 = new PropertyCircularMesh("FW3dLightSource", "Futile_White", mpb => jet.SetMPBLight(mpb, false));
+		PropertyMesh light1 = new PropertyCircularMesh("FW3dLightSource", "Futile_White", mpb => jet.SetMPBLight(mpb, true));
+		PropertyMesh light2 = new PropertyCircularMesh("FW3dLightSource", "Futile_White", mpb => jet.SetMPBLight(mpb, true));
 
 		TriangleMesh.Triangle[] tris = new TriangleMesh.Triangle[jet.nJetPos * 4];
 		for (int i = 0; i < jet.nJetPos - 1; i++) {
@@ -64,10 +58,10 @@ public class ColoredFlameJet : FlameJet {
 			uvs2[num3 + 2] = uvs1[num3 + 2];
 		}
 
-		jet.jetMesh = new PropertyMesh("FWColoredFlameJet", jet.SetMPBColors) { Vertices = vertices, Indices = indices, UVs = uvs1, VertexColors = new Color[vertices.Length] };
-		jet.glowMesh = new PropertyMesh("FWColoredFlameJetGlow", jet.SetMPBColors) { Vertices = [..vertices], Indices = indices, UVs = uvs2, VertexColors = new Color[vertices.Length] };
+		PropertyMesh jetMesh = new PropertyMesh("FWColoredFlameJet", jet.SetMPBColors) { Vertices = vertices, Indices = indices, UVs = uvs1, VertexColors = new Color[vertices.Length] };
+		PropertyMesh glowMesh = new PropertyMesh("FWColoredFlameJetGlow", jet.SetMPBColors) { Vertices = [..vertices], Indices = indices, UVs = uvs2, VertexColors = new Color[vertices.Length] };
 
-		sLeaser.containers = [ jet.jetMesh, jet.light0, jet.light1, jet.light2, jet.glowMesh ];
+		sLeaser.containers = [ jetMesh, light0, light1, light2, glowMesh ];
 
 		jet.AddToContainer(sLeaser, rCam, null);
 	}
@@ -95,12 +89,12 @@ public class ColoredFlameJet : FlameJet {
 			return;
 		}
 
-		rCam.ReturnFContainer("Midground").AddChild(jet.jetMesh);
-		rCam.ReturnFContainer("Bloom").AddChild(jet.glowMesh);
+		rCam.ReturnFContainer("Midground").AddChild(sLeaser.containers[0]);
+		rCam.ReturnFContainer("Bloom").AddChild(sLeaser.containers[4]);
 		FContainer foregroundLights = rCam.ReturnFContainer("ForegroundLights");
-		foregroundLights.AddChild(jet.light0);
-		foregroundLights.AddChild(jet.light1);
-		foregroundLights.AddChild(jet.light2);
+		foregroundLights.AddChild(sLeaser.containers[1]);
+		foregroundLights.AddChild(sLeaser.containers[2]);
+		foregroundLights.AddChild(sLeaser.containers[3]);
 		rCam.ReturnFContainer("GrabShaders").AddChild(sLeaser.sprites[0]);
 	}
 
@@ -110,24 +104,30 @@ public class ColoredFlameJet : FlameJet {
 			return;
 		}
 
+		PropertyMesh jetMesh = sLeaser.containers[0] as PropertyMesh;
+		PropertyMesh light0 = sLeaser.containers[1] as PropertyMesh;
+		PropertyMesh light1 = sLeaser.containers[2] as PropertyMesh;
+		PropertyMesh light2 = sLeaser.containers[3] as PropertyMesh;
+		PropertyMesh glowMesh = sLeaser.containers[4] as PropertyMesh;
+
 		Vector2 vector = Vector2.Lerp(jet.lastPos, jet.pos, timeStacker) - camPos;
 		int num = jet.nJetPos / 2;
-		jet.jetMesh.SetPosition(vector);
-		jet.glowMesh.SetPosition(vector);
+		jetMesh.SetPosition(vector);
+		glowMesh.SetPosition(vector);
 		Vector2 vector2 = Vector2.Lerp(jet.lightPos[1], jet.lightPos[0], timeStacker) * jet.target.magnitude / 500f;
 		Vector2 position = vector + Vector2.Lerp(jet.lastJetPos[num], jet.jetPos[num], timeStacker) + vector2 * (Mathf.Lerp(jet.lastJetScale[num], jet.jetScale[num], timeStacker) * 0.1f);
 		Color color = new Color(jet.data.midColor.r, jet.data.midColor.g, jet.data.midColor.b, Mathf.Min(jet.finalTemperature[num], Mathf.Max(0f, jet.finalTemperature[num] - 0.3f) * 5f)); // Orange
 		color *= Mathf.Lerp(jet.lastRippleMult, jet.rippleMult, timeStacker);
 		float num2 = jet.target.magnitude * 0.12f * (0.5f + jet.finalIntensity[num] * 0.5f);
-		jet.light0.SetPosition(position);
-		jet.light0.Color = color;
-		jet.light0.scale = num2;
-		jet.light1.SetPosition(position);
-		jet.light1.Color = color;
-		jet.light1.scale = num2;
-		jet.light2.SetPosition(position);
-		jet.light2.Color = new Color(jet.data.lightColor.r, jet.data.lightColor.g, jet.data.lightColor.b, color.a);
-		jet.light2.scale = num2 * 0.5f;
+		light0.SetPosition(position);
+		light0.Color = color;
+		light0.scale = num2;
+		light1.SetPosition(position);
+		light1.Color = color;
+		light1.scale = num2;
+		light2.SetPosition(position);
+		light2.Color = new Color(jet.data.lightColor.r, jet.data.lightColor.g, jet.data.lightColor.b, color.a);
+		light2.scale = num2 * 0.5f;
 		sLeaser.sprites[0].SetPosition(vector + Vector2.Lerp(jet.lastJetPos[num], jet.jetPos[num], timeStacker));
 		sLeaser.sprites[0].color = new Color(0f, 0f, 0f, color.a * 0.5f);
 		sLeaser.sprites[0].scale = num2 * 0.5f;
@@ -136,22 +136,26 @@ public class ColoredFlameJet : FlameJet {
 			int num3 = i * 3;
 			Vector2 vector3 = Vector2.Lerp(jet.lastJetPerp[i] * jet.lastJetScale[i], jet.jetPerp[i] * jet.jetScale[i], timeStacker);
 			Vector2 vector4 = Vector2.Lerp(jet.lastJetPos[i], jet.jetPos[i], timeStacker);
-			jet.jetMesh.MoveVertex(num3, vector4 + vector3);
-			jet.jetMesh.MoveVertex(num3 + 1, vector4);
-			jet.jetMesh.MoveVertex(num3 + 2, vector4 - vector3);
-			jet.glowMesh.MoveVertex(num3, vector4 + vector3 * 1.4f);
-			jet.glowMesh.MoveVertex(num3 + 1, vector4);
-			jet.glowMesh.MoveVertex(num3 + 2, vector4 - vector3 * 1.4f);
+			jetMesh.MoveVertex(num3, vector4 + vector3);
+			jetMesh.MoveVertex(num3 + 1, vector4);
+			jetMesh.MoveVertex(num3 + 2, vector4 - vector3);
+			glowMesh.MoveVertex(num3, vector4 + vector3 * 1.4f);
+			glowMesh.MoveVertex(num3 + 1, vector4);
+			glowMesh.MoveVertex(num3 + 2, vector4 - vector3 * 1.4f);
 			Color color2 = new Color(jet.finalIntensity[i], jet.finalTemperature[i], jet.individualOffset, 1f);
-			jet.jetMesh.SetVertexColor(num3, color2);
-			jet.jetMesh.SetVertexColor(num3 + 1, color2);
-			jet.jetMesh.SetVertexColor(num3 + 2, color2);
-			jet.glowMesh.SetVertexColor(num3, color2);
-			jet.glowMesh.SetVertexColor(num3 + 1, color2);
-			jet.glowMesh.SetVertexColor(num3 + 2, color2);
+			jetMesh.SetVertexColor(num3, color2);
+			jetMesh.SetVertexColor(num3 + 1, color2);
+			jetMesh.SetVertexColor(num3 + 2, color2);
+			glowMesh.SetVertexColor(num3, color2);
+			glowMesh.SetVertexColor(num3 + 1, color2);
+			glowMesh.SetVertexColor(num3 + 2, color2);
 		}
 
-		if (jet.slatedForDeletetion || jet.room != rCam.room) {
+		if (jet.slatedForDeletetion) {
+			foreach (PropertyMesh mesh in sLeaser.containers.OfType<PropertyMesh>()) {
+				mesh.Destroy();
+				mesh.RemoveFromContainer();
+			}
 			sLeaser.CleanSpritesAndRemove();
 		}
 

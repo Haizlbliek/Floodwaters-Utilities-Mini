@@ -5,8 +5,6 @@ public class EffectOverride : UpdatableAndDeletable, IDrawable {
 	public readonly PlacedObject pObj;
 	public EffectOverrideData Data => this.pObj.data as EffectOverrideData;
 
-	public PropertySquareMesh mesh;
-
 	public Color[] overrideA = new Color[4];
 	public Color[] overrideB = new Color[4];
 
@@ -20,7 +18,7 @@ public class EffectOverride : UpdatableAndDeletable, IDrawable {
 	public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
 		sLeaser.sprites = [];
 
-		this.mesh = new PropertySquareMesh(this.pObj.type == Enums.EffectOverrideRectPO ? "FWEffectColor" : "FWEffectColorCircle", "Futile_White", mpb => {
+		PropertyMesh mesh = new PropertySquareMesh(this.pObj.type == Enums.EffectOverrideRectPO ? "FWEffectColor" : "FWEffectColorCircle", "Futile_White", mpb => {
 			mpb.SetColor("_OverrideA0", this.overrideA[0]);
 			mpb.SetColor("_OverrideA1", this.overrideA[1]);
 			mpb.SetColor("_OverrideA2", this.overrideA[2]);
@@ -40,10 +38,10 @@ public class EffectOverride : UpdatableAndDeletable, IDrawable {
 		});
 
 		if (this.pObj.type == Enums.EffectOverrideRectPO) {
-			this.mesh.Vertices = [ new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) ];
+			mesh.Vertices = [ new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) ];
 		}
 
-		sLeaser.containers = [ this.mesh ];
+		sLeaser.containers = [ mesh ];
 
 		this.AddToContainer(sLeaser, rCam, null);
 	}
@@ -89,16 +87,19 @@ public class EffectOverride : UpdatableAndDeletable, IDrawable {
 	}
 
 	public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
-		sLeaser.containers[0].SetPosition(this.pObj.pos - camPos);
+		PropertyMesh mesh = sLeaser.containers[0] as PropertyMesh;
+		mesh.SetPosition(this.pObj.pos - camPos);
 		if (this.pObj.type == Enums.EffectOverrideRectPO) {
-			sLeaser.containers[0].scaleX = this.Data.handlePos.x;
-			sLeaser.containers[0].scaleY = this.Data.handlePos.y;
+			mesh.scaleX = this.Data.handlePos.x;
+			mesh.scaleY = this.Data.handlePos.y;
 		}
 		else {
-			sLeaser.containers[0].scale = this.Data.handlePos.magnitude * 2f;
+			mesh.scale = this.Data.handlePos.magnitude * 2f;
 		}
 
-		if (this.slatedForDeletetion || sLeaser.deleteMeNextFrame) {
+		if (this.slatedForDeletetion) {
+			mesh.Destroy();
+			mesh.RemoveFromContainer();
 			sLeaser.CleanSpritesAndRemove();
 		}
 	}
