@@ -1,6 +1,6 @@
 namespace Floodwaters.Objects;
 
-public class CustomLightRodRepresentation : ResizeableObjectRepresentation {
+public class CustomLightRodRepresentation : SnappedResizeableObjectRepresentation {
 	public CustomLightRodData Data => this.pObj.data as CustomLightRodData;
 
 	public ControlPanel panel;

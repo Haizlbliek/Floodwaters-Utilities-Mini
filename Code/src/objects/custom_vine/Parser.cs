@@ -26,10 +26,8 @@ public class Parser {
 			return ParseValue(value);
 		}
 
-		if (value.IndexOf('(') > value.IndexOf(')') || value.IndexOf('(') > value.IndexOf(',')) {
-			int idx = Mathf.Min(value.IndexOf(')'), value.IndexOf(','));
-
-			return ParseValue(value.Substring(0, idx));
+		if (value.StartsWith("(") && value.EndsWith(")")) {
+			return Parse(value.Substring(1, value.Length - 2));
 		}
 
 		string func = value.Substring(0, value.IndexOf('(')).Trim();
@@ -110,6 +108,42 @@ public class Parser {
 				}
 
 				return new ParserValue(Parse(args[0]), Parse(args[1]), Parse(args[2]), args.Length == 4 ? Parse(args[3]) : new ParserValue(1f));
+			}
+
+			case "col32":
+			case "color32":
+			case "rgb32":
+			case "rgba32":
+			case "c32": {
+				if (args.Length < 3 || args.Length > 4) {
+					Plugin.Log("Incorrect color arg amount: " + args.Length);
+					return null;
+				}
+
+				return new ParserValue(
+					new ParserMulti(ParserMulti.Type.Divide, [Parse(args[0]), new ParserValue(255f)]),
+					new ParserMulti(ParserMulti.Type.Divide, [Parse(args[1]), new ParserValue(255f)]),
+					new ParserMulti(ParserMulti.Type.Divide, [Parse(args[2]), new ParserValue(255f)]),
+					args.Length == 4
+						? new ParserMulti(ParserMulti.Type.Divide, [Parse(args[3]), new ParserValue(255f)])
+						: new ParserValue(1f)
+				);
+			}
+
+			case "hex": {
+				if (args.Length != 1) {
+					Plugin.Log("Incorrect hex arg amount: " + args.Length);
+					return null;
+				}
+
+				ParserValue value = Parse(args[0]) as ParserValue;
+				if (value.type != ParserValue.Type.String)
+					throw new InvalidCastException("Hex must be passed a string, not a " + value.type);
+
+				if (!ColorUtility.TryParseHtmlString(value.stringValue, out Color color))
+					throw new InvalidCastException("Hex input is invalid hex: " + value.stringValue);
+
+				return new ParserValue(color.r, color.g, color.b, color.a);
 			}
 
 			case "vec2":

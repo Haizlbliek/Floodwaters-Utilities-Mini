@@ -78,13 +78,7 @@ public class ColoredFlameJetRepresentation : PlacedObjectRepresentation {
 			return "Cosmetic";
 		}
 
-		public string SoundButtonText() {
-			if (this.soundControlsVisible) {
-				return "Hide Sound";
-			}
-
-			return "Show Sound";
-		}
+		public string SoundButtonText() => this.soundControlsVisible ? "Hide Sound" : "Show Sound";
 
 		public void AddPanelElements() {
 			this.size.y = -15f;

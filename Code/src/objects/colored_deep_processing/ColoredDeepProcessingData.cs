@@ -7,6 +7,7 @@ public class ColoredDeepProcessingData : PlacedObject.QuadObjectData {
 	public int toDepth = 30;
 	public float intensity = 0.5f;
 	public Color color = Color.blue;
+	public bool circle = true;
 
 	public ColoredDeepProcessingData(PlacedObject owner) : base(owner) {
 	}
@@ -24,13 +25,14 @@ public class ColoredDeepProcessingData : PlacedObject.QuadObjectData {
 			this.color.r = float.Parse(array[11], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.color.g = float.Parse(array[12], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.color.b = float.Parse(array[13], NumberStyles.Any, CultureInfo.InvariantCulture);
-			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 14);
+			this.circle = array[14] != "square";
+			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 15);
 		}
 		catch (Exception) { }
 	}
 
 	public override string ToString() {
-		string baseString = base.BaseSaveString() + string.Format(CultureInfo.InvariantCulture, "~{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}",
+		string baseString = base.BaseSaveString() + string.Format(CultureInfo.InvariantCulture, "~{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}~{8}",
 			this.panelPos.x,
 			this.panelPos.y,
 			this.fromDepth,
@@ -38,7 +40,8 @@ public class ColoredDeepProcessingData : PlacedObject.QuadObjectData {
 			this.intensity,
 			this.color.r,
 			this.color.g,
-			this.color.b
+			this.color.b,
+			this.circle ? "circle" : "square"
 		);
 		baseString = SaveState.SetCustomData(this, baseString);
 		return SaveUtils.AppendUnrecognizedStringAttrs(baseString, "~", this.unrecognizedAttributes);

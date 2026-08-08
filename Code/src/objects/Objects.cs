@@ -613,9 +613,8 @@ public static class Objects {
 	}
 
 	private static void IL_Player_UpdateAnimation(ILContext il) {
-		ILCursor ilcursor = new ILCursor(il);
-		MoveType moveType = MoveType.After;
-		if (ilcursor.TryGotoNext(moveType, [
+		ILCursor c = new ILCursor(il);
+		if (c.TryGotoNext(MoveType.After, [
 			x => x.MatchLdarg(0),
 			x => x.MatchLdfld<UpdatableAndDeletable>("room"),
 			x => x.MatchLdfld<Room>("climbableVines"),
@@ -624,22 +623,83 @@ public static class Objects {
 			x => x.MatchLdarg(0),
 			x => x.MatchCallOrCallvirt<ClimbableVinesSystem>("VineBeingClimbedOn"),
 		])) {
-			ilcursor.Emit(OpCodes.Ldarg_0);
-			ilcursor.EmitDelegate(delegate (Player self) {
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate(delegate (Player self) {
 				Room room = self.room;
 				ClimbableVinesSystem climbableVinesSystem = room?.climbableVines;
-				if (climbableVinesSystem != null) {
-					ClimbableVinesSystem.VinePosition vinePos = self.vinePos;
-					if (vinePos != null && climbableVinesSystem.vines.Count > 0) {
-						if (climbableVinesSystem.GetVineObject(vinePos) is CustomVineSystem.CustomVineClimbable customVine && customVine.JumpAllowed()) {
-							self.canJump = 5;
-						}
-					}
+				if (climbableVinesSystem == null) {
+					return;
 				}
+				ClimbableVinesSystem.VinePosition vinePos = self.vinePos;
+				if (vinePos == null || climbableVinesSystem.vines.Count <= 0) {
+					return;
+				}
+
+				if (climbableVinesSystem.GetVineObject(vinePos) is not CustomVineSystem.CustomVineClimbable customVine || !customVine.JumpAllowed()) {
+					return;
+				}
+
+				self.canJump = 5;
 			});
 		}
 		else {
 			Plugin.Log("Failed to IL hook player UpdateAnimation");
+		}
+
+		c = new ILCursor(il);
+		if (c.TryGotoNext(MoveType.After,
+			x => x.MatchCallOrCallvirt<ClimbableVinesSystem>(nameof(ClimbableVinesSystem.PushAtVine)), 
+			x => x.MatchLdarg(0),
+			x => x.MatchLdcI4(10),
+			x => x.MatchStfld<Player>(nameof(Player.vineGrabDelay))))
+		{
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<Action<Player>>((self) =>
+			{
+				Room room = self.room;
+				ClimbableVinesSystem climbableVinesSystem = room?.climbableVines;
+				if (climbableVinesSystem == null) {
+					return;
+				}
+				ClimbableVinesSystem.VinePosition vinePos = self.vinePos;
+				if (vinePos == null || climbableVinesSystem.vines.Count <= 0) {
+					return;
+				}
+
+				if (climbableVinesSystem.GetVineObject(vinePos) is not CustomVineSystem.CustomVineClimbable customVine || !customVine.JumpAllowed() || !customVine.JumpVelocity()) {
+					return;
+				}
+
+				self.canJump = 5;
+
+				Vector2 vineVelocity = Vector2.zero;
+				float totalWeight = 0f;
+
+				for (int i = 0; i < customVine.TotalPositions(); i++) {
+					float distance = (customVine.Pos(i) - self.firstChunk.pos).magnitude;
+					float weight = 0f;
+
+					if (distance <= 20f) {
+						weight = 1.75f;
+					} else {
+						float extraDistance = distance - 20f;
+						int steps = Mathf.FloorToInt(extraDistance / 20f) + 1;
+
+						weight = 1.75f * Mathf.Pow(0.5f, steps);
+					}
+
+					vineVelocity += customVine.Vel(i) * weight;
+					totalWeight += weight;
+				}
+
+				if (totalWeight > 0f) {
+					vineVelocity /= totalWeight;
+				}
+
+				self.firstChunk.vel += vineVelocity * 2f;
+				self.firstChunk.vel.y = 3f * vineVelocity.magnitude;
+
+			});
 		}
 	}
 

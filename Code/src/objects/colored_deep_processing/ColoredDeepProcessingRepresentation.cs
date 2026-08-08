@@ -5,6 +5,8 @@ public class ColoredDeepProcessingRepresentation : QuadObjectRepresentation {
 	private readonly ColoredDeepProcessingPanel controlPanel;
 	private readonly int lineSprite;
 
+	private ColoredDeepProcessingData Data => this.pObj.data as ColoredDeepProcessingData;
+
 	public ColoredDeepProcessingRepresentation(DevUI owner, string IDstring, DevUINode parentNode, PlacedObject pObj, string name) : base(owner, IDstring, parentNode, pObj, name) {
 		this.controlPanel = new ColoredDeepProcessingPanel(owner, "Deep_Processing_Panel", this, new Vector2(0f, 100f));
 		this.subNodes.Add(this.controlPanel);
@@ -26,18 +28,31 @@ public class ColoredDeepProcessingRepresentation : QuadObjectRepresentation {
 		base.MoveSprite(this.lineSprite, this.absPos);
 		this.fSprites[this.lineSprite].scaleY = this.controlPanel.pos.magnitude;
 		this.fSprites[this.lineSprite].rotation = Custom.AimFromOneVectorToAnother(this.absPos, this.controlPanel.absPos);
-		(this.pObj.data as ColoredDeepProcessingData).panelPos = this.controlPanel.pos;
+		this.Data.panelPos = this.controlPanel.pos;
 	}
 
 
-	public class ColoredDeepProcessingPanel : Panel {
-		public ColoredDeepProcessingPanel(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos) : base(owner, IDstring, parentNode, pos, new Vector2(250f, 125f), "Colored Deep Processing") {
-			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Color_R_Slider", this, new Vector2(5f, 105f), "Red: "));
-			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Color_G_Slider", this, new Vector2(5f, 85f), "Green: "));
-			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Color_B_Slider", this, new Vector2(5f, 65f), "Blue: "));
-			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "From_Depth_Slider", this, new Vector2(5f, 45f), "From Depth: "));
-			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "To_Depth_Slider", this, new Vector2(5f, 25f), "To Depth: "));
-			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Intensity_Slider", this, new Vector2(5f, 5f), "Intensity: "));
+	public class ColoredDeepProcessingPanel : Panel, IDevUISignals {
+		private ColoredDeepProcessingData Data => (this.parentNode as ColoredDeepProcessingRepresentation).Data;
+
+		public string CircleButtonText => this.Data.circle ? "Circle" : "Rect";
+
+		public ColoredDeepProcessingPanel(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos) : base(owner, IDstring, parentNode, pos, new Vector2(250f, 145f), "Colored Deep Processing") {
+			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Color_R_Slider", this, new Vector2(5f, 125f), "Red: "));
+			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Color_G_Slider", this, new Vector2(5f, 105f), "Green: "));
+			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Color_B_Slider", this, new Vector2(5f, 85f), "Blue: "));
+			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "From_Depth_Slider", this, new Vector2(5f, 65f), "From Depth: "));
+			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "To_Depth_Slider", this, new Vector2(5f, 45f), "To Depth: "));
+			this.subNodes.Add(new ColoredDeepProcessSlider(owner, "Intensity_Slider", this, new Vector2(5f, 25f), "Intensity: "));
+
+			this.subNodes.Add(new Button(this.owner, "Circle", this, new Vector2(5f, 5f), 44f, this.CircleButtonText));
+		}
+
+		public void Signal(DevUISignalType type, DevUINode sender, string message) {
+			if (sender.IDstring == "Circle") {
+				this.Data.circle = !this.Data.circle;
+				(sender as Button).Text = this.CircleButtonText;
+			}
 		}
 
 		public class ColoredDeepProcessSlider : Slider {

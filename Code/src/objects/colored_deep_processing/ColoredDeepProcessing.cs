@@ -33,6 +33,7 @@ public class ColoredDeepProcessing : UpdatableAndDeletable, IDrawable {
 				mpb.SetFloat("_ToDepth", this.Data.toDepth / 30f);
 				mpb.SetFloat("_Power", this.power);
 				mpb.SetFloat("_Intensity", this.Data.intensity);
+				mpb.SetInt("_Circle", this.Data.circle ? 1 : 0);
 			}) {
 				Vertices = new Vector2[4],
 				Indices = [0, 1, 2, 0, 2, 3],

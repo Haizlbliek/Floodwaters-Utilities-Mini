@@ -377,6 +377,10 @@ public class CustomVineSystem : UpdatableAndDeletable, IDrawable {
 		return this.vinePoints[vine.index][index].pos;
 	}
 
+	public Vector2 Vel(CustomVineClimbable vine, int index) {
+		return this.vinePoints[vine.index][index].vel;
+	}
+
 	public void Push(CustomVineClimbable vine, int index, Vector2 movement) {
 		this.vinePoints[vine.index][index].vel += movement;
 	}
@@ -453,8 +457,16 @@ public class CustomVineSystem : UpdatableAndDeletable, IDrawable {
 			return this.preset.jumpable;
 		}
 
+		public bool JumpVelocity() {
+			return this.preset.jumpvelocity;
+		}
+
 		public Vector2 Pos(int index) {
 			return this.owner.Pos(this, index);
+		}
+
+		public Vector2 Vel(int index) {
+			return this.owner.Vel(this, index);
 		}
 
 		public void Push(int index, Vector2 movement) {

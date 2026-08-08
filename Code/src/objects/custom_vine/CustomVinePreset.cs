@@ -41,6 +41,7 @@ public class CustomVinePreset {
 	public float textureLoopVertexCount = 2f;
 	public bool climbable = true;
 	public bool jumpable = true;
+	public bool jumpvelocity = true;
 	public string shader = "";
 	public List<Child> children = [];
 
@@ -115,6 +116,10 @@ public class CustomVinePreset {
 			}
 			case "jumpable": {
 				this.jumpable = bool.Parse(value);
+				break;
+			}
+			case "jumpvelocity": {
+				this.jumpvelocity = bool.Parse(value);
 				break;
 			}
 			case "rad":
