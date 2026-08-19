@@ -17,8 +17,7 @@ public interface IAbstractPlaceableDefinition : IPlaceableDefinition {
 }
 
 public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject : UpdatableAndDeletable {
-	public Enums.Enum<PlacedObject.Type> PlacedTypeEnum { get; }
-	public PlacedObject.Type PlacedType => this.PlacedTypeEnum;
+	public PlacedObject.Type PlacedType { get; }
 
 	public Func<PlacedObject, PlacedObject.Data> CreateDataFunc { get; }
 	public Func<PlacedObject, Room, TObject> CreateObjectFunc { get; }
@@ -31,12 +30,12 @@ public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject :
 	public bool FirstTimeOnly = false;
 
 	public PlaceableDefinition(
-		Enums.Enum<PlacedObject.Type> placedType,
+		PlacedObject.Type placedType,
 		Func<PlacedObject, PlacedObject.Data> createDataFunc,
 		Func<DevUI, string, DevUINode, PlacedObject, string, PlacedObjectRepresentation> createRepresentationFunc,
 		Func<PlacedObject, Room, TObject> createObjectFunc
 	) {
-		this.PlacedTypeEnum = placedType;
+		this.PlacedType = placedType;
 		this.CreateDataFunc = createDataFunc;
 		this.CreateObjectFunc = createObjectFunc;
 		this.CreateRepresentationFunc = createRepresentationFunc;
@@ -73,8 +72,7 @@ public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject :
 
 
 public class AbstractPlaceableDefinition<TObject, TAbstractObject> : PlaceableDefinition<TObject>, IAbstractPlaceableDefinition where TObject : PhysicalObject where TAbstractObject : AbstractPhysicalObject {
-	public Enums.Enum<AbstractPhysicalObject.AbstractObjectType> AbstractTypeEnum { get; }
-	public AbstractPhysicalObject.AbstractObjectType AbstractObjectType => this.AbstractTypeEnum;
+	public AbstractPhysicalObject.AbstractObjectType AbstractObjectType { get; }
 
 	public Func<PlacedObject, Room, TAbstractObject> CreateAbstractObjectFunc { get; }
 	public Func<TAbstractObject, TObject> CreateRealizedObjectFunc { get; }
@@ -82,13 +80,13 @@ public class AbstractPlaceableDefinition<TObject, TAbstractObject> : PlaceableDe
 	public new Action<AbstractPlaceableDefinition<TObject, TAbstractObject>, Room, PlacedObject, bool> OnRoomLoadedAction { get; set; }
 
 	public AbstractPlaceableDefinition(
-		Enums.Enum<PlacedObject.Type> placedType, Enums.Enum<AbstractPhysicalObject.AbstractObjectType> abstractType,
+		PlacedObject.Type placedType, AbstractPhysicalObject.AbstractObjectType abstractType,
 		Func<PlacedObject, PlacedObject.Data> createDataFunc,
 		Func<DevUI, string, DevUINode, PlacedObject, string, PlacedObjectRepresentation> createRepresentationFunc,
 		Func<PlacedObject, Room, TAbstractObject> createAbstractObjectFunc,
 		Func<TAbstractObject, TObject> createRealizedObjectFunc
 	) : base(placedType, createDataFunc, createRepresentationFunc, null) {
-		this.AbstractTypeEnum = abstractType;
+		this.AbstractObjectType = abstractType;
 		this.CreateAbstractObjectFunc = createAbstractObjectFunc;
 		this.CreateRealizedObjectFunc = createRealizedObjectFunc;
 		this.FirstTimeOnly = true;
