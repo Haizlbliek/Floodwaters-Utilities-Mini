@@ -5,6 +5,8 @@ public class EnumRegistry<R> where R : EnumRegistry<R> {
 	private static readonly List<Action> CoreUnregister = [];
 
 	public static void Initialize() {
+		System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(R).TypeHandle);
+
 		CoreRegister.ForEach(a => a());
 	}
 
@@ -16,10 +18,10 @@ public class EnumRegistry<R> where R : EnumRegistry<R> {
 		return Enum<T>.Enums.Contains(t);
 	}
 
-	public class Enum<T> where T : ExtEnum<T> {
+	public class Enum<T> : IEnumWrapper<T> where T : ExtEnum<T> {
 		public static readonly HashSet<T> Enums = [];
 
-		public T Value;
+		public T Value { get; private set; }
 		private bool existedBefore;
 		private readonly string _id;
 

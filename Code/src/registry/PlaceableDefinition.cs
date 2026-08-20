@@ -17,7 +17,8 @@ public interface IAbstractPlaceableDefinition : IPlaceableDefinition {
 }
 
 public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject : UpdatableAndDeletable {
-	public PlacedObject.Type PlacedType { get; }
+	public IEnumWrapper<PlacedObject.Type> PlacedTypeEnum { get; }
+	public PlacedObject.Type PlacedType => this.PlacedTypeEnum?.Value;
 
 	public Func<PlacedObject, PlacedObject.Data> CreateDataFunc { get; }
 	public Func<PlacedObject, Room, TObject> CreateObjectFunc { get; }
@@ -30,12 +31,12 @@ public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject :
 	public bool FirstTimeOnly = false;
 
 	public PlaceableDefinition(
-		PlacedObject.Type placedType,
+		IEnumWrapper<PlacedObject.Type> placedType,
 		Func<PlacedObject, PlacedObject.Data> createDataFunc,
 		Func<DevUI, string, DevUINode, PlacedObject, string, PlacedObjectRepresentation> createRepresentationFunc,
 		Func<PlacedObject, Room, TObject> createObjectFunc
 	) {
-		this.PlacedType = placedType;
+		this.PlacedTypeEnum = placedType;
 		this.CreateDataFunc = createDataFunc;
 		this.CreateObjectFunc = createObjectFunc;
 		this.CreateRepresentationFunc = createRepresentationFunc;
@@ -72,7 +73,8 @@ public class PlaceableDefinition<TObject> : IPlaceableDefinition where TObject :
 
 
 public class AbstractPlaceableDefinition<TObject, TAbstractObject> : PlaceableDefinition<TObject>, IAbstractPlaceableDefinition where TObject : PhysicalObject where TAbstractObject : AbstractPhysicalObject {
-	public AbstractPhysicalObject.AbstractObjectType AbstractObjectType { get; }
+	public IEnumWrapper<AbstractPhysicalObject.AbstractObjectType> AbstractTypeEnum { get; }
+	public AbstractPhysicalObject.AbstractObjectType AbstractObjectType => this.AbstractTypeEnum?.Value;
 
 	public Func<PlacedObject, Room, TAbstractObject> CreateAbstractObjectFunc { get; }
 	public Func<TAbstractObject, TObject> CreateRealizedObjectFunc { get; }
@@ -80,13 +82,13 @@ public class AbstractPlaceableDefinition<TObject, TAbstractObject> : PlaceableDe
 	public new Action<AbstractPlaceableDefinition<TObject, TAbstractObject>, Room, PlacedObject, bool> OnRoomLoadedAction { get; set; }
 
 	public AbstractPlaceableDefinition(
-		PlacedObject.Type placedType, AbstractPhysicalObject.AbstractObjectType abstractType,
+		IEnumWrapper<PlacedObject.Type> placedType, IEnumWrapper<AbstractPhysicalObject.AbstractObjectType> abstractType,
 		Func<PlacedObject, PlacedObject.Data> createDataFunc,
 		Func<DevUI, string, DevUINode, PlacedObject, string, PlacedObjectRepresentation> createRepresentationFunc,
 		Func<PlacedObject, Room, TAbstractObject> createAbstractObjectFunc,
 		Func<TAbstractObject, TObject> createRealizedObjectFunc
 	) : base(placedType, createDataFunc, createRepresentationFunc, null) {
-		this.AbstractObjectType = abstractType;
+		this.AbstractTypeEnum = abstractType;
 		this.CreateAbstractObjectFunc = createAbstractObjectFunc;
 		this.CreateRealizedObjectFunc = createRealizedObjectFunc;
 		this.FirstTimeOnly = true;
