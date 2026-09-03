@@ -1,14 +1,22 @@
 namespace Floodwaters.Creatures;
 
 public static class CustomAlternateVariants {
+	public static readonly ConditionalWeakTable<AbstractCreature, CustomFlags> customFlags = new ConditionalWeakTable<AbstractCreature, CustomFlags>();
+
 	public static void Initialize() {
 		On.VultureGraphics.ctor += On_VultureGraphics_ctor;
 		On.VultureFeather.CurrentColor += On_VultureFeather_CurrentColor;
+
+		On.Lizard.ctor += On_Lizard_ctor;
+		On.AbstractCreature.setCustomFlags += On_AbstractCreature_setCustomFlags;
 	}
 
 	public static void Cleanup() {
 		On.VultureGraphics.ctor -= On_VultureGraphics_ctor;
 		On.VultureFeather.CurrentColor -= On_VultureFeather_CurrentColor;
+
+		On.Lizard.ctor -= On_Lizard_ctor;
+		On.AbstractCreature.setCustomFlags -= On_AbstractCreature_setCustomFlags;
 	}
 
 	private static void On_VultureGraphics_ctor(On.VultureGraphics.orig_ctor orig, VultureGraphics self, Vulture ow) {
@@ -35,5 +43,34 @@ public static class CustomAlternateVariants {
 		}
 
 		return orig(self);
+	}
+
+	private static void On_Lizard_ctor(On.Lizard.orig_ctor orig, Lizard self, AbstractCreature abstractCreature, World world) {
+		orig(self, abstractCreature, world);
+
+		if (self.abstractCreature.creatureTemplate.type == CreatureTemplate.Type.CyanLizard) {
+			if (self.abstractCreature.superSizeMe) {
+				self.effectColor = Custom.HSL2RGB(Custom.WrappedRandomVariation(0.32f, 0.1f, 0.6f), 1f, Custom.ClampedRandomVariation(0.5f, 0.15f, 0.1f));
+			}
+		}
+
+		if (customFlags.TryGetValue(self.abstractCreature, out CustomFlags flags)) {
+			if (flags.pink) {
+				self.effectColor = Custom.HSL2RGB(Custom.WrappedRandomVariation(0.87f, 0.1f, 0.6f), 1f, Custom.ClampedRandomVariation(0.5f, 0.15f, 0.1f));
+			}
+		}
+	}
+
+	private static void On_AbstractCreature_setCustomFlags(On.AbstractCreature.orig_setCustomFlags orig, AbstractCreature self) {
+		orig(self);
+
+		if (self.unrecognizedFlags.Contains("Pink")) {
+			self.unrecognizedFlags.Remove("Pink");
+			customFlags.GetOrCreateValue(self).pink = true;
+		}
+	}
+
+	public class CustomFlags {
+		public bool pink;
 	}
 }
