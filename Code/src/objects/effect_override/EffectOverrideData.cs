@@ -24,14 +24,14 @@ public class EffectOverrideData : PlacedObject.ResizableObjectData {
 			string[] array = Regex.Split(s, "~");
 			this.panelPos.x = float.Parse(array[2]);
 			this.panelPos.y = float.Parse(array[3]);
-			this.colorA = int.Parse(array[4]);
-			this.colorB = int.Parse(array[5]);
-			this.modifyA.x = float.Parse(array[6]);
-			this.modifyA.y = float.Parse(array[7]);
-			this.modifyA.z = float.Parse(array[8]);
-			this.modifyB.x = float.Parse(array[9]);
-			this.modifyB.y = float.Parse(array[10]);
-			this.modifyB.z = float.Parse(array[11]);
+			this.colorB = int.Parse(array[4]);
+			this.colorA = int.Parse(array[5]);
+			this.modifyB.x = float.Parse(array[6]);
+			this.modifyB.y = float.Parse(array[7]);
+			this.modifyB.z = float.Parse(array[8]);
+			this.modifyA.x = float.Parse(array[9]);
+			this.modifyA.y = float.Parse(array[10]);
+			this.modifyA.z = float.Parse(array[11]);
 			this.fromDepth = int.Parse(array[12]);
 			this.toDepth = int.Parse(array[13]);
 			this.gradient = float.Parse(array[14]);
@@ -46,14 +46,14 @@ public class EffectOverrideData : PlacedObject.ResizableObjectData {
 			this.handlePos.y,
 			this.panelPos.x,
 			this.panelPos.y,
-			this.colorA,
 			this.colorB,
-			this.modifyA.x,
-			this.modifyA.y,
-			this.modifyA.z,
+			this.colorA,
 			this.modifyB.x,
 			this.modifyB.y,
 			this.modifyB.z,
+			this.modifyA.x,
+			this.modifyA.y,
+			this.modifyA.z,
 			this.fromDepth,
 			this.toDepth,
 			this.gradient
