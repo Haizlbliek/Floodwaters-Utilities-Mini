@@ -402,10 +402,19 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<SmokePipe>(
-				Enums.SmokePipe,
+				Enums.SmokePipePO,
 				pObj => new SmokePipeData(pObj),
 				(owner, idString, parentNode, pObj, name) => new SmokePipeRepresentation(owner, idString, parentNode, pObj, name),
 				(pObj, self) => new SmokePipe(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<CloverDodder>(
+				Enums.CloverDodderPO,
+				pObj => new CloverDodderData(pObj),
+				(owner, idString, parentNode, pObj, name) => new CloverDodderRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new CloverDodder(self, pObj)
 			)
 		);
 	}

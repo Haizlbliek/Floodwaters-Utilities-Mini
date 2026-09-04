@@ -36,7 +36,8 @@ public class Enums : EnumRegistry<Enums> {
 	public static Enum<PlacedObject.Type> ColoredFlameJetPO = new("ColoredFlameJet");
 	public static Enum<PlacedObject.Type> EffectOverrideRectPO = new("EffectOverrideRect");
 	public static Enum<PlacedObject.Type> EffectOverrideCirclePO = new("EffectOverrideCircle");
-	public static Enum<PlacedObject.Type> SmokePipe = new("SmokePipe");
+	public static Enum<PlacedObject.Type> SmokePipePO = new("SmokePipe");
+	public static Enum<PlacedObject.Type> CloverDodderPO = new("CloverDodder");
 
 	public static Enum<ObjectsPage.DevObjectCategories> FloodwatersCategory = new("Floodwaters");
 	public static Enum<RoomSettingsPage.DevEffectsCategories> FloodwatersEffectCategory = new("Floodwaters");
