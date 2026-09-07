@@ -48,17 +48,17 @@ public class CloverDodderRepresentation : ResizeableObjectRepresentation {
 
 			CloverDodderData data = (this.parentNode as CloverDodderRepresentation).Data;
 
-			float b = data.colorType == CloverDodderData.ColorType.Custom ? 65f : 5f;
-			this.subNodes.Add(new Button(this.owner, "Color_Button", this, new Vector2(5f, b + 60f), 100f, data.colorType.ToString()));
-			this.subNodes.Add(new CloverDodderSlider(this.owner, "PrimaryDensity_Slider", this, new Vector2(5f, b + 40f), "Primary Density:"));
-			this.subNodes.Add(new CloverDodderSlider(this.owner, "SecondaryDensity_Slider", this, new Vector2(5f, b + 20f), "Secondary Density:"));
-			this.subNodes.Add(new CloverDodderSlider(this.owner, "Stickiness_Slider", this, new Vector2(5f, b), "Stickiness:"));
+			this.subNodes.Add(new Button(this.owner, "Color_Button", this, new Vector2(5f, data.colorType == CloverDodderData.ColorType.Custom ? 145f : 85f), 100f, data.colorType.ToString()));
 			if (data.colorType == CloverDodderData.ColorType.Custom) {
-				this.subNodes.Add(new CloverDodderSlider(this.owner, "Red_Slider", this, new Vector2(5f, 45f), "Red:"));
-				this.subNodes.Add(new CloverDodderSlider(this.owner, "Green_Slider", this, new Vector2(5f, 25f), "Green:"));
-				this.subNodes.Add(new CloverDodderSlider(this.owner, "Blue_Slider", this, new Vector2(5f, 5f), "Blue:"));
+				this.subNodes.Add(new CloverDodderSlider(this.owner, "Red_Slider", this, new Vector2(5f, 125f), "Red:"));
+				this.subNodes.Add(new CloverDodderSlider(this.owner, "Green_Slider", this, new Vector2(5f, 105f), "Green:"));
+				this.subNodes.Add(new CloverDodderSlider(this.owner, "Blue_Slider", this, new Vector2(5f, 85f), "Blue:"));
 			}
-			this.size.y = b + 80f;
+			this.subNodes.Add(new CloverDodderSlider(this.owner, "PrimaryDensity_Slider", this, new Vector2(5f, 65f), "Primary Density:"));
+			this.subNodes.Add(new CloverDodderSlider(this.owner, "SecondaryDensity_Slider", this, new Vector2(5f, 45f), "Secondary Density:"));
+			this.subNodes.Add(new CloverDodderSlider(this.owner, "Stickiness_Slider", this, new Vector2(5f, 25f), "Stickiness:"));
+			this.subNodes.Add(new CloverDodderSlider(this.owner, "Volume_Slider", this, new Vector2(5f, 5f), "Volume:"));
+			this.size.y = (data.colorType == CloverDodderData.ColorType.Custom ? 60f : 0f) + 105f;
 		}
 
 		public void Signal(DevUISignalType type, DevUINode sender, string message) {
@@ -91,15 +91,19 @@ public class CloverDodderRepresentation : ResizeableObjectRepresentation {
 				float num = 0f;
 				if (this.IDstring == "PrimaryDensity_Slider") {
 					num = this.Data.primaryDensity;
-					base.NumberText = num.ToString("F2") + "%";
+					base.NumberText = (num * 100f).ToString("F2") + "%";
 				}
 				else if (this.IDstring == "SecondaryDensity_Slider") {
 					num = this.Data.secondaryDensity;
-					base.NumberText = num.ToString("F2") + "%";
+					base.NumberText = (num * 100f).ToString("F2") + "%";
 				}
 				else if (this.IDstring == "Stickiness_Slider") {
 					num = this.Data.stickiness;
-					base.NumberText = num.ToString("F2") + "%";
+					base.NumberText = (num * 100f).ToString("F2") + "%";
+				}
+				else if (this.IDstring == "Volume_Slider") {
+					num = this.Data.volume;
+					base.NumberText = (num * 100f).ToString("F2") + "%";
 				}
 				else if (this.IDstring == "Red_Slider") {
 					num = this.Data.color.r;
@@ -127,6 +131,9 @@ public class CloverDodderRepresentation : ResizeableObjectRepresentation {
 				}
 				else if (this.IDstring == "Stickiness_Slider") {
 					this.Data.stickiness = nubPos;
+				}
+				else if (this.IDstring == "Volume_Slider") {
+					this.Data.volume = nubPos;
 				}
 				else if (this.IDstring == "Red_Slider") {
 					this.Data.color.r = nubPos;

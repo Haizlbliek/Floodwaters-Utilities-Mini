@@ -171,7 +171,7 @@ public class CloverDodder : UpdatableAndDeletable, IDrawable {
 					}
 
 					if (stickies > 0 && Random.value < stickies / 60f) {
-						this.room.PlaySound(SoundID.Swollen_Water_Nut_Terrain_Impact, chunk);
+						this.room.PlaySound(SoundID.Swollen_Water_Nut_Terrain_Impact, chunk, false, this.Data.volume, 1f);
 					}
 				}
 			}

@@ -6,6 +6,7 @@ public class CloverDodderData : PlacedObject.ResizableObjectData {
 	public float primaryDensity = 0.8f;
 	public float secondaryDensity = 0.7f;
 	public float stickiness = 0.5f;
+	public float volume = 1f;
 	public Color color;
 
 
@@ -26,12 +27,13 @@ public class CloverDodderData : PlacedObject.ResizableObjectData {
 			this.color.r = float.Parse(array[8], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.color.g = float.Parse(array[9], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.color.b = float.Parse(array[10], NumberStyles.Any, CultureInfo.InvariantCulture);
-			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 11);
+			this.volume = float.Parse(array[11], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 12);
 		} catch (Exception) {}
 	}
 
 	public override string ToString() {
-		string text = base.BaseSaveString() + string.Format(CultureInfo.InvariantCulture, "~{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}~{8}",
+		string text = base.BaseSaveString() + string.Format(CultureInfo.InvariantCulture, "~{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}~{8}~{9}",
 			this.panelPos.x,
 			this.panelPos.y,
 			this.colorType,
@@ -40,7 +42,8 @@ public class CloverDodderData : PlacedObject.ResizableObjectData {
 			this.stickiness,
 			this.color.r,
 			this.color.g,
-			this.color.b
+			this.color.b,
+			this.volume
 		);
 		text = SaveState.SetCustomData(this, text);
 		return SaveUtils.AppendUnrecognizedStringAttrs(text, "~", this.unrecognizedAttributes);
