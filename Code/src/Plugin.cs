@@ -1,5 +1,6 @@
 using System.Security.Permissions;
 using BepInEx;
+using Floodwaters.Objects;
 
 #pragma warning disable CS0618
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -48,6 +49,8 @@ public class Plugin : BaseUnityPlugin {
 		Creatures.Creatures.Initialize();
 		Assets.Initialize();
 		AcronymFix.Initialize();
+		CustomSaveData.Initialize();
+		FWDevUI.Initialize();
 
 		HasInitialized = true;
 	}
@@ -59,6 +62,8 @@ public class Plugin : BaseUnityPlugin {
 		Creatures.Creatures.Cleanup();
 		Assets.Cleanup();
 		AcronymFix.Cleanup();
+		CustomSaveData.Cleanup();
+		FWDevUI.Cleanup();
 
 		HasInitialized = false;
 	}

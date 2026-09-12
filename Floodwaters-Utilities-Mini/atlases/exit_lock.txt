@@ -1,0 +1,32 @@
+{
+	"frames": {
+		"lock.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 25,
+				"h": 25
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 25,
+				"h": 25
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 25,
+				"h": 25
+			}
+		}
+	},
+	"meta": {
+		"app": "https://goofybox-studios.github.io/tools/texture_packer",
+		"image": "exit_lock",
+		"size": {
+			"w": 25,
+			"h": 25
+		}
+	}
+}

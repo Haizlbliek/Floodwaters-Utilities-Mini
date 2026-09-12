@@ -25,11 +25,13 @@ public static class Objects {
 		On.RainWorldGame.RestartGame += On_RainWorldGame_RestartGame;
 		On.LightSource.InitiateSprites += On_LightSource_InitiateSprites;
 		On.LightSource.DrawSprites += On_LightSource_DrawSprites;
+		On.ShortcutGraphics.GenerateSprites += On_ShortcutGraphics_GenerateSprites;
 
 		VerticalGateManager.Initialize();
 		ColoredFlameJet.Initialize();
 
 		Futile.atlasManager.LoadAtlas("atlases/Floodwaters-Mini");
+		Futile.atlasManager.LoadAtlas("atlases/exit_lock");
 	}
 
 	public static void Cleanup() {
@@ -51,11 +53,13 @@ public static class Objects {
 		On.RainWorldGame.RestartGame -= On_RainWorldGame_RestartGame;
 		On.LightSource.InitiateSprites -= On_LightSource_InitiateSprites;
 		On.LightSource.DrawSprites -= On_LightSource_DrawSprites;
+		On.ShortcutGraphics.GenerateSprites -= On_ShortcutGraphics_GenerateSprites;
 
 		VerticalGateManager.Cleanup();
 		ColoredFlameJet.Cleanup();
 
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
+		Futile.atlasManager.UnloadAtlas("atlases/exit_lock");
 	}
 
 	private static void RegisterPlaceableObjects() {
@@ -417,6 +421,33 @@ public static class Objects {
 				(pObj, self) => new CloverDodder(self, pObj)
 			)
 		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<ExitLock>(
+				Enums.ExitLockPO,
+				pObj => new ExitLockData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ExitLockRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new ExitLock(self, pObj)
+			)
+		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<ExitKey>(
+				Enums.ExitKeyPO,
+				pObj => new ExitKeyData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ExitKeyRepresentation(owner, idString, parentNode, pObj, name),
+				null
+			) {
+				OnRoomLoadedAction = (self, room, pObj, firstTimeRealized) => {
+					ExitKeyData data = pObj.data as ExitKeyData;
+					if (data.saveSpecific ? room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey("", data.key) : room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey(room.world.name, data.key)) {
+						room.AddObject(new ExitKey.TokenStalk(room, pObj.pos, pObj.pos + data.handlePos, null));
+					} else {
+						room.AddObject(new ExitKey(room, pObj));
+					}
+				}
+			}
+		);
 	}
 
 
@@ -767,5 +798,33 @@ public static class Objects {
 
 		orig(self, sLeaser, rCam, timeStacker, camPos);
 		rCam.room.darkenLightsFactor = darken;
+	}
+
+	private static void On_ShortcutGraphics_GenerateSprites(On.ShortcutGraphics.orig_GenerateSprites orig, ShortcutGraphics self) {
+		orig(self);
+
+		if (self.room == null)
+			return;
+
+		foreach (PlacedObject pObj in self.room.roomSettings.placedObjects) {
+			if (pObj.type != Enums.ExitLockPO)
+				continue;
+
+			ExitLockData data = pObj.data as ExitLockData;
+
+			if (!data.ignoreRegionSpecific && Custom.rainWorld.progression.miscProgressionData.HasRegionExitKey(self.room.world.name, data.key))
+				continue;
+
+			if (!data.ignoreSaveSpecific && Custom.rainWorld.progression.miscProgressionData.HasRegionExitKey("", data.key))
+				continue;
+
+			for (int i = 0; i < self.room.shortcuts.Length; i++) {
+				ShortcutData shortcut = self.room.shortcuts[i];
+				if (shortcut.StartTile != self.room.GetTilePosition(pObj.pos))
+					continue;
+
+				self.entranceSprites[i, 0].element = Futile.atlasManager.GetElementWithName("lock");
+			}
+		}
 	}
 }
