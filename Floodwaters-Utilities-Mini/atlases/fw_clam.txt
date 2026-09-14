@@ -1,0 +1,72 @@
+{
+	"frames": {
+		"clam_a.png": {
+			"frame": {
+				"x": 0,
+				"y": 0,
+				"w": 64,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 64,
+				"h": 32
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 64,
+				"h": 32
+			}
+		},
+		"clam_b.png": {
+			"frame": {
+				"x": 0,
+				"y": 32,
+				"w": 64,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 64,
+				"h": 32
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 64,
+				"h": 32
+			}
+		},
+		"clam_c.png": {
+			"frame": {
+				"x": 0,
+				"y": 64,
+				"w": 64,
+				"h": 32
+			},
+			"rotated": false,
+			"trimmed": false,
+			"sourceSize": {
+				"w": 64,
+				"h": 32
+			},
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 64,
+				"h": 32
+			}
+		}
+	},
+	"meta": {
+		"app": "https://goofybox-studios.github.io/tools/texture_packer",
+		"image": "fw_clam",
+		"size": {
+			"w": 64,
+			"h": 96
+		}
+	}
+}

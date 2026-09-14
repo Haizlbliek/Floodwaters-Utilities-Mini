@@ -9,10 +9,11 @@ public static class Assets {
 		"FWColoredFlameJet", "FWColoredFlameJetGlow",
 		"FWHeatLevel",
 		"FWWaterSlush", "FWWaterSludge", "FWStraightDeepWater",
-		"FWEffectColor", "FWEffectColorCircle"
+		"FWEffectColor", "FWEffectColorCircle", "FWDeathRain",
 	];
 
 	public static readonly int ShadPropFWBloomType = Shader.PropertyToID("_FWBloomType");
+	public static readonly int ShadPropFWRainRotation = Shader.PropertyToID("_FWRainRotation");
 
 	public static void Initialize() {
 		string bundlePath = AssetManager.ResolveFilePath("assetsbundles/floodwaters");

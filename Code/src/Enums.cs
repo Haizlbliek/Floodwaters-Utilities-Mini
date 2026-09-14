@@ -5,6 +5,7 @@ public class Enums : EnumRegistry<Enums> {
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> CactusSpear = new("CactusSpear");
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> Cattail = new("Cattail");
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> ColoredLantern = new("ColoredLantern");
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> Clam = new("Clam");
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> Lillypad = new("Lillypad");
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> IceCube = new("IceCube");
 
@@ -13,6 +14,7 @@ public class Enums : EnumRegistry<Enums> {
 	public static Enum<PlacedObject.Type> DeerSkullPO = new("DeerSkull");
 	public static Enum<PlacedObject.Type> CattailPO = new("Cattail");
 	public static Enum<PlacedObject.Type> ColoredCattailPO = new("ColoredCattail");
+	public static Enum<PlacedObject.Type> ClamPO = new("Clam");
 	public static Enum<PlacedObject.Type> BubbleEmitterPO = new("BubbleEmitter");
 	public static Enum<PlacedObject.Type> BambooPO = new("Bamboo");
 	public static Enum<PlacedObject.Type> ColoredLanternPO = new("ColoredLantern");
@@ -53,6 +55,7 @@ public class Enums : EnumRegistry<Enums> {
 	public static Enum<RoomSettings.RoomEffect.Type> StraightDeepWater = new("StraightDeepWater");
 	public static Enum<RoomSettings.RoomEffect.Type> Hypothermia = new("Hypothermia");
 	public static Enum<RoomSettings.RoomEffect.Type> NoDeathFallGradient = new("NoDeathFallGradient");
+	public static Enum<RoomSettings.RoomEffect.Type> RainRotation = new("RainRotation");
 
 	public static Enum<RoomRain.DangerType> HeatDanger = new("Heat");
 	public static Enum<Creature.DamageType> BurnDamageType = new("Burn");

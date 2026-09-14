@@ -28,6 +28,7 @@ public class Plugin : BaseUnityPlugin {
 	public void OnEnable() {
 		instance = this;
 
+		On.RainWorld.OnModsEnabled += this.OnModsEnabled;
 		On.RainWorld.OnModsInit += this.OnModsInit;
 		On.RainWorld.OnModsDisabled += this.OnModsDisabled;
 		On.RainWorld.PostModsInit += this.On_RainWorld_PostModsInit;
@@ -51,6 +52,7 @@ public class Plugin : BaseUnityPlugin {
 		AcronymFix.Initialize();
 		CustomSaveData.Initialize();
 		FWDevUI.Initialize();
+		RestrictedEnums.Initialize();
 
 		HasInitialized = true;
 	}
@@ -64,6 +66,7 @@ public class Plugin : BaseUnityPlugin {
 		AcronymFix.Cleanup();
 		CustomSaveData.Cleanup();
 		FWDevUI.Cleanup();
+		RestrictedEnums.Cleanup();
 
 		HasInitialized = false;
 	}
@@ -73,6 +76,13 @@ public class Plugin : BaseUnityPlugin {
 
 		if (newlyDisabledMods.Any(x => x.id == MOD_ID))
 			this.Cleanup();
+	}
+
+	private void OnModsEnabled(On.RainWorld.orig_OnModsEnabled orig, RainWorld self, ModManager.Mod[] newlyEnabledMods) {
+		orig(self, newlyEnabledMods);
+
+		RestrictedEnums.Cleanup();
+		RestrictedEnums.Initialize();
 	}
 
 	private void OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self) {

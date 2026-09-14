@@ -32,6 +32,7 @@ public static class Objects {
 
 		Futile.atlasManager.LoadAtlas("atlases/Floodwaters-Mini");
 		Futile.atlasManager.LoadAtlas("atlases/exit_lock");
+		Futile.atlasManager.LoadAtlas("atlases/fw_clam");
 	}
 
 	public static void Cleanup() {
@@ -60,6 +61,7 @@ public static class Objects {
 
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
 		Futile.atlasManager.UnloadAtlas("atlases/exit_lock");
+		Futile.atlasManager.UnloadAtlas("atlases/fw_clam");
 	}
 
 	private static void RegisterPlaceableObjects() {
@@ -140,6 +142,17 @@ public static class Objects {
 					self.AddObject(cattailStick);
 				}
 			}
+		);
+
+		ObjectRegistry.Register(
+			new AbstractPlaceableDefinition<Clam, Clam.AbstractClam>(
+				Enums.ClamPO,
+				Enums.Clam,
+				pObj => new PlacedObject.ResizableObjectData(pObj) { handlePos = new Vector2(100f, 0f) },
+				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, true),
+				(pObj, self) => new Clam.AbstractClam(self.world, Enums.Clam, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), pObj),
+				self => new Clam(self)
+			)
 		);
 
 		ObjectRegistry.Register(
@@ -562,7 +575,7 @@ public static class Objects {
 	}
 
 	private static ObjectsPage.DevObjectCategories On_ObjectsPage_DevObjectGetCategoryFromPlacedType(On.DevInterface.ObjectsPage.orig_DevObjectGetCategoryFromPlacedType orig, ObjectsPage self, PlacedObject.Type type) {
-		if (Enums.Has(type))
+		if (Enums.Has(type) || RestrictedEnums.Has(type))
 			return Enums.FloodwatersCategory;
 
 		return orig(self, type);
