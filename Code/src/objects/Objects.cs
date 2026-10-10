@@ -144,7 +144,7 @@ public static class Objects {
 			}
 		);
 
-		ObjectRegistry.Register(
+			ObjectRegistry.Register(
 			new AbstractPlaceableDefinition<Clam, Clam.AbstractClam>(
 				Enums.ClamPO,
 				Enums.Clam,
@@ -450,8 +450,36 @@ public static class Objects {
 				pObj => new ExitKeyData(pObj),
 				(owner, idString, parentNode, pObj, name) => new ExitKeyRepresentation(owner, idString, parentNode, pObj, name),
 				null
+			)
+		);
+
+
+		ObjectRegistry.Register(
+			new AbstractPlaceableDefinition<Lanternfruit, Lanternfruit.AbstractLanternfruit>(
+				Enums.LanternfruitPO,
+				Enums.Lanternfruit,
+				pObj => new LanternfruitData(pObj),
+				(owner, idString, parentNode, pObj, name) => new LanternfruitRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new Lanternfruit.AbstractLanternfruit(
+					self.world,
+					null,
+					self.GetWorldCoordinate(pObj.pos),
+					self.game.GetNewID(),
+					pObj,
+					self.abstractRoom.index,
+					self.roomSettings.placedObjects.IndexOf(pObj)
+				),
+				self => new Lanternfruit(self)
 			) {
-				OnRoomLoadedAction = (self, room, pObj, firstTimeRealized) => {
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					int poIndex = self.roomSettings.placedObjects.IndexOf(pObj);
+					if (!(self.game.session as StoryGameSession)?.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, poIndex) ?? true) {
+						Lanternfruit.AbstractLanternfruit abstractFruit = def.CreateAbstractObject(pObj, self) as Lanternfruit.AbstractLanternfruit;
+						abstractFruit.isConsumed = false;
+						self.abstractRoom.entities.Add(abstractFruit);
+						abstractFruit.placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(self.abstractRoom.name, poIndex);
+						abstractFruit.Realize();
+					
 					ExitKeyData data = pObj.data as ExitKeyData;
 					if (data.saveSpecific ? room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey("", data.key) : room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey(room.world.name, data.key)) {
 						room.AddObject(new ExitKey.TokenStalk(room, pObj.pos, pObj.pos + data.handlePos, null));
@@ -477,6 +505,9 @@ public static class Objects {
 		if (obj is ColoredLantern lantern && lantern.stick == null)
 			return Player.ObjectGrabability.OneHand;
 
+		if (obj is Lanternfruit)
+			return Player.ObjectGrabability.OneHand;
+
 		return orig(self, obj);
 	}
 
@@ -491,6 +522,9 @@ public static class Objects {
 		if (eatenobject is CactusFruit) {
 			return 2;
 		}
+		if (eatenobject is Lanternfruit) {
+			return 1;
+		}
 
 		return orig(slugcatIndex, eatenobject);
 	}
@@ -504,6 +538,9 @@ public static class Objects {
 				self.data = data;
 				return;
 			}
+		}
+		if (self.type == Enums.LanternfruitPO) {
+			self.data = new LanternfruitData(self);
 		}
 
 		if (self.type == Enums.ColoredLanternPO) {
@@ -603,6 +640,10 @@ public static class Objects {
 		if (self.type == Enums.ColoredLantern) {
 			self.realizedObject = new ColoredLantern(self as AbstractColoredLantern);
 		}
+
+		if (self.type == Enums.Lanternfruit) {
+			self.realizedObject = new Lanternfruit(self);
+		}
 	}
 
 	private static void On_CoralNeuronSystem_AIMapReady(On.CoralBrain.CoralNeuronSystem.orig_AIMapReady orig, CoralNeuronSystem self) {
@@ -636,6 +677,25 @@ public static class Objects {
 					null
 				) {
 					unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 8)
+				};
+			}
+			if (apo.type == Enums.Lanternfruit) {
+				bool hasColorData = array.Length > 6 && (
+					array[5] == LanternfruitData.ColorType.EffectColorA.ToString()
+					|| array[5] == LanternfruitData.ColorType.EffectColorB.ToString()
+					|| array[5] == LanternfruitData.ColorType.Custom.ToString()
+					|| array[5] == LanternfruitData.ColorType.Dead.ToString()
+				);
+				LanternfruitData.ColorType colorType = hasColorData ? new LanternfruitData.ColorType(array[5]) : LanternfruitData.ColorType.EffectColorA;
+				Color color = hasColorData ? Custom.hexToColor(array[6]) : Color.white;
+				return new Lanternfruit.AbstractLanternfruit(
+					world, null, apo.pos, apo.ID,
+					originRoom: int.Parse(array[3], NumberStyles.Any, CultureInfo.InvariantCulture),
+					placedObjectIndex: int.Parse(array[4], NumberStyles.Any, CultureInfo.InvariantCulture),
+					colorType: colorType,
+					color: color
+				) {
+					unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, hasColorData ? 7 : 5)
 				};
 			}
 		} catch (Exception ex) {
@@ -812,7 +872,7 @@ public static class Objects {
 		orig(self, sLeaser, rCam, timeStacker, camPos);
 		rCam.room.darkenLightsFactor = darken;
 	}
-
+	
 	private static void On_ShortcutGraphics_GenerateSprites(On.ShortcutGraphics.orig_GenerateSprites orig, ShortcutGraphics self) {
 		orig(self);
 

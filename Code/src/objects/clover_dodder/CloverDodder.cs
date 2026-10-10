@@ -4,11 +4,14 @@ public class CloverDodder : UpdatableAndDeletable, IDrawable {
 	public readonly PlacedObject pObj;
 	private readonly List<Vector2> points = [];
 	private readonly List<String> strings = [];
+	private readonly List<FruitAttachment> fruitAttachments = [];
 	private Vector2 lastPos = Vector2.zero;
 	private float lastRad = 0f;
 	public bool dirty = false;
 	public bool dirtyMesh = false;
 	public bool dirtyPalette = false;
+
+	public bool createdProducts = false;
 
 	private CloverDodderData Data => this.pObj.data as CloverDodderData;
 
@@ -142,6 +145,39 @@ public class CloverDodder : UpdatableAndDeletable, IDrawable {
 			this.dirty = false;
 		}
 
+		if (!this.createdProducts) {
+			this.createdProducts = true;
+
+			if (this.Data.lanternfruitChance > 0f) {
+				foreach (String lump in this.strings) {
+					for (int i = 0; i < lump.points.Length; i++) {
+						if (Random.value > this.Data.lanternfruitChance)
+							continue;
+
+						float fruitRotation = Random.Range(-60f, 60f);
+						Vector2 fruitPosition = lump.points[i] + Custom.DegToVec(fruitRotation) * 10f;
+
+						//fruit creation
+						AbstractPhysicalObject fruit = new Lanternfruit.AbstractLanternfruit(this.room.world, null, this.room.GetWorldCoordinate(fruitPosition), this.room.game.GetNewID());
+						this.room.abstractRoom.entities.Add(fruit);
+						fruit.Realize();
+
+						Lanternfruit lanternfruit = fruit.realizedObject as Lanternfruit;
+						Vector2 fruitRotationVector = Custom.DegToVec(fruitRotation);
+
+
+						this.ApplyLanternfruitColor(lanternfruit);
+						lanternfruit.Stuck(fruitPosition, fruitRotationVector);
+
+						this.fruitAttachments.Add(new FruitAttachment(lanternfruit, lump, i, fruitRotationVector));
+
+						//fruit.realizedObject.PlaceInRoom(this.room); <= enabling this causes glitching of the objects due to double defined stuff (FOUND OUT AT RANDOM I AM A GENIUS)
+					}
+				}
+			}
+		}
+	
+
 		foreach (List<PhysicalObject> pos in this.room.physicalObjects) {
 			foreach (PhysicalObject po in pos) {
 				foreach (BodyChunk chunk in po.bodyChunks) {
@@ -179,6 +215,46 @@ public class CloverDodder : UpdatableAndDeletable, IDrawable {
 
 		foreach (String str in this.strings) {
 			str.Update();
+		}
+
+
+		foreach (FruitAttachment attachment in this.fruitAttachments) {
+			if (attachment.Fruit.slatedForDeletetion || attachment.Fruit.grabbedBy.Count > 0)
+				continue;
+
+			this.ApplyLanternfruitColor(attachment.Fruit);
+			Vector2 fruitPosition = attachment.String.points[attachment.PointIndex] + attachment.Rotation * 10f;
+			attachment.Fruit.UpdateStuckPosition(fruitPosition, attachment.Rotation);
+		}
+	}
+
+	private void ApplyLanternfruitColor(Lanternfruit fruit) {
+		CloverDodderData.LanternfruitColorType colorType = this.Data.lanternfruitColorType;
+		if (colorType == CloverDodderData.LanternfruitColorType.Inherit) {
+			fruit.generatedColorType = new LanternfruitData.ColorType(this.Data.colorType.ToString());
+			fruit.generatedColor = this.Data.color with { a = 1f };
+		}
+		else {
+			fruit.generatedColorType = new LanternfruitData.ColorType(colorType.ToString());
+			fruit.generatedColor = this.Data.lanternfruitColor with { a = 1f };
+		}
+		if (fruit.abstractPhysicalObject is Lanternfruit.AbstractLanternfruit abstractFruit) {
+			abstractFruit.colorType = fruit.generatedColorType;
+			abstractFruit.color = fruit.generatedColor;
+		}
+	}
+
+	private class FruitAttachment {
+		public readonly Lanternfruit Fruit;
+		public readonly String String;
+		public readonly int PointIndex;
+		public readonly Vector2 Rotation;
+
+		public FruitAttachment(Lanternfruit fruit, String stringOwner, int pointIndex, Vector2 rotation) {
+			this.Fruit = fruit;
+			this.String = stringOwner;
+			this.PointIndex = pointIndex;
+			this.Rotation = rotation;
 		}
 	}
 

@@ -8,7 +8,9 @@ public class CloverDodderData : PlacedObject.ResizableObjectData {
 	public float stickiness = 0.5f;
 	public float volume = 1f;
 	public Color color;
-
+	public float lanternfruitChance;
+	public LanternfruitColorType lanternfruitColorType = LanternfruitColorType.Inherit;
+	public Color lanternfruitColor = Color.white;
 
 	public CloverDodderData(PlacedObject owner) : base(owner) {
 	}
@@ -28,12 +30,28 @@ public class CloverDodderData : PlacedObject.ResizableObjectData {
 			this.color.g = float.Parse(array[9], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.color.b = float.Parse(array[10], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.volume = float.Parse(array[11], NumberStyles.Any, CultureInfo.InvariantCulture);
-			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 12);
+			this.lanternfruitChance = array.Length > 12
+				? float.Parse(array[12], NumberStyles.Any, CultureInfo.InvariantCulture)
+				: 0f;
+			this.lanternfruitColorType = array.Length > 13
+				? new LanternfruitColorType(array[13])
+				: LanternfruitColorType.Inherit;
+			this.lanternfruitColor.r = array.Length > 14
+				? float.Parse(array[14], NumberStyles.Any, CultureInfo.InvariantCulture)
+				: 1f;
+			this.lanternfruitColor.g = array.Length > 15
+				? float.Parse(array[15], NumberStyles.Any, CultureInfo.InvariantCulture)
+				: 1f;
+			this.lanternfruitColor.b = array.Length > 16
+				? float.Parse(array[16], NumberStyles.Any, CultureInfo.InvariantCulture)
+				: 1f;
+
+			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, array.Length > 16 ? 17 : (array.Length > 12 ? 13 : 12));
 		} catch (Exception) {}
 	}
 
 	public override string ToString() {
-		string text = base.BaseSaveString() + string.Format(CultureInfo.InvariantCulture, "~{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}~{8}~{9}",
+		string text = base.BaseSaveString() + string.Format(CultureInfo.InvariantCulture, "~{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}~{8}~{9}~{10}~{11}~{12}~{13}~{14}",
 			this.panelPos.x,
 			this.panelPos.y,
 			this.colorType,
@@ -43,7 +61,12 @@ public class CloverDodderData : PlacedObject.ResizableObjectData {
 			this.color.r,
 			this.color.g,
 			this.color.b,
-			this.volume
+			this.volume,
+			this.lanternfruitChance,
+			this.lanternfruitColorType,
+			this.lanternfruitColor.r,
+			this.lanternfruitColor.g,
+			this.lanternfruitColor.b
 		);
 		text = SaveState.SetCustomData(this, text);
 		return SaveUtils.AppendUnrecognizedStringAttrs(text, "~", this.unrecognizedAttributes);
@@ -56,6 +79,16 @@ public class CloverDodderData : PlacedObject.ResizableObjectData {
 		public static readonly ColorType Dead = new ColorType(nameof(Dead), true);
 
 		public ColorType(string value, bool register = false) : base(value, register) {
+		}
+	}
+
+	public class LanternfruitColorType : ExtEnum<LanternfruitColorType> {
+		public static readonly LanternfruitColorType Inherit = new LanternfruitColorType(nameof(Inherit), true);
+		public static readonly LanternfruitColorType EffectColorA = new LanternfruitColorType(nameof(EffectColorA), true);
+		public static readonly LanternfruitColorType EffectColorB = new LanternfruitColorType(nameof(EffectColorB), true);
+		public static readonly LanternfruitColorType Custom = new LanternfruitColorType(nameof(Custom), true);
+
+		public LanternfruitColorType(string value, bool register = false) : base(value, register) {
 		}
 	}
 }
