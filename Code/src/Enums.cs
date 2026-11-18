@@ -8,6 +8,7 @@ public class Enums : EnumRegistry<Enums> {
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> Clam = new("Clam");
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> Lillypad = new("Lillypad");
 	public static Enum<AbstractPhysicalObject.AbstractObjectType> IceCube = new("IceCube");
+	public static Enum<AbstractPhysicalObject.AbstractObjectType> Lanternfruit = new("Lanternfruit");
 
 	public static Enum<PlacedObject.Type> CactusPO = new("Cactus");
 	public static Enum<PlacedObject.Type> SandDripPO = new("SandDrip");
@@ -43,6 +44,7 @@ public class Enums : EnumRegistry<Enums> {
 	public static Enum<PlacedObject.Type> CloverDodderPO = new("CloverDodder");
 	public static Enum<PlacedObject.Type> ExitLockPO = new("ExitLock");
 	public static Enum<PlacedObject.Type> ExitKeyPO = new("ExitKey");
+	public static Enum<PlacedObject.Type> LanternfruitPO = new("Lanternfruit");
 
 	public static Enum<ObjectsPage.DevObjectCategories> FloodwatersCategory = new("Floodwaters");
 	public static Enum<RoomSettingsPage.DevEffectsCategories> FloodwatersEffectCategory = new("Floodwaters");
