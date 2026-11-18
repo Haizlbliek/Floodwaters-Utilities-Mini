@@ -60,8 +60,8 @@ public static class Objects {
 		ColoredFlameJet.Cleanup();
 
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
-		Futile.atlasManager.LoadAtlas("atlases/exit_lock");
-		Futile.atlasManager.LoadAtlas("atlases/fw_clam");
+		Futile.atlasManager.UnloadAtlas("atlases/exit_lock");
+		Futile.atlasManager.UnloadAtlas("atlases/fw_clam");
 	}
 
 	private static void RegisterPlaceableObjects() {
@@ -475,22 +475,22 @@ public static class Objects {
 		);
 
 		ObjectRegistry.Register(
-				new PlaceableDefinition<ExitKey>(
-						Enums.ExitKeyPO,
-						pObj => new ExitKeyData(pObj),
-						(owner, idString, parentNode, pObj, name) => new ExitKeyRepresentation(owner, idString, parentNode, pObj, name),
-						null
-				) {
-					OnRoomLoadedAction = (self, room, pObj, firstTimeRealized) => {
-						ExitKeyData data = pObj.data as ExitKeyData;
-						if (data.saveSpecific ? room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey("", data.key) : room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey(room.world.name, data.key)) {
-							room.AddObject(new ExitKey.TokenStalk(room, pObj.pos, pObj.pos + data.handlePos, null));
-						}
-						else {
-							room.AddObject(new ExitKey(room, pObj));
-						}
+			new PlaceableDefinition<ExitKey>(
+					Enums.ExitKeyPO,
+					pObj => new ExitKeyData(pObj),
+					(owner, idString, parentNode, pObj, name) => new ExitKeyRepresentation(owner, idString, parentNode, pObj, name),
+					null
+			) {
+				OnRoomLoadedAction = (self, room, pObj, firstTimeRealized) => {
+					ExitKeyData data = pObj.data as ExitKeyData;
+					if (data.saveSpecific ? room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey("", data.key) : room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey(room.world.name, data.key)) {
+						room.AddObject(new ExitKey.TokenStalk(room, pObj.pos, pObj.pos + data.handlePos, null));
+					}
+					else {
+						room.AddObject(new ExitKey(room, pObj));
 					}
 				}
+			}
 		);
 
 		ObjectRegistry.Register(
