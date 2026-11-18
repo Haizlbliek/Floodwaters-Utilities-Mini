@@ -1,1 +1,7 @@
 * text=auto eol=lf
+*.png binary
+*.dll binary
+*.pdb binary
+**/assetbundles/** binary
+*.ogg binary
+*.wav binary
