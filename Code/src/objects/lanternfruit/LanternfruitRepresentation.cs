@@ -1,17 +1,14 @@
 namespace Floodwaters.Objects;
 
 public class LanternfruitRepresentation : PlacedObjectRepresentation {
-
-	public Lanternfruit Lanternfruit => this.Lfruit;
 	private LanternfruitData Data => this.pObj.data as LanternfruitData;
 	public readonly Button typeButton;
-	private readonly Lanternfruit Lfruit;
 	public readonly LanternfruitControlPanel controlPanel;
 
 	private readonly int lineSprite;
 	private Vector2 lastPos;
 
-    public LanternfruitRepresentation(DevUI owner,string idString, DevUINode parentNode, PlacedObject pObj, string name) : base(owner, idString, parentNode, pObj, name) {
+	public LanternfruitRepresentation(DevUI owner, string idString, DevUINode parentNode, PlacedObject pObj, string name) : base(owner, idString, parentNode, pObj, name) {
 		this.controlPanel = new LanternfruitControlPanel(owner, "Lanternfruit_Panel", this, new Vector2(0f, 100f));
 		this.subNodes.Add(this.controlPanel);
 		this.controlPanel.pos = this.Data.panelPos;
@@ -20,9 +17,9 @@ public class LanternfruitRepresentation : PlacedObjectRepresentation {
 		this.lineSprite = this.fSprites.Count - 1;
 		owner.placedObjectsContainer.AddChild(this.fSprites[this.lineSprite]);
 		this.fSprites[this.lineSprite].anchorY = 0f;
-		this.Lfruit = owner.room.updateList.OfType<Lanternfruit>().FirstOrDefault(b => b.pObj == pObj);
 
 	}
+
 	//creates the line connecting panel and object
 	public override void Refresh() {
 		base.Refresh();
@@ -36,10 +33,8 @@ public class LanternfruitRepresentation : PlacedObjectRepresentation {
 	}
 	//makes the line update its position when moved
 
-
-
-    public class LanternfruitControlPanel : Panel, IDevUISignals {
-		public LanternfruitControlPanel(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos) : base(owner, IDstring, parentNode, pos, new Vector2(200f, 10f), "Lanternfruit") {
+	public class LanternfruitControlPanel : Panel, IDevUISignals {
+		public LanternfruitControlPanel(DevUI owner, string IDstring, DevUINode parentNode, Vector2 pos) : base(owner, IDstring, parentNode, pos, new Vector2(250f, 15f), "Lanternfruit") {
 			this.UpdateUI();
 		}
 
@@ -50,36 +45,25 @@ public class LanternfruitRepresentation : PlacedObjectRepresentation {
 			}
 
 			LanternfruitData data = (this.parentNode as LanternfruitRepresentation).Data;
-			float y = 5f;
-			float x = 200f;
+			float y = -15f;
 
-		
-		this.subNodes.Add(new ColorSlider(this.owner, "MaxRegen", this, new Vector2(5f, y), "Max Regen:"));
-			y += 20f;
-		this.subNodes.Add(new ColorSlider(this.owner, "MinRegen", this, new Vector2(5f, y), "Min Regen:"));
-			y += 25f;
-		
-		
-		this.subNodes.Add(new Button(this.owner, "Color_Button", this, new Vector2(5f, y), 100f, data.colorType.ToString()));
-			y += 20f;
+			this.subNodes.Add(new Button(this.owner, "Color_Button", this, new Vector2(5f, y += 20f), 100f, data.colorType.ToString()));
 			if (data.colorType == LanternfruitData.ColorType.Custom) {
-				this.subNodes.Add(new ColorSlider(this.owner, "color1r", this, new Vector2(5f, y), "Red:"));
-				this.subNodes.Add(new ColorSlider(this.owner, "color1g", this, new Vector2(5f, y + 20f), "Green:"));
-				this.subNodes.Add(new ColorSlider(this.owner, "color1b", this, new Vector2(5f, y + 40f), "Blue:"));
-				y += 60f;
+				this.subNodes.Add(new ColorSlider(this.owner, "color1b", this, new Vector2(5f, y += 20f), "Blue:"));
+				this.subNodes.Add(new ColorSlider(this.owner, "color1g", this, new Vector2(5f, y += 20f), "Green:"));
+				this.subNodes.Add(new ColorSlider(this.owner, "color1r", this, new Vector2(5f, y += 20f), "Red:"));
 			}
-		
-		this.size.y = y + 5f;
-		this.size.x = x + 50f;
-		
-	
-        }
+			this.subNodes.Add(new ColorSlider(this.owner, "MaxRegen", this, new Vector2(5f, y += 20f), "Max Regen:"));
+			this.subNodes.Add(new ColorSlider(this.owner, "MinRegen", this, new Vector2(5f, y += 20f), "Min Regen:"));
+
+			this.size.y = y + 20f;
+		}
 
 		public void Signal(DevUISignalType type, DevUINode sender, string message) {
 			LanternfruitData LanternfruitData = (this.parentNode as LanternfruitRepresentation).pObj.data as LanternfruitData;
 			switch (sender.IDstring) {
 				case "Color_Button":
-					if ((int)LanternfruitData.colorType >= ExtEnum<LanternfruitData.ColorType>.values.Count - 1) {
+					if ((int) LanternfruitData.colorType >= ExtEnum<LanternfruitData.ColorType>.values.Count - 1) {
 						LanternfruitData.colorType = new LanternfruitData.ColorType(ExtEnum<LanternfruitData.ColorType>.values.GetEntry(0));
 					}
 					else {
@@ -91,14 +75,12 @@ public class LanternfruitRepresentation : PlacedObjectRepresentation {
 		}
 
 		public class ColorSlider : Slider {
-		
-	
 			public ColorSlider(DevUI owner, string IDString, DevUINode parentNode, Vector2 pos, string title) : base(owner, IDString, parentNode, pos, title, false, 110f) {
 			}
 
 			public override void Refresh() {
 				base.Refresh();
-			
+
 				float from = 0f;
 
 				if (this.IDstring == null)
@@ -132,14 +114,14 @@ public class LanternfruitRepresentation : PlacedObjectRepresentation {
 						if (data.minRegen == 0) {
 							base.NumberText = "N/A";
 						}
-						else
-						{
-						base.NumberText = data.maxRegen.ToString();
+						else {
+							base.NumberText = data.maxRegen.ToString();
 						}
 						break;
-	            }
-					base.RefreshNubPos(from);
 				}
+
+				base.RefreshNubPos(from);
+			}
 
 			public override void NubDragged(float nubPos) {
 				LanternfruitData data = (this.parentNode.parentNode as LanternfruitRepresentation).pObj.data as LanternfruitData;
@@ -176,11 +158,6 @@ public class LanternfruitRepresentation : PlacedObjectRepresentation {
 				this.parentNode.parentNode.Refresh();
 				this.Refresh();
 			}
-        }
-
+		}
 	}
 }
-	
-	
-
-
