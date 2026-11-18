@@ -22,19 +22,19 @@ public class EffectOverrideData : PlacedObject.ResizableObjectData {
 
 		try {
 			string[] array = Regex.Split(s, "~");
-			this.panelPos.x = float.Parse(array[2]);
-			this.panelPos.y = float.Parse(array[3]);
-			this.colorB = int.Parse(array[4]);
-			this.colorA = int.Parse(array[5]);
-			this.modifyB.x = float.Parse(array[6]);
-			this.modifyB.y = float.Parse(array[7]);
-			this.modifyB.z = float.Parse(array[8]);
-			this.modifyA.x = float.Parse(array[9]);
-			this.modifyA.y = float.Parse(array[10]);
-			this.modifyA.z = float.Parse(array[11]);
-			this.fromDepth = int.Parse(array[12]);
-			this.toDepth = int.Parse(array[13]);
-			this.gradient = float.Parse(array[14]);
+			this.panelPos.x = float.Parse(array[2], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.panelPos.y = float.Parse(array[3], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.colorB = int.Parse(array[4], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.colorA = int.Parse(array[5], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.modifyB.x = float.Parse(array[6], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.modifyB.y = float.Parse(array[7], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.modifyB.z = float.Parse(array[8], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.modifyA.x = float.Parse(array[9], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.modifyA.y = float.Parse(array[10], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.modifyA.z = float.Parse(array[11], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.fromDepth = int.Parse(array[12], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.toDepth = int.Parse(array[13], NumberStyles.Any, CultureInfo.InvariantCulture);
+			this.gradient = float.Parse(array[14], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 15);
 		}
 		catch (Exception) {}

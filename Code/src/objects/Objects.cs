@@ -461,6 +461,15 @@ public static class Objects {
 				}
 			}
 		);
+
+		ObjectRegistry.Register(
+			new PlaceableDefinition<PaletteOverride>(
+				Enums.PaletteOverridePO,
+				pObj => new PaletteOverrideData(pObj),
+				(owner, idString, parentNode, pObj, name) => new PaletteOverrideRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new PaletteOverride(self, pObj)
+			)
+		);
 	}
 
 

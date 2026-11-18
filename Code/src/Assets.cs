@@ -9,7 +9,8 @@ public static class Assets {
 		"FWColoredFlameJet", "FWColoredFlameJetGlow",
 		"FWHeatLevel",
 		"FWWaterSlush", "FWWaterSludge", "FWStraightDeepWater",
-		"FWEffectColor", "FWEffectColorCircle", "FWDeathRain",
+		"FWEffectColor", "FWEffectColorCircle", "FWPaletteOverride",
+		"FWDeathRain",
 	];
 
 	public static readonly int ShadPropFWBloomType = Shader.PropertyToID("_FWBloomType");
