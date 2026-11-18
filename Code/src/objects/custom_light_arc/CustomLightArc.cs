@@ -33,9 +33,9 @@ public class CustomLightArc : UpdatableAndDeletable, IDrawable {
 		newContatiner ??= rCam.ReturnFContainer("GrabShaders");
 
 		for (int i = 0; i < sLeaser.sprites.Length; i++) {
-			FSprite fsprite = sLeaser.sprites[i];
-			fsprite.RemoveFromContainer();
-			newContatiner.AddChildAtIndex(fsprite, i);
+			FSprite sprite = sLeaser.sprites[i];
+			sprite.RemoveFromContainer();
+			newContatiner.AddChildAtIndex(sprite, i);
 		}
 	}
 
@@ -61,6 +61,7 @@ public class CustomLightArc : UpdatableAndDeletable, IDrawable {
 			}
 			this.InitiateSprites(sLeaser, rCam);
 			this.nodeCountChanged = false;
+			this.nodesUpdated = true;
 		}
 
 		TriangleMesh mesh = sLeaser.sprites[0] as TriangleMesh;
@@ -85,10 +86,15 @@ public class CustomLightArc : UpdatableAndDeletable, IDrawable {
 		mesh.SetPosition(this.pObj.pos - camPos);
 
 		if (base.slatedForDeletetion) {
+			Plugin.Log("Removed");
 			sLeaser.CleanSpritesAndRemove();
 			foreach (LightVessel light in this.lights) {
 				light.light.RemoveFromRoom();
 			}
+		}
+
+		if (this.room != rCam.room) {
+			Plugin.Log("Not room");
 		}
 	}
 

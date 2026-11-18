@@ -15,24 +15,20 @@
 	</Target>
 
 	<ItemGroup>
-		<Compile Remove="assets\**\*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="$(RainWorldDllPath)/Mono.Cecil.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/MonoMod.Common.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/MonoMod.RuntimeDetour.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/MonoMod.Utils.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/Assembly-CSharp-firstpass.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/PUBLIC-Assembly-CSharp.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/UnityEngine.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/Unity.Mathematics.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/UnityEngine.CoreModule.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/UnityEngine.InputLegacyModule.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldDllPath)/UnityEngine.AssetBundleModule.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldBepInEx)/core/BepInEx.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldBepInEx)/plugins/HOOKS-Assembly-CSharp.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldBepInEx)/utils/PUBLIC-Assembly-CSharp.dll"><Private>false</Private></Reference>
-		<Reference Include="$(RainWorldBepInEx)/core/0Harmony.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/Mono.Cecil.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/MonoMod.Common.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/MonoMod.RuntimeDetour.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/MonoMod.Utils.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/Assembly-CSharp-firstpass.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/PUBLIC-Assembly-CSharp.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/UnityEngine.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/Unity.Mathematics.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/UnityEngine.CoreModule.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/UnityEngine.InputLegacyModule.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/RainWorld_Data/Managed/UnityEngine.AssetBundleModule.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/BepInEx/core/BepInEx.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/BepInEx/plugins/HOOKS-Assembly-CSharp.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/BepInEx/utils/PUBLIC-Assembly-CSharp.dll"><Private>false</Private></Reference>
+		<Reference Include="$(RWPath)/BepInEx/core/0Harmony.dll"><Private>false</Private></Reference>
 	</ItemGroup>
 </Project>

@@ -16,7 +16,7 @@ public static class Assets {
 	public static readonly int ShadPropFWRainRotation = Shader.PropertyToID("_FWRainRotation");
 
 	public static void Initialize() {
-		string bundlePath = AssetManager.ResolveFilePath("assetsbundles/floodwaters");
+		string bundlePath = AssetManager.ResolveFilePath("assetbundles/floodwaters");
 		if (!File.Exists(bundlePath))
 			return;
 

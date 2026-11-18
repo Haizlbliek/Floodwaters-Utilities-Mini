@@ -1,0 +1,9 @@
+<Project>
+	<PropertyGroup>
+		<RWPath Condition="'$(RWPath)' == '' And Exists('$(HOME)/.local/share/Steam/steamapps/common/Rain World')">$(HOME)/.local/share/Steam/steamapps/common/Rain World</RWPath>
+		<RWPath Condition="'$(RWPath)' == ''">C:/Program Files (x86)/Steam/steamapps/common/Rain World</RWPath>
+
+		<RWWorkshopPath Condition="'$(RWWorkshopPath)' == '' And Exists('$(HOME)/.local/share/Steam/steamapps/workshop/content/312520')">$(HOME)/.local/share/Steam/steamapps/workshop/content/312520</RWWorkshopPath>
+		<RWWorkshopPath Condition="'$(RWWorkshopPath)' == ''">C:/Program Files (x86)/Steam/steamapps/workshop/content/312520</RWWorkshopPath>
+	</PropertyGroup>
+</Project>
