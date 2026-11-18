@@ -9,6 +9,13 @@
 		<OutputDirectory>../Floodwaters-Utilities-Mini/plugins</OutputDirectory>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="PolySharp" Version="1.14.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
 	<Target Name="CopyData" AfterTargets="AfterBuild">
 		<Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFolder="$(OutputDirectory)" />
 		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(OutputDirectory)" />
