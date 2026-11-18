@@ -25,14 +25,11 @@ public static class Objects {
 		On.RainWorldGame.RestartGame += On_RainWorldGame_RestartGame;
 		On.LightSource.InitiateSprites += On_LightSource_InitiateSprites;
 		On.LightSource.DrawSprites += On_LightSource_DrawSprites;
-		On.ShortcutGraphics.GenerateSprites += On_ShortcutGraphics_GenerateSprites;
 
 		VerticalGateManager.Initialize();
 		ColoredFlameJet.Initialize();
 
 		Futile.atlasManager.LoadAtlas("atlases/Floodwaters-Mini");
-		Futile.atlasManager.LoadAtlas("atlases/exit_lock");
-		Futile.atlasManager.LoadAtlas("atlases/fw_clam");
 	}
 
 	public static void Cleanup() {
@@ -54,14 +51,11 @@ public static class Objects {
 		On.RainWorldGame.RestartGame -= On_RainWorldGame_RestartGame;
 		On.LightSource.InitiateSprites -= On_LightSource_InitiateSprites;
 		On.LightSource.DrawSprites -= On_LightSource_DrawSprites;
-		On.ShortcutGraphics.GenerateSprites -= On_ShortcutGraphics_GenerateSprites;
 
 		VerticalGateManager.Cleanup();
 		ColoredFlameJet.Cleanup();
 
 		Futile.atlasManager.UnloadAtlas("atlases/Floodwaters-Mini");
-		Futile.atlasManager.UnloadAtlas("atlases/exit_lock");
-		Futile.atlasManager.UnloadAtlas("atlases/fw_clam");
 	}
 
 	private static void RegisterPlaceableObjects() {
@@ -142,17 +136,6 @@ public static class Objects {
 					self.AddObject(cattailStick);
 				}
 			}
-		);
-
-		ObjectRegistry.Register(
-			new AbstractPlaceableDefinition<Clam, Clam.AbstractClam>(
-				Enums.ClamPO,
-				Enums.Clam,
-				pObj => new PlacedObject.ResizableObjectData(pObj) { handlePos = new Vector2(100f, 0f) },
-				(owner, idString, parentNode, pObj, name) => new ResizeableObjectRepresentation(owner, idString, parentNode, pObj, name, true),
-				(pObj, self) => new Clam.AbstractClam(self.world, Enums.Clam, null, self.GetWorldCoordinate(pObj.pos), self.game.GetNewID(), pObj),
-				self => new Clam(self)
-			)
 		);
 
 		ObjectRegistry.Register(
@@ -436,30 +419,34 @@ public static class Objects {
 		);
 
 		ObjectRegistry.Register(
-			new PlaceableDefinition<ExitLock>(
-				Enums.ExitLockPO,
-				pObj => new ExitLockData(pObj),
-				(owner, idString, parentNode, pObj, name) => new ExitLockRepresentation(owner, idString, parentNode, pObj, name),
-				(pObj, self) => new ExitLock(self, pObj)
-			)
-		);
-
-		ObjectRegistry.Register(
-			new PlaceableDefinition<ExitKey>(
-				Enums.ExitKeyPO,
-				pObj => new ExitKeyData(pObj),
-				(owner, idString, parentNode, pObj, name) => new ExitKeyRepresentation(owner, idString, parentNode, pObj, name),
-				null
+			new AbstractPlaceableDefinition<Lanternfruit, Lanternfruit.AbstractLanternfruit>(
+				Enums.LanternfruitPO,
+				Enums.Lanternfruit,
+				pObj => new LanternfruitData(pObj),
+				(owner, idString, parentNode, pObj, name) => new LanternfruitRepresentation(owner, idString, parentNode, pObj, name),
+				(pObj, self) => new Lanternfruit.AbstractLanternfruit(
+					self.world,
+					null,
+					self.GetWorldCoordinate(pObj.pos),
+					self.game.GetNewID(),
+					pObj,
+					self.abstractRoom.index,
+					self.roomSettings.placedObjects.IndexOf(pObj)
+				),
+				self => new Lanternfruit(self)
 			) {
-				OnRoomLoadedAction = (self, room, pObj, firstTimeRealized) => {
-					ExitKeyData data = pObj.data as ExitKeyData;
-					if (data.saveSpecific ? room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey("", data.key) : room.game.rainWorld.progression.miscProgressionData.HasRegionExitKey(room.world.name, data.key)) {
-						room.AddObject(new ExitKey.TokenStalk(room, pObj.pos, pObj.pos + data.handlePos, null));
-					} else {
-						room.AddObject(new ExitKey(room, pObj));
+				OnRoomLoadedAction = (def, self, pObj, firstTimeRealized) => {
+					int poIndex = self.roomSettings.placedObjects.IndexOf(pObj);
+					if (!(self.game.session as StoryGameSession)?.saveState.ItemConsumed(self.world, false, self.abstractRoom.index, poIndex) ?? true) {
+						Lanternfruit.AbstractLanternfruit abstractFruit = def.CreateAbstractObject(pObj, self) as Lanternfruit.AbstractLanternfruit;
+						abstractFruit.isConsumed = false;
+						self.abstractRoom.entities.Add(abstractFruit);
+						abstractFruit.placedObjectOrigin = self.SetAbstractRoomAndPlacedObjectNumber(self.abstractRoom.name, poIndex);
+						abstractFruit.Realize();
 					}
 				}
 			}
+			
 		);
 
 		ObjectRegistry.Register(
@@ -486,6 +473,9 @@ public static class Objects {
 		if (obj is ColoredLantern lantern && lantern.stick == null)
 			return Player.ObjectGrabability.OneHand;
 
+		if (obj is Lanternfruit)
+			return Player.ObjectGrabability.OneHand;
+
 		return orig(self, obj);
 	}
 
@@ -500,6 +490,9 @@ public static class Objects {
 		if (eatenobject is CactusFruit) {
 			return 2;
 		}
+		if (eatenobject is Lanternfruit) {
+			return 1;
+		}
 
 		return orig(slugcatIndex, eatenobject);
 	}
@@ -513,6 +506,9 @@ public static class Objects {
 				self.data = data;
 				return;
 			}
+		}
+		if (self.type == Enums.LanternfruitPO) {
+			self.data = new LanternfruitData(self);
 		}
 
 		if (self.type == Enums.ColoredLanternPO) {
@@ -584,7 +580,7 @@ public static class Objects {
 	}
 
 	private static ObjectsPage.DevObjectCategories On_ObjectsPage_DevObjectGetCategoryFromPlacedType(On.DevInterface.ObjectsPage.orig_DevObjectGetCategoryFromPlacedType orig, ObjectsPage self, PlacedObject.Type type) {
-		if (Enums.Has(type) || RestrictedEnums.Has(type))
+		if (Enums.Has(type))
 			return Enums.FloodwatersCategory;
 
 		return orig(self, type);
@@ -611,6 +607,10 @@ public static class Objects {
 
 		if (self.type == Enums.ColoredLantern) {
 			self.realizedObject = new ColoredLantern(self as AbstractColoredLantern);
+		}
+
+		if (self.type == Enums.Lanternfruit) {
+			self.realizedObject = new Lanternfruit(self);
 		}
 	}
 
@@ -645,6 +645,25 @@ public static class Objects {
 					null
 				) {
 					unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 8)
+				};
+			}
+			if (apo.type == Enums.Lanternfruit) {
+				bool hasColorData = array.Length > 6 && (
+					array[5] == LanternfruitData.ColorType.EffectColorA.ToString()
+					|| array[5] == LanternfruitData.ColorType.EffectColorB.ToString()
+					|| array[5] == LanternfruitData.ColorType.Custom.ToString()
+					|| array[5] == LanternfruitData.ColorType.Dead.ToString()
+				);
+				LanternfruitData.ColorType colorType = hasColorData ? new LanternfruitData.ColorType(array[5]) : LanternfruitData.ColorType.EffectColorA;
+				Color color = hasColorData ? Custom.hexToColor(array[6]) : Color.white;
+				return new Lanternfruit.AbstractLanternfruit(
+					world, null, apo.pos, apo.ID,
+					originRoom: int.Parse(array[3], NumberStyles.Any, CultureInfo.InvariantCulture),
+					placedObjectIndex: int.Parse(array[4], NumberStyles.Any, CultureInfo.InvariantCulture),
+					colorType: colorType,
+					color: color
+				) {
+					unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, hasColorData ? 7 : 5)
 				};
 			}
 		} catch (Exception ex) {
@@ -820,33 +839,5 @@ public static class Objects {
 
 		orig(self, sLeaser, rCam, timeStacker, camPos);
 		rCam.room.darkenLightsFactor = darken;
-	}
-
-	private static void On_ShortcutGraphics_GenerateSprites(On.ShortcutGraphics.orig_GenerateSprites orig, ShortcutGraphics self) {
-		orig(self);
-
-		if (self.room == null)
-			return;
-
-		foreach (PlacedObject pObj in self.room.roomSettings.placedObjects) {
-			if (pObj.type != Enums.ExitLockPO)
-				continue;
-
-			ExitLockData data = pObj.data as ExitLockData;
-
-			if (!data.ignoreRegionSpecific && Custom.rainWorld.progression.miscProgressionData.HasRegionExitKey(self.room.world.name, data.key))
-				continue;
-
-			if (!data.ignoreSaveSpecific && Custom.rainWorld.progression.miscProgressionData.HasRegionExitKey("", data.key))
-				continue;
-
-			for (int i = 0; i < self.room.shortcuts.Length; i++) {
-				ShortcutData shortcut = self.room.shortcuts[i];
-				if (shortcut.StartTile != self.room.GetTilePosition(pObj.pos))
-					continue;
-
-				self.entranceSprites[i, 0].element = Futile.atlasManager.GetElementWithName("lock");
-			}
-		}
 	}
 }
