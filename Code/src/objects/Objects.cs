@@ -476,10 +476,10 @@ public static class Objects {
 
 		ObjectRegistry.Register(
 			new PlaceableDefinition<ExitKey>(
-					Enums.ExitKeyPO,
-					pObj => new ExitKeyData(pObj),
-					(owner, idString, parentNode, pObj, name) => new ExitKeyRepresentation(owner, idString, parentNode, pObj, name),
-					null
+				Enums.ExitKeyPO,
+				pObj => new ExitKeyData(pObj),
+				(owner, idString, parentNode, pObj, name) => new ExitKeyRepresentation(owner, idString, parentNode, pObj, name),
+				null
 			) {
 				OnRoomLoadedAction = (self, room, pObj, firstTimeRealized) => {
 					ExitKeyData data = pObj.data as ExitKeyData;
@@ -502,7 +502,6 @@ public static class Objects {
 			)
 		);
 	}
-
 
 	private static Player.ObjectGrabability On_Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj) {
 		if (obj is CactusFruit)
