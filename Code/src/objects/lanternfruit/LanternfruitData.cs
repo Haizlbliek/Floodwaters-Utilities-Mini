@@ -9,11 +9,11 @@ public class LanternfruitData : PlacedObject.ConsumableObjectData {
 	public LanternfruitData(PlacedObject owner) : base(owner) {
 	}
 
-    public override void FromString(string s) {
-        base.FromString(s);
+	public override void FromString(string s) {
+		base.FromString(s);
 
-        try {
-        	string[] array = Regex.Split(s, "~");
+		try {
+			string[] array = Regex.Split(s, "~");
 			this.panelPos.x = float.Parse(array[0], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.panelPos.y = float.Parse(array[1], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.minRegen = int.Parse(array[2], NumberStyles.Any, CultureInfo.InvariantCulture);
@@ -23,9 +23,9 @@ public class LanternfruitData : PlacedObject.ConsumableObjectData {
 			this.color.g = float.Parse(array[6], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.color.b = float.Parse(array[7], NumberStyles.Any, CultureInfo.InvariantCulture);
 			this.unrecognizedAttributes = SaveUtils.PopulateUnrecognizedStringAttrs(array, 8);
-       }
-       catch (Exception) {}
-  }
+		}
+		catch (Exception) { }
+	}
 
 	private string LanternfruitSaveString() {
 		return string.Format(CultureInfo.InvariantCulture, "{0}~{1}~{2}~{3}~{4}~{5}~{6}~{7}",
@@ -55,7 +55,4 @@ public class LanternfruitData : PlacedObject.ConsumableObjectData {
 		public ColorType(string value, bool register = false) : base(value, register) {
 		}
 	}
-
-	
 }
-	

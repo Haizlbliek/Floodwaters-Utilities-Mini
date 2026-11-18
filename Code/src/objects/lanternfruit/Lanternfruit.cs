@@ -1,5 +1,3 @@
-using System.Collections.Concurrent;
-
 namespace Floodwaters.Objects;
 
 public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProvideWarmth {
@@ -22,13 +20,11 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 	public LanternfruitData.ColorType generatedColorType;
 	public Color generatedColor;
 
-
 	//warmth settings
 	float IProvideWarmth.warmth => RainWorldGame.DefaultHeatSourceWarmth;
 	Room IProvideWarmth.loadedRoom => this.room;
 	float IProvideWarmth.range => 75;
 	Vector2 IProvideWarmth.Position() => base.firstChunk.pos;
-
 
 	//Stuck settings for generation on Dodder
 	private bool stuck;
@@ -40,14 +36,13 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 	public int BitesLeft => this.bites;
 	public int bites = 2;
 	public int FoodPoints => 1;
-	
+
 	public bool AutomaticPickUp => true;
 
 	//color configuration
 	public Color Color => this.pObj?.data is LanternfruitData data ? data.color : this.generatedColor;
 	private LanternfruitData.ColorType ColorType => this.pObj?.data is LanternfruitData data ? data.colorType : this.generatedColorType;
 	private Color LightColor => this.ColorType == LanternfruitData.ColorType.Custom || this.ColorType == LanternfruitData.ColorType.Dead ? this.Color : this.color;
-
 
 	public Lanternfruit(AbstractPhysicalObject abstractPhysicalObject) : base(abstractPhysicalObject) {
 		AbstractLanternfruit abstractFruit = abstractPhysicalObject as AbstractLanternfruit;
@@ -75,8 +70,6 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 		}
 	}
 
-
-	
 	public override void Update(bool eu) {
 		base.Update(eu);
 		if (this.pObj != null && this.grabbedBy.Count > 0 && this.abstractPhysicalObject is AbstractLanternfruit abstractFruit && !abstractFruit.isConsumed) {
@@ -92,9 +85,9 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 				this.flicker[i, 2] = 1f + Mathf.Pow(UnityEngine.Random.value, 3f) * 0.2f * ((UnityEngine.Random.value < 0.5f) ? -1f : 1f);
 			}
 			this.flicker[i, 2] = Mathf.Lerp(this.flicker[i, 2], 1f, 0.01f);
-			}
+		}
 		//flicker
-	
+
 		//Lightsource addition
 		bool dead = this.ColorType == LanternfruitData.ColorType.Dead;
 		bool custom = this.ColorType == LanternfruitData.ColorType.Custom;
@@ -118,11 +111,9 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 		}
 		//Lightsource addition
 
-
 		if (this.room.game.devToolsActive && Input.GetKey("b")) {
 			this.firstChunk.vel += Custom.DirVec(base.firstChunk.pos, Futile.mousePosition) * 3f;
 		}
-		
 
 		this.lastRotation = this.rotation;
 		if (this.grabbedBy.Count > 0) {
@@ -194,8 +185,6 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 		newContatiner.AddChild(sLeaser.sprites[0]);
 		newContatiner.AddChild(sLeaser.sprites[1]);
 	}
-	
-
 
 	public void ApplyPalette(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, RoomPalette palette) {
 		LanternfruitData data = this.pObj?.data as LanternfruitData;
@@ -204,7 +193,7 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 		if (colorType == LanternfruitData.ColorType.Dead) {
 			int x = Random.Range(0, 10);
 			baseColor = palette.texture.GetPixel(x, 3);
-			
+
 		}
 		else if (colorType != LanternfruitData.ColorType.Custom) {
 			int effectColor = colorType == LanternfruitData.ColorType.EffectColorB ? 1 : 0;
@@ -222,8 +211,6 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 		sLeaser.sprites[1].color = Color.Lerp(this.color, Color.black, 0.5f);
 	}
 
-
-
 	public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam) {
 		sLeaser.sprites = new FSprite[2];
 		sLeaser.sprites[0] = new FSprite("DangleFruit0A", true);
@@ -234,7 +221,6 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 		}
 		this.AddToContainer(sLeaser, rCam, null);
 	}
-
 
 	public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos) {
 		Vector2 position = Vector2.Lerp(base.firstChunk.lastPos, base.firstChunk.pos, timeStacker);
@@ -268,7 +254,6 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 		}
 	}
 
-
 	public void BitByPlayer(Creature.Grasp grasp, bool eu) {
 		this.bites--;
 		this.room.PlaySound(this.bites == 0 ? SoundID.Slugcat_Eat_Dangle_Fruit : SoundID.Slugcat_Bite_Dangle_Fruit, base.firstChunk);
@@ -279,7 +264,6 @@ public class Lanternfruit : PlayerCarryableItem, IDrawable, IPlayerEdible, IProv
 			this.Destroy();
 		}
 	}
-
 
 	public void ThrowByPlayer() {
 	}
